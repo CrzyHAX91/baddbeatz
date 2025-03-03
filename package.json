@@ -1,0 +1,47 @@
+{
+  "name": "fastn-express",
+  "version": "1.0.0",
+  "description": "Fast and lightweight Express.js application",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "eslint": "eslint \"**/*.{js,cjs,ts,mjs,jsx,tsx}\"",
+    "lint": "npm run eslint",
+    "lintfix": "npm run eslint -- --fix",
+    "postlint": "template-oss-check",
+    "template-oss-apply": "template-oss-apply --force",
+    "snap": "tap",
+    "test": "tap",
+    "posttest": "npm run lint"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.34.0",
+    "@npmcli/eslint-config": "^5.1.0",
+    "@npmcli/template-oss": "^4.24.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^6.0.1",
+    "qs": "6.13.0 side-channel@1.1.0 object-inspect@1.13.3 side-channel-list@1.0.0 side-channel-map@1.0.1 call-bound@1.0.3 function-bind@1.1.2 get-intrinsic@1.2.7 gopd@1.2.0 has-symbols@1.1.0 side-channel-weakmap@1.0.2",
+    "tap": "^21.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "author": "GitHub Inc.",
+  "files": [
+    "bin/",
+    "lib/"
+  ],
+  "templateOSS": {
+    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "4.24.0"
+  },
+  "tap": {
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
+  }
+}
