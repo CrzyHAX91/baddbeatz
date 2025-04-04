@@ -19,14 +19,19 @@
     "@dotenvx/dotenvx": "^1.34.0",
     "@npmcli/eslint-config": "^5.1.0",
     "@npmcli/template-oss": "^4.24.0",
+    "blerg": "^0.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "figlet": "^1.8.0",
+    "glob": "^11.0.1",
     "helmet": "^6.0.1",
     "qs": "6.13.0 side-channel@1.1.0 object-inspect@1.13.3 side-channel-list@1.0.0 side-channel-map@1.0.1 call-bound@1.0.3 function-bind@1.1.2 get-intrinsic@1.2.7 gopd@1.2.0 has-symbols@1.1.0 side-channel-weakmap@1.0.2",
+    "rimraf": "^6.0.1",
     "tap": "^21.0.1"
   },
   "devDependencies": {
+    "eslint": "^9.22.0",
     "nodemon": "^3.1.9"
   },
   "author": "GitHub Inc.",
@@ -36,12 +41,16 @@
   ],
   "templateOSS": {
     "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
-    "version": "4.24.0"
+    "version": "4.24.2"
   },
   "tap": {
     "nyc-arg": [
       "--exclude",
       "tap-snapshots/**"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/smart-ai-cli.git"
   }
 }
