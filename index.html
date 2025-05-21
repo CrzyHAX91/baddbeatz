@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Open Graph -->
+    <meta property="og:title" content="TheBadGuy (TBG) | BaddBeats" />
+    <meta property="og:description" content="Explosive underground DJ – House, Techno, Hardstyle & Uptempo. Book now or listen to fresh mixes." />
+    <meta property="og:image" content="https://baddbeats.nl/assets/images/hero-bg.png" />
+    <meta property="og:url" content="https://baddbeats.nl/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TheBadGuy (TBG) | BaddBeats" />
+    <meta name="twitter:description" content="Hard-hitting DJ from NL blending underground energy with pure chaos." />
+    <meta name="twitter:image" content="https://baddbeats.nl/assets/images/hero-bg.png" />
+    <meta name="twitter:site" content="@your_handle" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TheBadGuy (TBG) – Explosive underground DJ blending house, techno, hardstyle, and uptempo. Listen now or book for your next event." />
+    <title>TheBadGuy | BaddBeats</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/cyberpunk.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-brand">BaddBeats</div>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#music">Music</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>WELCOME TO BADD BEATS</h1>
+            <h2 class="tagline">Raw Energy. Relentless Beats. Underground Sound.</h2>
+            <p>TheBadGuy (TBG) delivers high-octane sets built for the rave generation. Hard techno, house, EDM & more.</p>
+            <div class="cta-buttons">
+                <a href="#music" class="btn-primary">🎧 Listen to Mixes</a>
+                <a href="#contact" class="btn-secondary">📆 Book Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">Who is TBG?</h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <div class="profile-placeholder">DJ Profile</div>
+                </div>
+                <div class="about-text">
+                    <p>From the bedroom studio to the club stage – TheBadGuy brings four years of passion, sweat and chaos to every set. House, techno, rawstyle and beyond.</p>
+                    <div class="experience-highlights">
+                        <div class="highlight">
+                            <span class="number">4+</span>
+                            <span class="label">Years Experience</span>
+                        </div>
+                        <div class="highlight">
+                            <span class="number">200+</span>
+                            <span class="label">Events</span>
+                        </div>
+                        <div class="highlight">
+                            <span class="number">30+</span>
+                            <span class="label">Venues</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Music Section -->
+    <section id="music" class="music">
+        <div class="container">
+            <h2 class="section-title">Latest Mixes</h2>
+            <div class="music-categories">
+                <button class="category-btn active" data-category="soundcloud">SoundCloud</button>
+                <button class="category-btn" data-category="mixcloud">Mixcloud</button>
+                <button class="category-btn" data-category="youtube">YouTube</button>
+                <button class="category-btn" data-category="internal">Internal Player</button>
+            </div>
+            <div class="music-grid">
+                <div class="music-player" data-category="soundcloud">
+                    <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/TheBadGuy/Mix1">
+                    </iframe>
+                    <div class="tracklist">
+                        <h4>Tracklist</h4>
+                        <ol>
+                            <li>Track 1 - Artist A</li>
+                            <li>Track 2 - Artist B</li>
+                            <li>Track 3 - Artist C</li>
+                        </ol>
+                    </div>
+                    <a href="https://soundcloud.com/TheBadGuy/Mix1/download" class="btn-secondary" download>Download</a>
+                </div>
+                <div class="music-player" data-category="mixcloud" style="display:none;">
+                    <iframe width="100%" height="120" src="https://www.mixcloud.com/widget/iframe/?feed=%2FTheBadGuy%2Fmix1%2F" frameborder="0" ></iframe>
+                    <div class="tracklist">
+                        <h4>Tracklist</h4>
+                        <ol>
+                            <li>Track A - Artist X</li>
+                            <li>Track B - Artist Y</li>
+                            <li>Track C - Artist Z</li>
+                        </ol>
+                    </div>
+                    <a href="#" class="btn-secondary" download>Download</a>
+                </div>
+                <div class="music-player" data-category="youtube" style="display:none;">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+                    <a href="https://youtube.com/watch?v=VIDEO_ID" class="btn-secondary" target="_blank">Watch on YouTube</a>
+                </div>
+                <div class="music-player" data-category="internal" style="display:none;">
+                    <audio controls>
+                        <source src="assets/audio/mix1.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="tracklist">
+                        <h4>Tracklist</h4>
+                        <ol>
+                            <li>Internal Track 1</li>
+                            <li>Internal Track 2</li>
+                            <li>Internal Track 3</li>
+                        </ol>
+                    </div>
+                    <a href="assets/audio/mix1.mp3" class="btn-secondary" download>Download</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Live Performance</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Club Night</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Festival Stage</div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">Private Event</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Club Events</h3>
+                    <p>High-energy sets perfect for underground club atmospheres</p>
+                    <a href="#contact" class="btn-secondary">Book Now</a>
+                </div>
+                <div class="service-card">
+                    <h3>Festivals</h3>
+                    <p>Explosive performances that ignite the crowd</p>
+                    <a href="#contact" class="btn-secondary">Book Now</a>
+                </div>
+                <div class="service-card">
+                    <h3>Private Events</h3>
+                    <p>Customized sets for your special occasion</p>
+                    <a href="#contact" class="btn-secondary">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="contact-content">
+                <form action="https://formspree.io/f/your-form-id" method="POST" class="contact-form">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <input type="text" name="event_type" placeholder="Event Type">
+                    <textarea name="message" placeholder="Tell us about your event" required></textarea>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+                <div class="contact-info">
+                    <div class="social-links">
+                        <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://soundcloud.com/thebadguyhimself?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" rel="noopener" class="social-link" aria-label="SoundCloud">
+                            <i class="fab fa-soundcloud"></i>
+                        </a>
+                        <a href="https://facebook.com/yourprofile" target="_blank" rel="noopener" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@THEBADGUYHIMSELF" target="_blank" rel="noopener" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://twitter.com/yourprofile" target="_blank" rel="noopener" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 TheBadGuy / BaddBeats. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
