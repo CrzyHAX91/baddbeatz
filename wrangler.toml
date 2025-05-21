@@ -4,4 +4,3 @@ main = "workers-site/index.js"
 
 [site]
 bucket = "./"
-entry-point = "workers-site"
