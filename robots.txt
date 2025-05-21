@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://baddbeats.nl/sitemap.xml
