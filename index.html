@@ -1,55 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="TheBadGuy (TBG) – Explosive underground DJ blending house, techno, hardstyle, and uptempo. Listen now or book for your next event." />
-  <title>TheBadGuy | BaddBeats</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TheBadGuyHimself is a high-energy techno DJ known for underground vibes and seamless transitions.">
+  <title>TheBadGuyHimself | BADDBEATS</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script defer src="/assets/js/main.js"></script>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">BaddBeats</div>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="music.html">Music</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="bookings.html">Bookings</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h1>WELCOME TO BADD BEATS</h1>
-      <h2>Raw Energy. Relentless Beats. Underground Sound.</h2>
-      <p>TheBadGuy (TBG) delivers high-octane sets built for the rave generation. Hard techno, house, EDM & more.</p>
+  <header class="hero">
+    <img src="/assets/images/th.jpeg" alt="TheBadGuyHimself performing" class="hero-bg">
+    <div class="overlay">
+      <h1>BADDBEATS by THEBADGUYHIMSELF</h1>
+      <p>Master of the underground sound. From dark techno to rawstyle – always high-energy.</p>
       <div class="cta-buttons">
-        <a href="music.html" class="btn-primary">🎧 Listen to Mixes</a>
-        <a href="bookings.html" class="btn-secondary">📆 Book Now</a>
+        <a href="/music.html" class="btn">🎧 Listen to Mixes</a>
+        <a href="/gallery.html" class="btn">📸 View Gallery</a>
+        <a href="/bookings.html" class="btn">📩 Book Now</a>
       </div>
     </div>
-  </section>
-
-  <section class="intro-snippet">
-    <h3>Who is TBG?</h3>
-    <p>From the bedroom studio to the club stage – TheBadGuy brings four years of passion, sweat and chaos to every set. House, techno, rawstyle and beyond.</p>
-    <a href="about.html" class="link-more">Read more →</a>
-  </section>
-
-  <section class="featured-media">
-    <h3>Featured Mix</h3>
-    <iframe width="100%" height="166" scrolling="no" frameborder="no"
-      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/thebadguyhimself">
-    </iframe>
-  </section>
-
+  </header>
+  <main>
+    <section class="intro">
+      <h2>Who is TheBadGuyHimself?</h2>
+      <p>With over 4 years of electrifying dancefloors, he blends explosive techno, rawstyle bangers, and seamless transitions to keep crowds locked in the groove. Festivals, clubs, and exclusive events – he brings the energy everywhere.</p>
+    </section>
+    <section class="featured-mix">
+      <h2>🔥 Featured Mix</h2>
+      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/YOUR_TRACK_ID&color=%23ff5500&auto_play=false&show_user=true">
+      </iframe>
+    </section>
+    <section class="ai-chat">
+      <h2>🎤 Ask the DJ</h2>
+      <p>Curious about TheBadGuyHimself's setup, vibe, or availability? Ask below!</p>
+      <textarea id="userInput" placeholder="Type your question..."></textarea>
+      <button onclick="askDJ()">Ask</button>
+      <pre id="aiResponse"></pre>
+    </section>
+  </main>
   <footer>
-    <p>&copy; 2025 TheBadGuy / BaddBeats. All rights reserved.</p>
+    <p>&copy; 2025 TheBadGuyHimself</p>
+    <a href="/contact.html">Contact</a>
   </footer>
+
+  <!-- Simulated AI JS -->
+  <script>
+    async function askDJ() {
+      const input = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('aiResponse');
+      responseBox.textContent = 'Thinking...';
+
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${window.env.OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "You are an AI DJ assistant for TheBadGuyHimself." },
+              { role: "user", content: input }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        responseBox.textContent = data.choices?.[0]?.message?.content || "No response";
+      } catch (err) {
+        responseBox.textContent = "Error connecting to AI.";
+      }
+    }
+  </script>
 </body>
 </html>
