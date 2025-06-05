@@ -22,7 +22,8 @@ export default {
           })
         });
 
-        return new Response(await aiRes.text(), {
+        const aiResJson = await aiRes.json();
+        return new Response(JSON.stringify(aiResJson), {
           status: aiRes.status,
           headers: { 'Content-Type': 'application/json' }
         });
