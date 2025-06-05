@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://baddbeats.nl/</loc>
+        <loc>https://baddbeats.nl/</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
   <url>
-    <loc>https://baddbeats.nl/about.html</loc>
+        <loc>https://baddbeats.nl/about.html</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
   <url>
-    <loc>https://baddbeats.nl/music.html</loc>
+        <loc>https://baddbeats.nl/music.html</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
   <url>
-    <loc>https://baddbeats.nl/gallery.html</loc>
+        <loc>https://baddbeats.nl/gallery.html</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
   <url>
-    <loc>https://baddbeats.nl/bookings.html</loc>
+        <loc>https://baddbeats.nl/bookings.html</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
   <url>
-    <loc>https://baddbeats.nl/contact.html</loc>
+        <loc>https://baddbeats.nl/contact.html</loc>
+    <lastmod>2025-06-05</lastmod>
   </url>
 </urlset>
