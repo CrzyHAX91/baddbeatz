@@ -1,4 +1,4 @@
-# BaddBeats Website - TheBadGuy (TBG)
+# BaddBeatz Website - TheBadGuy (TBG)
 
 This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy underground DJ blending house, techno, hardstyle, and uptempo styles. This site is built to be deployed on **Cloudflare Pages**.
 
@@ -21,7 +21,6 @@ baddbeatz/
     │   └── main.js
     ├── images/
     ├── audio/
-    └── video/
 ```
 
 ---
@@ -72,3 +71,16 @@ baddbeatz/
 - Add hover effects (glow / pulse)
 - Optimize images with WebP support
 - Social preview meta tags (Open Graph / Twitter Cards)
+
+---
+
+## 🧪 Running Tests
+
+1. Install dev dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+2. Run pytest:
+   ```bash
+   pytest
+   ```
