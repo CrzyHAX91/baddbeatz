@@ -74,13 +74,17 @@ baddbeatz/
 
 ---
 
-## 🧪 Running Tests
 
-1. Install dev dependencies:
-   ```bash
-   pip install -r requirements-dev.txt
-   ```
-2. Run pytest:
-   ```bash
-   pytest
-   ```
+## 🤖 AI Chat Setup
+
+The homepage chat feature sends questions to a Cloudflare Worker endpoint.
+Set your OpenAI API key as a secret so the worker can contact the API:
+
+```bash
+wrangler secret put OPENAI_API_KEY
+```
+
+Or configure the variable in the Cloudflare dashboard. The frontend calls
+`/api/ask` which the worker proxies to OpenAI.
+
+

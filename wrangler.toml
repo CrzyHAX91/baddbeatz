@@ -8,3 +8,7 @@ bucket = "./"
 routes = [
   { pattern = "www.baddbeatz.nl", custom_domain = true }
 ]
+
+[vars]
+# Add your OpenAI API key in the Cloudflare dashboard or via `wrangler secret put`.
+OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
