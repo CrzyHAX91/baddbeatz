@@ -123,6 +123,10 @@
         grid-template-columns: 1fr;
     }
 
+    .music-grid {
+        grid-template-columns: 1fr;
+    }
+
     /* Contact Form */
     .contact-form {
         width: 100%;
