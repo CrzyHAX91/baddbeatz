@@ -7,12 +7,12 @@ This is a static DJ portfolio website built with HTML, CSS, and JavaScript. It f
 Follow these steps to deploy the website on Cloudflare Pages:
 
 1. **Prepare your project:**
-   - Ensure all website files (HTML, CSS, JS, assets) are in the `dj-portfolio` directory.
+   - Ensure all website files (HTML, CSS, JS, assets) are in the `baddbeatz` directory.
    - The site is fully static and requires no server-side processing.
 
 2. **Push to a Git repository:**
    - Create a repository on GitHub, GitLab, or Bitbucket.
-   - Commit and push the contents of the `dj-portfolio` folder to the repository.
+   - Commit and push the contents of the `baddbeatz` folder to the repository.
 
 3. **Create a Cloudflare Pages project:**
    - Log in to your Cloudflare dashboard.
@@ -21,7 +21,7 @@ Follow these steps to deploy the website on Cloudflare Pages:
 
 4. **Configure build settings:**
    - Leave the build command empty (no build step needed).
-   - Set the build output directory to the root folder (`/` or `dj-portfolio` depending on your repo structure).
+   - Set the build output directory to the root folder (`/` or `baddbeatz` depending on your repo structure).
 
 5. **Deploy:**
    - Cloudflare Pages will automatically build and deploy your site.
@@ -33,7 +33,7 @@ Follow these steps to deploy the website on Cloudflare Pages:
 
 ## Local Testing
 
-To test the site locally, run the following command inside the `dj-portfolio` directory:
+To test the site locally, run the following command inside the `baddbeatz` directory:
 
 ```bash
 python3 server.py
