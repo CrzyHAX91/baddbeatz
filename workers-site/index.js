@@ -28,7 +28,10 @@ export default {
           headers: { 'Content-Type': 'application/json' }
         });
       } catch (err) {
-        return new Response('AI request failed', { status: 500 });
+        return new Response(JSON.stringify({ error: 'AI request failed' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
       }
     }
 
