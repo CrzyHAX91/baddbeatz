@@ -102,6 +102,11 @@ body {
   margin-top: 2rem;
 }
 
+.music-grid > div {
+  display: flex;
+  flex-direction: column;
+}
+
 .music-grid iframe {
   width: 100%;
   border: none;
