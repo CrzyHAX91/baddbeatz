@@ -71,3 +71,25 @@ body {
   color: #00ffff;
   text-shadow: 0 0 5px #00ffff;
 }
+
+/* Ensure the hero image displays correctly */
+.hero-bg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Basic gallery grid styling */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 2rem;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}

@@ -1,7 +1,9 @@
 import http.server
 import socketserver
+import os
 
-PORT = 8000
+# Allow overriding the port via the PORT environment variable
+PORT = int(os.getenv("PORT", "8000"))
 
 Handler = http.server.SimpleHTTPRequestHandler
 
