@@ -6,5 +6,5 @@ main = "workers-site/index.js"
 [site]
 bucket = "./"
 routes = [
-  { pattern = "www.baddbeatz.nl", custom_domain = true }
+  { pattern = "www.baddbeats.nl", custom_domain = true }
 ]
