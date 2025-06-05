@@ -7,7 +7,7 @@ This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy u
 ## 🚀 Project Structure
 
 ```
-baddbeats/
+baddbeatz/
 ├── index.html
 ├── about.html
 ├── music.html
@@ -31,11 +31,11 @@ baddbeats/
 ### 1. Login to [Cloudflare Pages](https://pages.cloudflare.com/)
 ### 2. Create a new project:
 - Choose **"Direct Upload"**
-- Upload the entire contents of the `baddbeats/` folder
+- Upload the entire contents of the `baddbeatz/` folder
 
 ### 3. Set your custom domain:
 - In your Cloudflare dashboard, go to **Pages > Settings > Custom Domains**
-- Add: `baddbeats.nl`
+- Add: `baddbeatz.nl`
 
 ---
 
