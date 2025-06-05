@@ -107,6 +107,10 @@ body {
   flex-direction: column;
 }
 
+.music-grid iframe {
+  width: 100%;
+  border: none;
+}
 
 /* SoundCloud credit text */
 .sc-credit {
