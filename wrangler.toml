@@ -12,3 +12,6 @@ routes = [
 [vars]
 # Add your OpenAI API key in the Cloudflare dashboard or via `wrangler secret put`.
 OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
+
+[observability.logs]
+enabled = true
