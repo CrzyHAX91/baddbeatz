@@ -88,3 +88,21 @@ Or configure the variable in the Cloudflare dashboard. The frontend calls
 `/api/ask` which the worker proxies to OpenAI.
 
 
+## 🛠 Development Setup
+
+To run tests or develop locally, install the Node and Python dependencies.
+
+1. Install JavaScript packages (including Jest):
+
+```bash
+npm install
+```
+
+2. Install Python packages:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Then you can run `npm test` for JavaScript tests and `pytest` for Python tests.
+
