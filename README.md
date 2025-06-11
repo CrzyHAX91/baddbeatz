@@ -121,3 +121,7 @@ npm test
 pytest
 ```
 
+
+## GitHub Pages Option
+
+If you prefer using GitHub Pages, place the site files inside a `docs/` folder and enable Pages from that directory (see `DEPLOYMENT_GITHUB.md`). The `/api/ask` worker should still be deployed on Cloudflare or another serverless platform so the chat feature continues to function.
