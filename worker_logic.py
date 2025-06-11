@@ -1,0 +1,22 @@
+import requests
+
+SYSTEM_PROMPT = "You are an AI DJ assistant for TheBadGuyHimself."
+
+
+def ask(question: str, api_key: str):
+    url = "https://api.openai.com/v1/chat/completions"
+    payload = {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": question},
+        ],
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
