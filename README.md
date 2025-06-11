@@ -108,6 +108,10 @@ You can also set `OPENAI_API_KEY` in the Cloudflare dashboard. The key is not
 stored in `wrangler.toml` to keep credentials out of version control. The
 frontend calls `/api/ask`, which the worker proxies to OpenAI.
 
+For local development, copy `.env.example` to `.env` and place your OpenAI key
+inside. `worker_logic.py` and the worker script fall back to the
+`OPENAI_API_KEY` environment variable when not running on Cloudflare.
+
 To protect the API from abuse, create a KV namespace for rate limiting:
 
 ```bash
@@ -124,6 +128,12 @@ Install the project dependencies:
 ```bash
 npm ci
 pip install -r requirements-dev.txt
+```
+
+Create a `.env` file for your API key:
+
+```bash
+cp .env.example .env
 ```
 
 Start the local development server:

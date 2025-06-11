@@ -1,9 +1,13 @@
+import os
 import requests
 
 SYSTEM_PROMPT = "You are an AI DJ assistant for TheBadGuyHimself."
 
 
-def ask(question: str, api_key: str):
+def ask(question: str, api_key: str | None = None):
+    api_key = api_key or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY is not set")
     url = "https://api.openai.com/v1/chat/completions"
     payload = {
         "model": "gpt-3.5-turbo",

@@ -31,11 +31,19 @@ export default {
         }
         await env.RATE_LIMIT.put(key, String(count + 1), { expirationTtl: 60 });
 
+        const openaiKey = env.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+        if (!openaiKey) {
+          return new Response(
+            JSON.stringify({ error: 'Missing OpenAI API key' }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+
         const aiRes = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${env.OPENAI_API_KEY}`
+            'Authorization': `Bearer ${openaiKey}`
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
