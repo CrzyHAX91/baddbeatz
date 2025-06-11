@@ -88,3 +88,34 @@ Or configure the variable in the Cloudflare dashboard. The frontend calls
 `/api/ask` which the worker proxies to OpenAI.
 
 
+## 🛠 Local Development
+
+Install the project dependencies:
+
+```bash
+npm ci
+pip install -r requirements-dev.txt
+```
+
+Start the local development server:
+
+```bash
+python3 server.py
+```
+
+You can override the default port by setting the `PORT` environment variable.
+
+### Running Tests
+
+- JavaScript tests:
+
+```bash
+npm test
+```
+
+- Python tests:
+
+```bash
+pytest
+```
+
