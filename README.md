@@ -25,15 +25,17 @@ baddbeatz/
 
 ---
 
+## 📦 Dependencies
+---
+
 ## 🌐 Deploy to GitHub Pages
 
-The repository contains a GitHub Actions workflow that publishes the contents
-of the `docs/` directory whenever changes are pushed to the `main` branch.
+**Prerequisites:** This project uses the GitHub Actions workflow at `.github/workflows/pages.yml` to build the `docs` directory and publish it automatically.
 
-1. Commit your updates and push to `main`.
-2. The workflow builds the site and deploys it to GitHub Pages automatically.
-3. In your repository **Settings → Pages**, set the custom domain to
-   `baddbeatz.nl` after pointing your DNS records to GitHub.
+1. Push your changes to the `main` branch.
+2. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
+3. Once the workflow finishes, visit the URL shown in the job output to view your site.
+
 
 ---
 
