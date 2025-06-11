@@ -26,6 +26,22 @@ The `docs/` directory used for GitHub Pages is generated from these source files
 
 ---
 
+### Importing Local Assets
+
+If you already have images, CSS, or JavaScript files saved elsewhere (for example on
+Windows at `C:\Users\Behee\OneDrive\Bureaublad\Website bestanden`), you can copy
+them into this project automatically. Run the helper script and provide the path
+to your asset folder:
+
+```bash
+python3 scripts/import_assets.py "C:\Users\Behee\OneDrive\Bureaublad\Website bestanden"
+```
+
+Files matching common image, CSS, and JS extensions will be placed in the
+appropriate subfolders under `assets/`.
+
+---
+
 ## 📦 Dependencies
 ---
 
