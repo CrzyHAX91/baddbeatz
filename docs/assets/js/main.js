@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
     navToggle.addEventListener('click', () => {
       navToggle.classList.toggle('nav__toggle--active');
       navLinks.classList.toggle('nav__links--active');
+      const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', !isExpanded);
     });
   }
 });
