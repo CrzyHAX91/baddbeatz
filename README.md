@@ -37,6 +37,16 @@ of the `docs/` directory whenever changes are pushed to the `main` branch.
 
 ---
 
+## 🌐 Deploy to GitHub Pages
+
+**Prerequisites:** This project uses the GitHub Actions workflow at `.github/workflows/pages.yml` to build the `docs` directory and publish it automatically.
+
+1. Push your changes to the `main` branch.
+2. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
+3. Once the workflow finishes, visit the URL shown in the job output to view your site.
+
+---
+
 ## 📬 Booking Form Setup
 
 1. Go to [Formspree](https://formspree.io)
