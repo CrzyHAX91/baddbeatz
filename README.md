@@ -20,7 +20,6 @@ baddbeatz/
     ├── js/
     │   └── main.js
     ├── images/
-    ├── audio/
 ```
 
 ---
