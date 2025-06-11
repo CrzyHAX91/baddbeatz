@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official site of TheBadGuyHimself – underground DJ and producer." />
+  <title>Home | TheBadGuyHimself</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">BaddBeats</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="bookings.html">Bookings</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img src="https://via.placeholder.com/1200x800?text=TheBadGuy" alt="TheBadGuyHimself performing" class="hero-bg">
+    <div class="overlay">
+      <h1>BADDBEATS by THEBADGUYHIMSELF</h1>
+      <p class="tagline">High-energy underground techno and hardstyle</p>
+      <div class="cta-buttons">
+        <a href="music.html" class="btn">🎧 Listen to Mixes</a>
+        <a href="gallery.html" class="btn">📸 View Gallery</a>
+        <a href="bookings.html" class="btn">📩 Book Now</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="intro">
+      <h2>Who is TheBadGuyHimself?</h2>
+      <p>With over 4 years of electrifying dancefloors, he blends explosive techno, rawstyle bangers, and seamless transitions to keep crowds locked in the groove.</p>
+    </section>
+
+    <section class="featured-mix">
+      <h2>🔥 Featured Mix</h2>
+      <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2019398421&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+      <div style="font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;">
+        <a href="https://soundcloud.com/thebadguyhimself" title="TBGxTheBadGuy" target="_blank" style="color: #cccccc; text-decoration: none;">TBGxTheBadGuy</a> ·
+        <a href="https://soundcloud.com/thebadguyhimself/sets/house-mixes-2025" title="House mixes 2025" target="_blank" style="color: #cccccc; text-decoration: none;">House mixes 2025</a>
+      </div>
+    </section>
+    <section class="video-section">
+      <div class="video-embed">
+        <h2>Latest Videos</h2>
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed?listType=user_uploads&amp;list=TheBadGuyHimself"
+          title="Latest Videos playlist"
+          loading="lazy"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+      
+    <section class="ai-chat">
+      <h2>🎤 Ask the DJ</h2>
+      <p>Curious about TheBadGuyHimself's setup, vibe, or availability? Ask below!</p>
+      <textarea id="userInput" placeholder="Type your question..."></textarea>
+      <button onclick="askDJ()">Ask</button>
+      <pre id="aiResponse"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 TheBadGuyHimself</p>
+    <a href="contact.html">Contact</a>
+  </footer>
+
+  <script>
+    async function askDJ() {
+      const input = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('aiResponse');
+      responseBox.textContent = 'Thinking...';
+      try {
+        const res = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: input })
+        });
+        const data = await res.json();
+        responseBox.textContent = data.choices?.[0]?.message?.content || 'No response';
+      } catch (err) {
+        responseBox.textContent = 'Error connecting to AI.';
+      }
+    }
+  </script>
+</body>
+</html>
