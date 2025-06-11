@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "deploy": "wrangler deploy",
-    "test": "jest"
+    "test": "jest",
+    "build-docs": "node scripts/build-docs.js"
   },
   "keywords": [],
   "author": "",
