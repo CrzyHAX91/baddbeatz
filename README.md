@@ -1,6 +1,6 @@
 # BaddBeatz Website - TheBadGuy (TBG)
 
-This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy underground DJ blending house, techno, hardstyle, and uptempo styles. This site is built to be deployed on **Cloudflare Pages**.
+This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy underground DJ blending house, techno, hardstyle, and uptempo styles. This site is built to be deployed on **GitHub Pages**.
 
 ---
 
@@ -20,21 +20,21 @@ baddbeatz/
     ├── js/
     │   └── main.js
     ├── images/
-    ├── audio/
 ```
 
 ---
 
-## 🌐 Deploy to Cloudflare Pages
+## 📦 Dependencies
+---
 
-### 1. Login to [Cloudflare Pages](https://pages.cloudflare.com/)
-### 2. Create a new project:
-- Choose **"Direct Upload"**
-- Upload the entire contents of the `baddbeatz/` folder
+## 🌐 Deploy to GitHub Pages
 
-### 3. Set your custom domain:
-- In your Cloudflare dashboard, go to **Pages > Settings > Custom Domains**
-- Add: `baddbeatz.nl`
+**Prerequisites:** This project uses the GitHub Actions workflow at `.github/workflows/pages.yml` to build the `docs` directory and publish it automatically.
+
+1. Push your changes to the `main` branch.
+2. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
+3. Once the workflow finishes, visit the URL shown in the job output to view your site.
+
 
 ---
 
@@ -78,15 +78,48 @@ baddbeatz/
 ## 🤖 AI Chat Setup
 
 The homepage chat feature sends questions to a Cloudflare Worker endpoint.
-Set your OpenAI API key as a secret so the worker can contact the API:
+Before you deploy the worker, provide your OpenAI API key as a secret so it can
+contact the API:
 
 ```bash
 wrangler secret put OPENAI_API_KEY
 ```
 
-Or configure the variable in the Cloudflare dashboard. The frontend calls
-`/api/ask` which the worker proxies to OpenAI.
+You can also set `OPENAI_API_KEY` in the Cloudflare dashboard. The key is not
+stored in `wrangler.toml` to keep credentials out of version control. The
+frontend calls `/api/ask`, which the worker proxies to OpenAI.
 
+
+## 🛠 Local Development
+
+Install the project dependencies:
+
+```bash
+npm ci
+pip install -r requirements-dev.txt
+```
+
+Start the local development server:
+
+```bash
+python3 server.py
+```
+
+You can override the default port by setting the `PORT` environment variable.
+
+### Running Tests
+
+- JavaScript tests:
+
+```bash
+npm test
+```
+
+- Python tests:
+
+```bash
+pytest
+```
 
 
 ## GitHub Pages Option

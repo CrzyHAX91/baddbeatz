@@ -2,9 +2,9 @@
 
 This is a static DJ portfolio website built with HTML, CSS, and JavaScript. It features a cyberpunk theme with embedded music players, categorization, tracklists, download options, call to action buttons, and a contact form.
 
-## Deployment on Cloudflare Pages
+## Deployment on GitHub Pages
 
-Follow these steps to deploy the website on Cloudflare Pages:
+Follow these steps to deploy the website on GitHub Pages:
 
 1. **Prepare your project:**
    - Ensure all website files (HTML, CSS, JS, assets) are in the `baddbeatz` directory.
@@ -14,22 +14,19 @@ Follow these steps to deploy the website on Cloudflare Pages:
    - Create a repository on GitHub, GitLab, or Bitbucket.
    - Commit and push the contents of the `baddbeatz` folder to the repository.
 
-3. **Create a Cloudflare Pages project:**
-   - Log in to your Cloudflare dashboard.
-   - Navigate to the Pages section and click "Create a project".
-   - Connect your Git repository to Cloudflare Pages.
+3. **Enable GitHub Pages:**
+   - In your repository, go to **Settings → Pages**.
+   - Choose **GitHub Actions** as the source.
 
-4. **Configure build settings:**
-   - Leave the build command empty (no build step needed).
-   - Set the build output directory to the root folder (`/` or `baddbeatz` depending on your repo structure).
+4. **Deploy:**
+   - Push commits to the `main` branch.
+   - The workflow in `.github/workflows/pages.yml` publishes the `docs/` folder to GitHub Pages.
 
-5. **Deploy:**
-   - Cloudflare Pages will automatically build and deploy your site.
-   - You will receive a live URL to access your DJ portfolio.
+5. **Custom domain:**
+   - After DNS is configured, set `baddbeatz.nl` as your custom domain in the Pages settings.
 
 6. **Update and redeploy:**
-   - Push any future changes to your Git repository.
-   - Cloudflare Pages will automatically redeploy the updated site.
+   - Push any future changes to `main` and the site will redeploy automatically.
 
 ## Local Testing
 
@@ -46,4 +43,4 @@ Then open `http://localhost:8000` in your browser.
 For any questions or support, please contact the developer.
 
 ---
-This document provides all necessary steps to deploy and maintain your DJ portfolio website on Cloudflare Pages.
+This document provides all necessary steps to deploy and maintain your DJ portfolio website on GitHub Pages.
