@@ -113,7 +113,7 @@ body {
 }
 
 /* SoundCloud credit text */
-.sc-credit {
+.soundcloud-credit {
   font-size: 0.75rem;
   color: #cccccc;
   line-break: anywhere;
@@ -127,7 +127,7 @@ body {
   margin-top: 0.5rem;
 }
 
-.sc-credit a {
+.soundcloud-credit a {
   color: #cccccc;
   text-decoration: none;
 }
