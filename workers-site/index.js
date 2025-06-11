@@ -7,6 +7,30 @@ export default {
     if (url.pathname === '/api/ask' && request.method === 'POST') {
       try {
         const { question } = await request.json();
+
+        // Ensure a valid, non-empty question string
+        if (typeof question !== 'string' || question.trim() === '') {
+          return new Response(
+            JSON.stringify({ error: 'Question must be a non-empty string' }),
+            { status: 400, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+
+        // Basic rate limiting by client IP
+        const ip =
+          request.headers.get('CF-Connecting-IP') ||
+          request.headers.get('X-Forwarded-For') ||
+          'unknown';
+        const key = `ip:${ip}`;
+        const count = parseInt((await env.RATE_LIMIT.get(key)) || '0');
+        if (count >= 20) {
+          return new Response(
+            JSON.stringify({ error: 'Rate limit exceeded' }),
+            { status: 429, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        await env.RATE_LIMIT.put(key, String(count + 1), { expirationTtl: 60 });
+
         const aiRes = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {

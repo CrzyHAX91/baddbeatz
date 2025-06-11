@@ -90,6 +90,14 @@ You can also set `OPENAI_API_KEY` in the Cloudflare dashboard. The key is not
 stored in `wrangler.toml` to keep credentials out of version control. The
 frontend calls `/api/ask`, which the worker proxies to OpenAI.
 
+To protect the API from abuse, create a KV namespace for rate limiting:
+
+```bash
+wrangler kv:namespace create RATE_LIMIT
+```
+
+Add the namespace to `wrangler.toml` so the Worker can access it.
+
 
 ## 🛠 Local Development
 
