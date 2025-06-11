@@ -87,4 +87,6 @@ wrangler secret put OPENAI_API_KEY
 Or configure the variable in the Cloudflare dashboard. The frontend calls
 `/api/ask` which the worker proxies to OpenAI.
 
+## License
 
+This project is licensed under the [MIT License](LICENSE).
