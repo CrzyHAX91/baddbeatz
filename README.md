@@ -22,6 +22,8 @@ baddbeatz/
     ├── images/
 ```
 
+The `docs/` directory used for GitHub Pages is generated from these source files using the `npm run build-docs` script.
+
 ---
 
 ## 📦 Dependencies
@@ -29,11 +31,12 @@ baddbeatz/
 
 ## 🌐 Deploy to GitHub Pages
 
-**Prerequisites:** This project uses the GitHub Actions workflow at `.github/workflows/pages.yml` to build the `docs` directory and publish it automatically.
+**Prerequisites:** The root directory contains the source HTML files. The GitHub Actions workflow at `.github/workflows/pages.yml` copies them into `docs/` and publishes that folder automatically.
 
 1. Push your changes to the `main` branch.
-2. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
-3. Once the workflow finishes, visit the URL shown in the job output to view your site.
+2. Run `npm run build-docs` locally if you want to preview the `docs/` folder. The workflow runs this command automatically.
+3. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
+4. Once the workflow finishes, visit the URL shown in the job output to view your site.
 
 
 ---
