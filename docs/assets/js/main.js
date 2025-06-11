@@ -17,4 +17,13 @@ document.addEventListener("DOMContentLoaded", function () {
   faders.forEach(fader => {
     appearOnScroll.observe(fader);
   });
+
+  const navToggle = document.querySelector('.nav__toggle');
+  const navLinks = document.querySelector('.nav__links');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('nav__toggle--active');
+      navLinks.classList.toggle('nav__links--active');
+    });
+  }
 });
