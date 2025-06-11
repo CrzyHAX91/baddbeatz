@@ -32,3 +32,17 @@ def test_worker_ask_error():
         with pytest.raises(requests.exceptions.HTTPError):
             ask("Hi", "sk-test")
 
+
+def test_worker_ask_env_fallback(monkeypatch):
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://api.openai.com/v1/chat/completions",
+            json={"id": "456", "choices": [{"message": {"content": "hi"}}]},
+            status_code=200,
+        )
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-env")
+        result = ask("Yo")
+        assert result["id"] == "456"
+        history = m.request_history[0]
+        assert history.headers["Authorization"] == "Bearer sk-env"
+
