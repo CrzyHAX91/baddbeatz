@@ -34,6 +34,17 @@ body {
 .hero h2 {
   color: #00ffff;
 }
+
+/* Generic button style mirroring btn-primary */
+.btn {
+  padding: 1rem 2rem;
+  margin: 1rem;
+  display: inline-block;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #ff0033;
+  color: #fff;
+}
 .btn-primary, .btn-secondary {
   padding: 1rem 2rem;
   margin: 1rem;
