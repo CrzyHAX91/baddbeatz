@@ -46,3 +46,13 @@ def test_worker_ask_env_fallback(monkeypatch):
         history = m.request_history[0]
         assert history.headers["Authorization"] == "Bearer sk-env"
 
+
+def test_worker_ask_timeout():
+    with requests_mock.Mocker() as m:
+        m.post(
+            "https://api.openai.com/v1/chat/completions",
+            exc=requests.exceptions.Timeout,
+        )
+        with pytest.raises(requests.exceptions.Timeout):
+            ask("Hi", "sk-test")
+

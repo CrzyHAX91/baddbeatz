@@ -20,7 +20,7 @@ def ask(question: str, api_key: str | None = None):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}",
     }
-    response = requests.post(url, json=payload, headers=headers)
+    response = requests.post(url, json=payload, headers=headers, timeout=10)
     response.raise_for_status()
     return response.json()
 

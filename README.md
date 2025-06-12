@@ -112,6 +112,10 @@ For local development, copy `.env.example` to `.env` and place your OpenAI key
 inside. `worker_logic.py` and the worker script fall back to the
 `OPENAI_API_KEY` environment variable when not running on Cloudflare.
 
+Requests to the OpenAI API use a 10-second timeout. If the API does not respond
+within this window, `worker_logic.ask` will raise a
+`requests.exceptions.Timeout` error.
+
 To protect the API from abuse, create a KV namespace for rate limiting:
 
 ```bash
