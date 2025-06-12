@@ -70,8 +70,14 @@ export default {
     try {
       return await getAssetFromKV({ request, waitUntil: ctx.waitUntil.bind(ctx) });
     } catch (e) {
-      const pathname = url.pathname;
-      return new Response(`"${pathname}" not found`, { status: 404, statusText: 'not found' });
+      try {
+        const notFoundRequest = new Request(url.origin + '/404.html', request);
+        const res = await getAssetFromKV({ request: notFoundRequest, waitUntil: ctx.waitUntil.bind(ctx) });
+        return new Response(res.body, { ...res, status: 404 });
+      } catch (err) {
+        const pathname = url.pathname;
+        return new Response(`"${pathname}" not found`, { status: 404, statusText: 'not found' });
+      }
     }
   }
 };
