@@ -120,6 +120,9 @@ wrangler kv:namespace create RATE_LIMIT
 
 Add the namespace to `wrangler.toml` so the Worker can access it.
 
+Before deploying, replace the placeholder `id` and `preview_id` values in
+`wrangler.toml` with your real KV namespace IDs.
+
 
 ## 🛠 Local Development
 
@@ -145,6 +148,13 @@ python3 server.py
 You can override the default port by setting the `PORT` environment variable.
 
 ### Running Tests
+
+Install the dependencies first:
+
+```bash
+npm ci
+pip install -r requirements-dev.txt
+```
 
 - JavaScript tests:
 
