@@ -1,6 +1,6 @@
 # BaddBeatz Website - TheBadGuy (TBG)
 
-This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy underground DJ blending house, techno, hardstyle, and uptempo styles. This site is built to be deployed on **Cloudflare Pages**.
+This is the static portfolio website for **TheBadGuy (TBG)** – a high-energy underground DJ blending house, techno, hardstyle, and uptempo styles. This site is built to be deployed on **GitHub Pages**.
 
 ---
 
@@ -25,16 +25,15 @@ baddbeatz/
 
 ---
 
-## 🌐 Deploy to Cloudflare Pages
+## 🌐 Deploy to GitHub Pages
 
-### 1. Login to [Cloudflare Pages](https://pages.cloudflare.com/)
-### 2. Create a new project:
-- Choose **"Direct Upload"**
-- Upload the entire contents of the `baddbeatz/` folder
+The repository contains a GitHub Actions workflow that publishes the contents
+of the `docs/` directory whenever changes are pushed to the `main` branch.
 
-### 3. Set your custom domain:
-- In your Cloudflare dashboard, go to **Pages > Settings > Custom Domains**
-- Add: `baddbeatz.nl`
+1. Commit your updates and push to `main`.
+2. The workflow builds the site and deploys it to GitHub Pages automatically.
+3. In your repository **Settings → Pages**, set the custom domain to
+   `baddbeatz.nl` after pointing your DNS records to GitHub.
 
 ---
 
