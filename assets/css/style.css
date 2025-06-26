@@ -132,4 +132,9 @@ body {
   text-decoration: none;
 }
 
+/* Logo inside the navigation bar */
+.nav__logo {
+  height: 40px;
+}
+
 
