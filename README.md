@@ -53,6 +53,7 @@ appropriate subfolders under `assets/`.
 2. Run `npm run build-docs` locally if you want to preview the `docs/` folder. The workflow runs this command automatically.
 3. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
 4. Once the workflow finishes, visit the URL shown in the job output to view your site.
+5. After pointing your DNS records to GitHub, set **baddbeatz.nl** as the custom domain under **Settings → Pages**.
 
 
 ---
