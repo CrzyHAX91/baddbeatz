@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <script defer src="assets/js/player.js"></script>
 </head>
 <body>
   <header>
@@ -71,6 +72,16 @@
       </div>
 
     </div>
+
+    <section class="player">
+      <h2>Your Playlist</h2>
+      <audio id="audioPlayer" controls></audio>
+      <div class="player-controls">
+        <button id="prevBtn">Prev</button>
+        <button id="nextBtn">Next</button>
+      </div>
+      <ul id="playlist"></ul>
+    </section>
   </main>
   <footer>
     <p>&copy; 2025 TheBadGuy / BaddBeatz. All rights reserved.</p>
