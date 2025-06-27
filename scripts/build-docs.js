@@ -32,6 +32,7 @@ async function main() {
     await copyFile(file);
   }
   await copyDir('assets');
+  await copyDir('data');
 }
 
 main().catch((err) => {
