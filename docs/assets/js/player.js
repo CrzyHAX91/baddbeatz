@@ -1,15 +1,27 @@
+function authHeaders() {
+  const token = localStorage.getItem('authToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function loadPlaylist() {
-  const res = await fetch('/api/tracks');
+  const res = await fetch('/api/tracks', { headers: authHeaders() });
+  if (!res.ok) {
+    console.error('Failed to load tracks', await res.text());
+    return [];
+  }
   const data = await res.json();
   return data.tracks || [];
 }
 
 async function addTrack(title, url) {
-  await fetch('/api/tracks', {
+  const res = await fetch('/api/tracks', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify({ title, url })
   });
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
 }
 
 function createPlayer(tracks) {

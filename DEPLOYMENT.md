@@ -30,13 +30,24 @@ Follow these steps to deploy the website on GitHub Pages:
 
 ## Local Testing
 
-To test the site locally, run the following command inside the `baddbeatz` directory:
+To test the site locally with the Flask backend, run the following command inside the `baddbeatz` directory:
 
 ```bash
-python3 server.py
+python3 app.py
 ```
 
 Then open `http://localhost:8000` in your browser.
+
+## Flask Backend on a VM or Container
+
+The Flask application in `app.py` can run on any VM or container platform.
+
+1. Install Python 3 and run `pip install -r requirements.txt`.
+2. Initialize the database with `python3 scripts/init_db.py` (optional `DB_PATH`).
+3. Expose the desired `PORT` and start the app with `python3 app.py`.
+
+When using Docker, copy the repository contents into an image based on
+`python:3` and set the `PORT` and `DB_PATH` environment variables as needed.
 
 ## Contact
 

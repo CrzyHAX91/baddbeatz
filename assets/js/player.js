@@ -1,21 +1,6 @@
 let playlist = [];
-let audio;
-let list;
-let current = 0;
 
-async function loadPlaylist() {
-  const res = await fetch('/api/tracks');
-  const data = await res.json();
-  playlist = data.tracks || [];
-  const stored = JSON.parse(localStorage.getItem('playlist') || '[]');
-  playlist = playlist.concat(stored);
-  return playlist;
-}
-
-function savePlaylist() {
-  localStorage.setItem('playlist', JSON.stringify(playlist));
-}
-
+codex/extend-player.js-with-playlist-functions
 async function addTrack(title, url, art) {
   const track = { title, url, art };
   playlist.push(track);
