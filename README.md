@@ -128,6 +128,12 @@ Add the namespace to `wrangler.toml` so the Worker can access it.
 Before deploying, replace the placeholder `id` and `preview_id` values in
 `wrangler.toml` with your real KV namespace IDs.
 
+### Environment Variables
+
+- `OPENAI_API_KEY` – required by the Cloudflare Worker and `worker_logic.py`.
+- `PORT` – optional port for the Flask app (defaults to `8000`).
+- `DB_PATH` – optional path to the SQLite database file used by the Flask app.
+
 
 ## 🛠 Local Development
 
@@ -144,13 +150,14 @@ Create a `.env` file for your API key:
 cp .env.example .env
 ```
 
-Start the local development server:
+Start the Flask development server:
 
 ```bash
-python3 server.py
+python3 app.py
 ```
 
-You can override the default port by setting the `PORT` environment variable.
+The server reads `PORT` and `DB_PATH` from the environment. `DB_PATH` points to
+the SQLite database file (defaults to `data/app.db`).
 
 ### Running Tests
 
@@ -176,3 +183,25 @@ pytest
 ## GitHub Pages Option
 
 If you prefer using GitHub Pages, place the site files inside a `docs/` folder and enable Pages from that directory (see `DEPLOYMENT_GITHUB.md`). The `/api/ask` worker should still be deployed on Cloudflare or another serverless platform so the chat feature continues to function.
+
+## Flask Backend Deployment
+
+1. Install the production dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Initialize the SQLite database (optional path via `DB_PATH`):
+
+```bash
+python3 scripts/init_db.py
+```
+
+3. Run the application. It listens on `PORT` (default `8000`) and uses the database file defined in `DB_PATH`:
+
+```bash
+python3 app.py
+```
+
+Deploy this app to any VM or container platform that can run Python 3. Ensure the chosen host exposes the configured `PORT` and persists the database file. The Cloudflare Worker defined in `wrangler.toml` should remain deployed to handle `/api/ask` requests.
