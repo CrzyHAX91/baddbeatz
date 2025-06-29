@@ -117,6 +117,10 @@ If you'd like to experiment with Google's Gemini models locally, install
 `gemini-cli` and set `GEMINI_API_KEY` in your `.env` file. The helper script
 `gemini_logic.py` shows how to call the API using Python.
 
+For open source models, install the `transformers` package and set `HF_MODEL`
+to your preferred model name (defaults to `sshleifer/tiny-gpt2`). The helper
+module `huggingface_logic.py` demonstrates using a Hugging Face pipeline.
+
 Requests to the OpenAI API use a 10-second timeout. If the API does not respond
 within this window, `worker_logic.ask` will raise a
 `requests.exceptions.Timeout` error.
@@ -136,6 +140,7 @@ Before deploying, replace the placeholder `id` and `preview_id` values in
 
 - `OPENAI_API_KEY` – required by the Cloudflare Worker and `worker_logic.py`.
 - `GEMINI_API_KEY` – optional key for using `gemini_logic.py`.
+- `HF_MODEL` – optional Hugging Face model name for `huggingface_logic.py`.
 - `PORT` – optional port for the Flask app (defaults to `8000`).
 - `DB_PATH` – optional path to the SQLite database file used by the Flask app.
 
