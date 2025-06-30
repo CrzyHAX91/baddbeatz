@@ -6,3 +6,4 @@ Werkzeug
 
 Flask
 google-generativeai
+https://github.com/googlecodex/voeg-gemini-cli-toe-voor-ai-functies

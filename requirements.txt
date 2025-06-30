@@ -1,2 +1,4 @@
 Flask
 google-generativeai
+https://medium.com/codex/voeg-gemini-cli-toe-voor-ai-functies
+
