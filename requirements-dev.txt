@@ -5,3 +5,4 @@ Flask
 Werkzeug
 
 Flask
+google-generativeai
