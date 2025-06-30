@@ -1,5 +1,9 @@
 import os
+codex/voeg-gemini-cli-toe-voor-ai-functies
+import google.generativeai as genai
 import requests
+
+
 
 SYSTEM_PROMPT = "You are an AI DJ assistant for TheBadGuyHimself."
 
@@ -10,6 +14,11 @@ def ask(question: str, api_key: str | None = None):
     if not api_key:
         raise ValueError("GEMINI_API_KEY is not set")
 
+    codex/voeg-gemini-cli-toe-voor-ai-functies
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-pro", system_instruction=SYSTEM_PROMPT)
+    result = model.generate_content(question)
+    return {"text": result.text}
     url = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
         "gemini-pro:generateContent"
