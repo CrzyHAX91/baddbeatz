@@ -18,7 +18,7 @@ def _get_pipeline(model_name: str):
 
 
 def ask(question: str, model_name: str | None = None):
-    """Generate a response using a Hugging Face model."""
+    """Generate a response using a Hugging Face model and return ``{"text": ...}``."""
     model_name = model_name or os.getenv("HF_MODEL", DEFAULT_MODEL)
     nlp = _get_pipeline(model_name)
     outputs = nlp(question, max_new_tokens=20)
