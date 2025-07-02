@@ -1,3 +1,4 @@
 Flask
 google-generativeai
-transformers
+ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies
+
