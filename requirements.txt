@@ -1,4 +1,5 @@
 Flask
 google-generativeai
 ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies
+requests
 
