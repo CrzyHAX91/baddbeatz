@@ -1,6 +1,4 @@
 let playlist = [];
-
-codex/extend-player.js-with-playlist-functions
 async function addTrack(title, url, art) {
   const track = { title, url, art };
   playlist.push(track);
