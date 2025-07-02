@@ -4,7 +4,8 @@ import secrets
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+# Serve files from the dedicated `docs` directory
+app = Flask(__name__, static_folder='docs', static_url_path='')
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'app.db')
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -103,7 +104,7 @@ def login():
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path:path>')
 def static_files(path: str):
-    return send_from_directory('.', path)
+    return send_from_directory(app.static_folder, path)
 
 
 if __name__ == '__main__':

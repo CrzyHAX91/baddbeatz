@@ -2,7 +2,8 @@ import os
 import sqlite3
 from flask import Flask, request, jsonify, send_from_directory
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+# Serve files from the dedicated `docs` folder instead of the repository root
+app = Flask(__name__, static_folder='docs', static_url_path='')
 DB_PATH = os.getenv('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'app.db'))
 
 
