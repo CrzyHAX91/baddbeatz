@@ -1,8 +1,9 @@
 pytest
 requests
 requests_mock
-Flask
 Werkzeug
+Flask
 transformers
 google-generativeai
-https://github.com/googlecodex/voeg-gemini-cli-toe-voor-ai-functies
+# git+https://github.com/ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies.git
+
