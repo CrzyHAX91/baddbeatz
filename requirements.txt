@@ -1,4 +1,10 @@
-Flask
-google-generativeai
-https://medium.com/codex/voeg-gemini-cli-toe-voor-ai-functies
-
+google-generativeai @ git+https://github.com/google/generativeai@codex/update-requirements.txt-with-requests
+requests==2.32.4
+Flask==2.3.2
+Werkzeug==3.0.6
+gunicorn==23.0.0
+openai==0.27.8
+python-dotenv==1.0.0
+psycopg2==2.9.6
+Flask-SQLAlchemy==3.0.3
+SQLAlchemy==2.0.15
