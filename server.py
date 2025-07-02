@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'app.db')
+DB_PATH = os.getenv('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'app.db'))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 tokens: dict[str, int] = {}
@@ -24,15 +24,35 @@ def init_db():
         conn.execute(
             'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password_hash TEXT)'
         )
+        conn.execute(
+            'CREATE TABLE IF NOT EXISTS tokens (token TEXT PRIMARY KEY, user_id INTEGER)'
+        )
 
 init_db()
+
+
+def load_tokens():
+    with get_db() as conn:
+        rows = conn.execute('SELECT token, user_id FROM tokens').fetchall()
+    tokens.clear()
+    tokens.update({row['token']: row['user_id'] for row in rows})
+
+
+load_tokens()
 
 
 def get_user_id_from_token() -> int | None:
     auth = request.headers.get('Authorization', '')
     if auth.startswith('Bearer '):
         token = auth.split(' ', 1)[1]
-        return tokens.get(token)
+        user_id = tokens.get(token)
+        if user_id is not None:
+            return user_id
+        with get_db() as conn:
+            row = conn.execute('SELECT user_id FROM tokens WHERE token=?', (token,)).fetchone()
+            if row:
+                tokens[token] = row['user_id']
+                return row['user_id']
     return None
 
 
@@ -78,6 +98,9 @@ def register():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'User exists'}), 400
     token = secrets.token_hex(16)
+    with get_db() as conn:
+        conn.execute('INSERT INTO tokens (token, user_id) VALUES (?, ?)', (token, user_id))
+        conn.commit()
     tokens[token] = user_id
     return jsonify({'token': token})
 
@@ -96,6 +119,9 @@ def login():
     if not row or not check_password_hash(row['password_hash'], password):
         return jsonify({'error': 'Invalid credentials'}), 401
     token = secrets.token_hex(16)
+    with get_db() as conn:
+        conn.execute('INSERT INTO tokens (token, user_id) VALUES (?, ?)', (token, row['id']))
+        conn.commit()
     tokens[token] = row['id']
     return jsonify({'token': token})
 
