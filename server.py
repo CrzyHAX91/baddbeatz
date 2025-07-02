@@ -2,10 +2,12 @@ import os
 import sqlite3
 import secrets
 from flask import Flask, request, jsonify, send_from_directory
+from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Serve files from the dedicated `docs` directory
-app = Flask(__name__, static_folder='docs', static_url_path='')
+# Serve files from the `docs` directory if it exists, else from the repo root
+static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else ''
+app = Flask(__name__, static_folder=static_dir or '.', static_url_path='')
 
 DB_PATH = os.getenv('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'app.db'))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -38,6 +40,7 @@ def load_tokens():
     tokens.update({row['token']: row['user_id'] for row in rows})
 
 
+init_db()
 load_tokens()
 
 
@@ -124,6 +127,19 @@ def login():
         conn.commit()
     tokens[token] = row['id']
     return jsonify({'token': token})
+
+
+@app.route('/api/youtube')
+def youtube_videos():
+    """Return recent YouTube videos for a given channel."""
+    channel_id = request.args.get('channel_id') or request.args.get('channelId')
+    if not channel_id:
+        return jsonify({'error': 'channel_id required'}), 400
+    try:
+        data = get_latest_videos(channel_id)
+    except Exception as exc:
+        return jsonify({'error': str(exc)}), 500
+    return jsonify(data)
 
 
 @app.route('/', defaults={'path': 'index.html'})

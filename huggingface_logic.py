@@ -1,5 +1,9 @@
 import os
-from transformers import pipeline
+try:
+    from transformers import pipeline
+except Exception:  # pragma: no cover - optional dependency may be missing
+    def pipeline(*_args, **_kwargs):
+        raise ImportError("transformers is not installed")
 
 # Default small model to load if none provided
 DEFAULT_MODEL = "sshleifer/tiny-gpt2"
