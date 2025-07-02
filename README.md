@@ -182,6 +182,8 @@ pip install -r requirements-dev.txt
 
 - JavaScript tests:
 
+Run `npm ci` before executing `npm test`:
+
 ```bash
 npm test
 ```
