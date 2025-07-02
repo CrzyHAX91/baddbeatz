@@ -22,7 +22,7 @@ baddbeatz/
     ├── images/
 ```
 
-The `docs/` directory used for GitHub Pages is generated from these source files using the `npm run build-docs` script.
+The `docs/` directory used for GitHub Pages is generated automatically with `npm run build-docs` and should not be committed.
 
 ---
 
@@ -50,7 +50,7 @@ appropriate subfolders under `assets/`.
 **Prerequisites:** The root directory contains the source HTML files. The GitHub Actions workflow at `.github/workflows/pages.yml` copies them into `docs/` and publishes that folder automatically.
 
 1. Push your changes to the `main` branch.
-2. Run `npm run build-docs` locally if you want to preview the `docs/` folder. The workflow runs this command automatically.
+2. Run `npm run build-docs` locally to generate the `docs/` folder for preview (no need to commit it). The workflow runs this command automatically.
 3. Enable GitHub Pages in the repository settings and choose **GitHub Actions** as the source.
 4. Once the workflow finishes, visit the URL shown in the job output to view your site.
 5. After pointing your DNS records to GitHub, set **baddbeatz.nl** as the custom domain under **Settings → Pages**.
@@ -197,7 +197,7 @@ pytest
 
 ## GitHub Pages Option
 
-If you prefer using GitHub Pages, place the site files inside a `docs/` folder and enable Pages from that directory (see `DEPLOYMENT_GITHUB.md`). The `/api/ask` worker should still be deployed on Cloudflare or another serverless platform so the chat feature continues to function.
+If you prefer using GitHub Pages, generate the `docs/` folder with `npm run build-docs` and enable Pages from that directory (see `DEPLOYMENT_GITHUB.md`). There's no need to commit `docs/`. The `/api/ask` worker should still be deployed on Cloudflare or another serverless platform so the chat feature continues to function.
 
 ## Flask Backend Deployment
 
