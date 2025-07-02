@@ -2,10 +2,12 @@ pytest
 requests
 requests_mock
 Werkzeug
+pydantic
 pylint
-codex/update-requirements-dev.txt-for-unique-packages.txt
+pytest-cov
 google-generativeai
 transformers
 google-generativeai
 # git+https://github.com/ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies.git
+
 
