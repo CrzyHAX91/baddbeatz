@@ -2,6 +2,7 @@ pytest
 requests
 requests_mock
 Werkzeug
+pylint
 codex/update-requirements-dev.txt-for-unique-packages.txt
 google-generativeai
 transformers
