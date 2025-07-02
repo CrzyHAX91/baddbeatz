@@ -115,11 +115,12 @@ inside. `worker_logic.py` and the worker script fall back to the
 
 If you'd like to experiment with Google's Gemini models locally, install
 `gemini-cli` and set `GEMINI_API_KEY` in your `.env` file. The helper script
-for generating a Gemini API key is [here](https://github.com/ledfva/codex/remove-codex-comments-and-urls
-is `scripts/install_gemini_cli.sh`. See the gemini-cli documentation for
-installation instructions.
-`gemini_logic.py` demonstrates using the official `google-generativeai`
-package to send a prompt to Gemini.
+`gemini_logic.py` is based on codex/update-hugging-face-section-in-readme.md
+`gemini_logic.py` shows how to call the API using Python.
+
+For open source models, install the `transformers` package and set `HF_MODEL` to your preferred model name (defaults to `sshleifer/tiny-gpt2`).
+Text generation models also need a backend like **PyTorch** or **TensorFlow**. Install one with `pip install torch` (or `pip install tensorflow`).
+The helper module `huggingface_logic.py` demonstrates using a Hugging Face pipeline. See the [PyTorch install guide](https://pytorch.org/get-started/locally/) for details.
 
 Requests to the OpenAI API use a 10-second timeout. If the API does not respond
 within this window, `worker_logic.ask` will raise a
