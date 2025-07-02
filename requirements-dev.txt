@@ -7,7 +7,3 @@ pylint
 pytest-cov
 google-generativeai
 transformers
-google-generativeai
-# git+https://github.com/ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies.git
-
-
