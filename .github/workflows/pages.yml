@@ -29,7 +29,7 @@ jobs:
       - uses: actions/configure-pages@v3
         with:
           static_site_generator: ''
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-artifact@latest
         with:
           path: './docs'
       - id: deploy
