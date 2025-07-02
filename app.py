@@ -18,7 +18,6 @@ def init_db():
 
 @app.route('/api/tracks', methods=['GET', 'POST'])
 def tracks():
-    init_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     if request.method == 'POST':

@@ -25,7 +25,6 @@ def init_db():
             'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password_hash TEXT)'
         )
 
-init_db()
 
 
 def get_user_id_from_token() -> int | None:
@@ -107,5 +106,6 @@ def static_files(path: str):
 
 
 if __name__ == '__main__':
+    init_db()
     port = int(os.getenv('PORT', '8000'))
     app.run(host='0.0.0.0', port=port)
