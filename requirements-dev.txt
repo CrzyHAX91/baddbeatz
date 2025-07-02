@@ -4,5 +4,5 @@ requests_mock
 Werkzeug
 Flask
 google-generativeai
-ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies
+# git+https://github.com/ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies.git
 
