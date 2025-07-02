@@ -39,7 +39,7 @@ jobs:
           static_site_generator: ''
 
       - name: Upload Documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: './docs'
 
