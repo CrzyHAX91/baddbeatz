@@ -115,8 +115,9 @@ inside. `worker_logic.py` and the worker script fall back to the
 
 If you'd like to experiment with Google's Gemini models locally, install
 `gemini-cli` and set `GEMINI_API_KEY` in your `.env` file. The helper script
-will generate a Gemini API key for you: ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies
-
+for generating a Gemini API key is [here](https://github.com/ledfva/codex/remove-codex-comments-and-urls
+is `scripts/install_gemini_cli.sh`. See the gemini-cli documentation for
+installation instructions.
 `gemini_logic.py` demonstrates using the official `google-generativeai`
 package to send a prompt to Gemini.
 
@@ -139,8 +140,9 @@ Before deploying, replace the placeholder `id` and `preview_id` values in
 
 - `OPENAI_API_KEY` – required by the Cloudflare Worker and `worker_logic.py`.
 - `GEMINI_API_KEY` – optional key for using `gemini_logic.py`.
-- `GEMINI_API_KEY` – optional key for using `gemini_logic.py`. The helper script will generate a Gemini API key for you: ledfva-codex/voeg-gemini-cli-toe-voor-ai-functies
-
+  See https://github.com/ledfva/codex/remove-codex-comments-and-urls
+  See the gemini-cli documentation for details
+- `HF_MODEL` – optional Hugging Face model name for `huggingface_logic.py`.
 - `PORT` – optional port for the Flask app (defaults to `8000`).
 - `DB_PATH` – optional path to the SQLite database file used by the Flask app.
 
@@ -179,6 +181,8 @@ pip install -r requirements-dev.txt
 ```
 
 - JavaScript tests:
+
+Run `npm ci` before executing `npm test`:
 
 ```bash
 npm test
