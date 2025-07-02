@@ -4,6 +4,5 @@ requests_mock
 Flask
 Werkzeug
 
-Flask
 google-generativeai
 transformers
