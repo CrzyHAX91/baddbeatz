@@ -5,8 +5,8 @@ SYSTEM_PROMPT = "You are an AI DJ assistant for TheBadGuyHimself."
 
 
 def ask(question: str, api_key: str | None = None):
-    """Query the Gemini API and return the response JSON."""
-
+  # codex/update-requirements.txt-with-requests
+    """Query the Gemini API and return the response text."""
     api_key = api_key or os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("GEMINI_API_KEY is not set")
