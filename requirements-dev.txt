@@ -5,5 +5,5 @@ Werkzeug
 pydantic
 pylint
 pytest-cov
-google-generativeai
+google-generativeai==0.8.5
 transformers
