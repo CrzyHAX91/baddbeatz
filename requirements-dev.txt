@@ -3,7 +3,7 @@ pydantic
 pylint
 pytest
 pytest-cov
-codex/update-requirements.txt-and-requirements-dev.txt
+-r codex/update-requirements.txt-and-requirements-dev.txt
 requests
 requests_mock
 google-generativeai==0.8.5
