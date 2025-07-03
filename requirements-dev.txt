@@ -2,6 +2,7 @@ pytest
 requests
 requests_mock
 Werkzeug
+Flask
 pydantic
 pylint
 pytest-cov
