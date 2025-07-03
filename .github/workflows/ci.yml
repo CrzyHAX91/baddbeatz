@@ -9,16 +9,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
+
       - run: npm ci
+
+      # Check for requirements-dev.txt before running Python steps
+      - name: Check for requirements-dev.txt
+        id: requirements-dev
+        run: echo "exists=$(if [ -f requirements-dev.txt ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+
       - uses: actions/setup-python@v4
+        if: steps.requirements-dev.outputs.exists == 'true'
         with:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: -r requirements-dev.txt
+
       - run: pip install -r requirements-dev.txt
+        if: steps.requirements-dev.outputs.exists == 'true'
+
       - run: npm test
+
       - run: pytest
+        if: steps.requirements-dev.outputs.exists == 'true'
