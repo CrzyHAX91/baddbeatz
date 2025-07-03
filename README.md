@@ -186,6 +186,8 @@ Install the dependencies first:
 npm ci
 pip install -r requirements-dev.txt
 ```
+The development requirements include **Flask**, **google-generativeai**, and
+other libraries needed for the test suite.
 
 - JavaScript tests:
 
