@@ -4,6 +4,9 @@ import secrets
 from flask import Flask, request, jsonify, send_from_directory
 from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Serve files from the `docs` directory if it exists, else from the repo root
 static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else ''

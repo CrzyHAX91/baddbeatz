@@ -2,6 +2,9 @@ import os
 import sqlite3
 from flask import Flask, request, jsonify, send_from_directory
 from youtube_logic import get_latest_videos
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Serve files from `docs` if present; otherwise serve from repo root
 static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else ''
