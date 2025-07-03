@@ -1,9 +1,9 @@
-pytest
-requests
-requests_mock
 Werkzeug
+google-generativeai
 pydantic
 pylint
+pytest
 pytest-cov
-google-generativeai
+requests
+requests_mock
 transformers
