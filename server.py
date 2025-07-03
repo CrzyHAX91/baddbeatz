@@ -141,7 +141,8 @@ def youtube_videos():
     try:
         data = get_latest_videos(channel_id)
     except Exception as exc:
-        return jsonify({'error': str(exc)}), 500
+        app.logger.error('Error fetching YouTube videos: %s', exc, exc_info=True)
+        return jsonify({'error': 'An internal error occurred. Please try again later.'}), 500
     return jsonify(data)
 
 
