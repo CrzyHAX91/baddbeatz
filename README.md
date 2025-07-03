@@ -137,6 +137,12 @@ Add the namespace to `wrangler.toml` so the Worker can access it.
 Before deploying, replace the placeholder `id` and `preview_id` values in
 `wrangler.toml` with your real KV namespace IDs.
 
+### AI Response Disclaimer
+
+The "Ask the DJ" feature relies on AI to generate replies. These answers may
+contain inaccuracies or other errors, so treat them as informational rather
+than professional advice.
+
 ### Environment Variables
 
 - `OPENAI_API_KEY` – required by the Cloudflare Worker and `worker_logic.py`.
@@ -180,6 +186,8 @@ Install the dependencies first:
 npm ci
 pip install -r requirements-dev.txt
 ```
+The development requirements include **Flask**, **google-generativeai**, and
+other libraries needed for the test suite.
 
 - JavaScript tests:
 

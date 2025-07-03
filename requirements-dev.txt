@@ -1,9 +1,10 @@
 Werkzeug
-google-generativeai
 pydantic
 pylint
 pytest
 pytest-cov
+codex/update-requirements.txt-and-requirements-dev.txt
 requests
 requests_mock
-transformers
+google-generativeai==0.8.5
+transformers==4.28.1
