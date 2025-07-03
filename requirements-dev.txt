@@ -1,10 +1,10 @@
-pytest
-requests
-requests_mock
 Werkzeug
-Flask
 pydantic
 pylint
+pytest
 pytest-cov
+codex/update-requirements.txt-and-requirements-dev.txt
+requests
+requests_mock
 google-generativeai==0.8.5
-transformers
+transformers==4.28.1
