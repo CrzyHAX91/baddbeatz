@@ -22,7 +22,7 @@ baddbeatz/
     ├── images/
 ```
 
-The `docs/` directory used for GitHub Pages is generated automatically with `npm run build-docs` and should not be committed.
+The `docs/` directory used for GitHub Pages is generated automatically with `npm run build-docs` and should not be committed. Running `npm test` will build this folder automatically if it's missing.
 
 ---
 
@@ -188,7 +188,7 @@ other libraries needed for the test suite.
 
 - JavaScript tests:
 
-Run `npm ci` before executing `npm test`:
+Run `npm ci` before executing `npm test`. The test command automatically generates the `docs/` folder if it's not present:
 
 ```bash
 npm test
