@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "wrangler deploy",
-    "pretest": "node scripts/ensure-docs.js",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "build-docs": "node scripts/build-docs.js"
   },
   "keywords": [],
