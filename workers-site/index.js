@@ -67,6 +67,45 @@ export default {
       }
     }
 
+    if (url.pathname === '/api/youtube' && request.method === 'GET') {
+      const channelId = url.searchParams.get('channel_id') || url.searchParams.get('channelId');
+      if (!channelId) {
+        return new Response(
+          JSON.stringify({ error: 'channel_id required' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      const apiKey = env.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY;
+      if (!apiKey) {
+        return new Response(
+          JSON.stringify({ error: 'Missing YouTube API key' }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      const apiUrl = new URL('https://www.googleapis.com/youtube/v3/search');
+      apiUrl.searchParams.set('key', apiKey);
+      apiUrl.searchParams.set('channelId', channelId);
+      apiUrl.searchParams.set('part', 'snippet');
+      apiUrl.searchParams.set('order', 'date');
+      apiUrl.searchParams.set('type', 'video');
+      apiUrl.searchParams.set('maxResults', '5');
+      const apiRes = await fetch(apiUrl.toString());
+      if (!apiRes.ok) {
+        return new Response(
+          JSON.stringify({ error: 'Failed to fetch videos' }),
+          { status: apiRes.status, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      const { items = [] } = await apiRes.json();
+      const videos = items
+        .filter(item => item.id && item.id.videoId)
+        .map(item => ({ id: item.id.videoId, title: item.snippet.title }));
+      return new Response(JSON.stringify({ videos }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     try {
       return await getAssetFromKV({ request, waitUntil: ctx.waitUntil.bind(ctx) });
     } catch (e) {
