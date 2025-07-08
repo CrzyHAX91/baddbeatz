@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "wrangler deploy",
+    "pretest": "node scripts/ensure-docs.js",
     "test": "jest",
     "build-docs": "node scripts/build-docs.js"
   },
