@@ -202,6 +202,38 @@ def ask_dj():
         return jsonify({'error': 'An internal error occurred while processing your question.'}), 500
 
 
+@app.route('/api/trigger-agent', methods=['POST'])
+def trigger_agent():
+    """Manually trigger the automated agent tasks."""
+    # Check for authorization
+    if not get_user_id_from_token():
+        return jsonify({'error': 'Unauthorized - Admin access required'}), 401
+    
+    data = request.get_json(silent=True) or {}
+    task_type = data.get('task_type', 'all')
+    
+    try:
+        from automated_agent import trigger_manual_update
+        result = trigger_manual_update(task_type)
+        logger.info(f"Manual agent trigger completed: {task_type}")
+        return jsonify(result)
+    except Exception as exc:
+        logger.error(f"Error triggering automated agent: {exc}", exc_info=True)
+        return jsonify({'error': 'Failed to trigger automated agent'}), 500
+
+
+@app.route('/api/agent-status', methods=['GET'])
+def agent_status():
+    """Get the current status of the automated agent."""
+    try:
+        from automated_agent import get_agent_status
+        status = get_agent_status()
+        return jsonify(status)
+    except Exception as exc:
+        logger.error(f"Error getting agent status: {exc}", exc_info=True)
+        return jsonify({'error': 'Failed to get agent status'}), 500
+
+
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path:path>')
 def static_files(path: str):

@@ -1,22 +1,190 @@
 async function loadYoutubeVideos() {
   const list = document.getElementById('youtubeVideos');
   if (!list) return;
+  
+  // Show loading state
+  if (window.AppUtils && window.AppUtils.showLoading) {
+    window.AppUtils.showLoading(list);
+  }
+  list.innerHTML = '<li class="loading-message">Loading latest videos...</li>';
+  
   try {
     const channelId = list.dataset.channelId || 'UC_x5XG1OV2P6uZZ5FSM9Ttw';
     const res = await fetch(`/api/youtube?channel_id=${encodeURIComponent(channelId)}`);
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
+    
+    // Check for API errors
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    
+    // Clear loading state
+    if (window.AppUtils && window.AppUtils.hideLoading) {
+      window.AppUtils.hideLoading(list);
+    }
     list.innerHTML = '';
-    (data.videos || []).forEach(v => {
+    
+    const videos = data.videos || [];
+    
+    if (videos.length === 0) {
+      list.innerHTML = '<li class="no-videos">No videos found. Check back later!</li>';
+      return;
+    }
+    
+    videos.forEach(v => {
       const li = document.createElement('li');
+      li.className = 'video-item';
+      
       const a = document.createElement('a');
-      a.href = `https://www.youtube.com/watch?v=${v.id}`;
-      a.textContent = v.title;
-      li.appendChild(a);
+      a.href = v.url || `https://www.youtube.com/watch?v=${v.id}`;
+      a.textContent = v.title || 'Untitled Video';
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      
+      // Add video description if available
+      if (v.description) {
+        const desc = document.createElement('p');
+        desc.className = 'video-description';
+        desc.textContent = v.description.substring(0, 100) + (v.description.length > 100 ? '...' : '');
+        li.appendChild(a);
+        li.appendChild(desc);
+      } else {
+        li.appendChild(a);
+      }
+      
       list.appendChild(li);
     });
+    
+    console.log(`Successfully loaded ${videos.length} YouTube videos`);
+    
   } catch (err) {
-    list.textContent = 'Failed to load videos.';
+    console.error('Error loading YouTube videos:', err);
+    
+    // Hide loading state
+    if (window.AppUtils && window.AppUtils.hideLoading) {
+      window.AppUtils.hideLoading(list);
+    }
+    
+    // Create error message with retry option
+    list.innerHTML = `
+      <li class="error-message">
+        <div class="error-content">
+          <p class="error-text">⚠️ Failed to load videos: ${err.message}</p>
+          <button class="retry-btn" onclick="retryLoadVideos()">🔄 Retry</button>
+        </div>
+      </li>
+    `;
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadYoutubeVideos);
+function retryLoadVideos() {
+  console.log('Retrying YouTube video load...');
+  loadYoutubeVideos();
+}
+
+// Auto-retry mechanism with exponential backoff
+let retryCount = 0;
+const maxRetries = 3;
+
+async function loadYoutubeVideosWithRetry() {
+  try {
+    await loadYoutubeVideos();
+    retryCount = 0; // Reset on success
+  } catch (err) {
+    if (retryCount < maxRetries) {
+      retryCount++;
+      const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+      console.log(`Retrying in ${delay}ms (attempt ${retryCount}/${maxRetries})`);
+      setTimeout(loadYoutubeVideosWithRetry, delay);
+    } else {
+      console.error('Max retries reached for YouTube videos');
+      retryCount = 0;
+    }
+  }
+}
+
+// Enhanced initialization
+document.addEventListener('DOMContentLoaded', () => {
+  // Load videos with retry mechanism
+  loadYoutubeVideosWithRetry();
+  
+  // Set up periodic refresh (every 30 minutes)
+  setInterval(() => {
+    console.log('Refreshing YouTube videos...');
+    loadYoutubeVideosWithRetry();
+  }, 30 * 60 * 1000);
+});
+
+// Add CSS styles for enhanced UI
+const style = document.createElement('style');
+style.textContent = `
+  .loading-message {
+    text-align: center;
+    color: #00ffff;
+    font-style: italic;
+    padding: 1rem;
+  }
+  
+  .no-videos {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 1rem;
+  }
+  
+  .error-message {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .error-content {
+    background: rgba(255, 0, 51, 0.1);
+    border: 1px solid rgba(255, 0, 51, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .error-text {
+    color: #ff6b6b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .retry-btn {
+    background: linear-gradient(45deg, #00ffff, #0099cc);
+    color: #000;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .retry-btn:hover {
+    background: linear-gradient(45deg, #0099cc, #00ffff);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+  }
+  
+  .video-item {
+    transition: all 0.3s ease;
+  }
+  
+  .video-item:hover {
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+  
+  .video-description {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin: 0.5rem 0 0 0;
+    line-height: 1.4;
+  }
+`;
+document.head.appendChild(style);

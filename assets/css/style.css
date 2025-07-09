@@ -546,7 +546,7 @@ footer a:hover {
 }
 
 /* Video embed sections */
-.video-section, .video-embed {
+.video-section, .video-embed, .youtube-section, .more-videos {
   text-align: center;
 }
 
@@ -554,6 +554,38 @@ footer a:hover {
   max-width: 100%;
   border-radius: 12px;
   margin-bottom: 1rem;
+}
+
+.video-container {
+  background: rgba(17, 17, 17, 0.8);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  margin-bottom: 2rem;
+}
+
+.video-container iframe {
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+}
+
+.video-info {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.video-info h3 {
+  color: #ff0033;
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.video-info p {
+  color: #ccc;
+  margin-bottom: 1rem;
+  line-height: 1.6;
 }
 
 #youtubeVideos {
@@ -570,19 +602,10 @@ footer a:hover {
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-#youtubeVideos a {
-  color: #00ffff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-#youtubeVideos a:hover {
-  color: #fff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-}
+#youtubeVideos li:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
