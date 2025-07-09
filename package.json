@@ -1,6 +1,7 @@
 {
   "name": "dj-portfolio",
   "version": "1.0.0",
+  "type": "module",
   "description": "DJ Portfolio Website",
   "main": "index.js",
   "scripts": {
