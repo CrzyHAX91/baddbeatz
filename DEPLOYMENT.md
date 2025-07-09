@@ -40,14 +40,81 @@ Then open `http://localhost:8000` in your browser.
 
 ## Flask Backend on a VM or Container
 
-The Flask application in `app.py` can run on any VM or container platform.
+The Flask application in `server.py` can run on any VM or container platform.
 
+### Prerequisites
 1. Install Python 3 and run `pip install -r requirements.txt`.
-2. Initialize the database with `python3 scripts/init_db.py` (optional `DB_PATH`).
-3. Expose the desired `PORT` and start the app with `python3 app.py`.
+2. **Important:** In case you encounter errors related to `pg_config` or building psycopg2 from source, ensure:
+   - You have **not** installed the source version of psycopg2.
+   - Uninstall any conflicting package by running:  
+     ```
+     pip uninstall psycopg2
+     ```
+   - Reinstall using the binary package as specified in `requirements.txt` (psycopg2-binary).
 
+### OAuth2 Configuration
+3. **Set up OAuth2 credentials** (required for login functionality):
+   ```bash
+   cp .env.example .env
+   # Edit .env with your OAuth2 credentials
+   ```
+   See [OAUTH2_SETUP.md](OAUTH2_SETUP.md) for detailed OAuth2 provider setup instructions.
+
+### Database Setup
+4. Initialize the database with `python3 scripts/init_db.py` (optional `DB_PATH`).
+
+### Environment Variables
+5. Configure the following environment variables:
+   ```bash
+   # Required
+   FLASK_SECRET_KEY=your_secure_secret_key
+   PORT=8000
+   DB_PATH=data/app.db
+   
+   # OAuth2 (see OAUTH2_SETUP.md)
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   GITHUB_CLIENT_ID=your_github_client_id
+   GITHUB_CLIENT_SECRET=your_github_client_secret
+   DISCORD_CLIENT_ID=your_discord_client_id
+   DISCORD_CLIENT_SECRET=your_discord_client_secret
+   ```
+
+### Start the Application
+6. Expose the desired `PORT` and start the app with `python3 server.py`.
+
+### Docker Deployment
 When using Docker, copy the repository contents into an image based on
-`python:3` and set the `PORT` and `DB_PATH` environment variables as needed.
+`python:3` and set the environment variables as needed:
+
+```dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+COPY . .
+
+RUN pip install -r requirements.txt
+
+# Set environment variables
+ENV FLASK_SECRET_KEY=your_production_secret_key
+ENV PORT=8000
+ENV DB_PATH=data/app.db
+
+# OAuth2 credentials (use Docker secrets in production)
+ENV GOOGLE_CLIENT_ID=your_google_client_id
+ENV GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+EXPOSE 8000
+
+CMD ["python3", "server.py"]
+```
+
+### Production Considerations
+- Use HTTPS for all OAuth2 redirects
+- Store secrets securely (not in environment variables)
+- Set up proper logging and monitoring
+- Configure reverse proxy (nginx/Apache) if needed
+- Set up database backups for SQLite file
 
 ## Contact
 
