@@ -1,10 +1,15 @@
 import os
 import sqlite3
 import secrets
+import logging
 from flask import Flask, request, jsonify, send_from_directory
 from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -144,6 +149,57 @@ def youtube_videos():
         app.logger.error('Error fetching YouTube videos: %s', exc, exc_info=True)
         return jsonify({'error': 'An internal error occurred. Please try again later.'}), 500
     return jsonify(data)
+
+
+@app.route('/api/ask', methods=['POST'])
+def ask_dj():
+    """AI chat endpoint for asking questions about TheBadGuy."""
+    data = request.get_json(silent=True) or {}
+    question = data.get('question')
+    
+    if not question:
+        return jsonify({'error': 'Question is required'}), 400
+    
+    try:
+        # Try to use available AI logic modules
+        try:
+            from worker_logic import ask as ai_ask
+            response = ai_ask(question)
+            if isinstance(response, dict) and 'text' in response:
+                response_text = response['text']
+            else:
+                response_text = str(response)
+        except ImportError:
+            try:
+                from gemini_logic import ask as gemini_ask
+                response = gemini_ask(question)
+                if isinstance(response, dict) and 'text' in response:
+                    response_text = response['text']
+                else:
+                    response_text = str(response)
+            except ImportError:
+                try:
+                    from huggingface_logic import ask as hf_ask
+                    response = hf_ask(question)
+                    if isinstance(response, dict) and 'text' in response:
+                        response_text = response['text']
+                    else:
+                        response_text = str(response)
+                except ImportError:
+                    # Fallback response if no AI modules are available
+                    response_text = f"Thanks for asking about '{question}'! I'm TheBadGuyHimself, a DJ specializing in underground techno and hardstyle. For specific questions about bookings, equipment, or performances, please contact me directly through the contact page."
+        
+        return jsonify({
+            'choices': [{
+                'message': {
+                    'content': response_text
+                }
+            }]
+        })
+        
+    except Exception as exc:
+        app.logger.error("Error processing AI question: %s", exc, exc_info=True)
+        return jsonify({'error': 'An internal error occurred while processing your question.'}), 500
 
 
 @app.route('/', defaults={'path': 'index.html'})

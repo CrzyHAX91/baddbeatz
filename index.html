@@ -43,7 +43,7 @@
   </header>
 
   <section class="hero">
-    <img src="https://via.placeholder.com/1200x800?text=TheBadGuy" alt="TheBadGuyHimself performing" class="hero-bg" loading="lazy">
+    <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="DJ performing with vibrant lights" class="hero-bg" loading="lazy">
     <div class="overlay">
       <h1 class="hero__title">BADDBEATS by THEBADGUYHIMSELF</h1>
       <p class="hero__tagline">High-energy underground techno and hardstyle</p>
@@ -70,6 +70,7 @@
         <a href="https://soundcloud.com/thebadguyhimself/sets/house-mixes-2025" title="House mixes 2025" target="_blank">House mixes 2025</a>
       </div>
     </section>
+
     <section class="video-section fade-in">
       <div class="video-embed">
         <h2>Latest Videos</h2>
@@ -77,8 +78,8 @@
         <ul id="youtubeVideos" data-channel-id="UC_x5XG1OV2P6uZZ5FSM9Ttw"></ul>
       </div>
     </section>
-   <section class="ai-chat fade-in">
 
+    <section class="ai-chat fade-in">
       <h2>🎤 Ask the DJ</h2>
       <p>Curious about TheBadGuyHimself's setup, vibe, or availability? Ask below!</p>
       <p class="ai-disclaimer">Responses come from an AI and may contain errors.</p>
@@ -97,17 +98,29 @@
     async function askDJ() {
       const input = document.getElementById('userInput').value;
       const responseBox = document.getElementById('aiResponse');
+      
+      if (!input.trim()) {
+        responseBox.textContent = 'Please enter a question.';
+        return;
+      }
+      
       responseBox.textContent = 'Thinking...';
+      
       try {
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ question: input })
         });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
         const data = await res.json();
-        responseBox.textContent = data.choices?.[0]?.message?.content || 'No response';
+        responseBox.textContent = data.choices?.[0]?.message?.content || data.error || 'No response received.';
       } catch (err) {
-        responseBox.textContent = 'Error connecting to AI.';
+        responseBox.textContent = `Error: ${err.message}`;
       }
     }
   </script>
