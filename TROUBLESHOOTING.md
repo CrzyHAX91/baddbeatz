@@ -188,6 +188,46 @@ If you continue to experience issues:
    - Complete error message
    - Steps to reproduce the issue
 
+## OAuth2 Setup Issues
+
+### Problem: OAuth2 login buttons not working
+**Solutions:**
+1. **Set up OAuth2 credentials:**
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your OAuth2 credentials
+   ```
+
+2. **Google OAuth2 Setup:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select existing one
+   - Enable Google+ API
+   - Create OAuth2 credentials
+   - Add authorized redirect URI: `http://localhost:8000/api/auth/google/callback`
+   - Copy Client ID and Client Secret to `.env`
+
+3. **GitHub OAuth2 Setup:**
+   - Go to GitHub Settings → Developer settings → OAuth Apps
+   - Create a new OAuth App
+   - Set Authorization callback URL: `http://localhost:8000/api/auth/github/callback`
+   - Copy Client ID and Client Secret to `.env`
+
+4. **Discord OAuth2 Setup:**
+   - Go to [Discord Developer Portal](https://discord.com/developers/applications)
+   - Create a new application
+   - Go to OAuth2 section
+   - Add redirect URI: `http://localhost:8000/api/auth/discord/callback`
+   - Copy Client ID and Client Secret to `.env`
+
+### Problem: OAuth2 callback errors
+**Solutions:**
+- Ensure redirect URIs match exactly in OAuth provider settings
+- Check that OAuth2 dependencies are installed:
+  ```bash
+  pip install authlib requests-oauthlib
+  ```
+- Verify Flask secret key is set in environment variables
+
 ## Performance Tips
 
 - Use a virtual environment to avoid dependency conflicts
