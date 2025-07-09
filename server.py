@@ -2,7 +2,7 @@ import os
 import sqlite3
 import secrets
 import logging
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect, url_for, session
 from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -10,6 +10,7 @@ from file_manager import (
     upload_music_file, get_music_files, download_music_file, 
     delete_music_file, get_storage_info
 )
+from oauth_auth import OAuth2Manager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,8 +22,14 @@ load_dotenv()
 static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else ''
 app = Flask(__name__, static_folder=static_dir or '.', static_url_path='')
 
+# Configure Flask for OAuth2
+app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(32))
+
 DB_PATH = os.getenv('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'app.db'))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
+# Initialize OAuth2 Manager
+oauth_manager = OAuth2Manager(app, DB_PATH)
 
 tokens: dict[str, int] = {}
 
@@ -60,6 +67,8 @@ def get_user_id_from_token() -> int | None:
     auth = request.headers.get('Authorization', '')
     if auth.startswith('Bearer '):
         token = auth.split(' ', 1)[1]
+        
+        # Check traditional tokens first
         user_id = tokens.get(token)
         if user_id is not None:
             return user_id
@@ -68,6 +77,12 @@ def get_user_id_from_token() -> int | None:
             if row:
                 tokens[token] = row['user_id']
                 return row['user_id']
+        
+        # Check OAuth2 tokens
+        oauth_user = oauth_manager.get_user_from_oauth_token(token)
+        if oauth_user:
+            return oauth_user['id']
+    
     return None
 
 
@@ -301,6 +316,106 @@ def storage_info():
     """Get storage information."""
     info = get_storage_info()
     return jsonify(info)
+
+
+# OAuth2 Authentication Routes
+@app.route('/api/auth/<provider>')
+def oauth_login(provider):
+    """Initiate OAuth2 login with specified provider"""
+    if provider == 'google':
+        redirect_uri = url_for('oauth_callback', provider='google', _external=True)
+        return oauth_manager.google.authorize_redirect(redirect_uri)
+    elif provider == 'github':
+        redirect_uri = url_for('oauth_callback', provider='github', _external=True)
+        return oauth_manager.github.authorize_redirect(redirect_uri)
+    elif provider == 'discord':
+        redirect_uri = url_for('oauth_callback', provider='discord', _external=True)
+        return oauth_manager.discord.authorize_redirect(redirect_uri)
+    else:
+        return jsonify({'error': 'Unsupported provider'}), 400
+
+
+@app.route('/api/auth/<provider>/callback')
+def oauth_callback(provider):
+    """Handle OAuth2 callback from providers"""
+    code = request.args.get('code')
+    if not code:
+        return redirect('/login.html?error=oauth_failed')
+    
+    if provider == 'google':
+        result = oauth_manager.handle_google_callback(code)
+    elif provider == 'github':
+        result = oauth_manager.handle_github_callback(code)
+    elif provider == 'discord':
+        result = oauth_manager.handle_discord_callback(code)
+    else:
+        return redirect('/login.html?error=unsupported_provider')
+    
+    if result['success']:
+        # Redirect to files page with token
+        return redirect(f'/files.html?token={result["token"]}')
+    else:
+        return redirect(f'/login.html?error={result.get("error", "oauth_failed")}')
+
+
+@app.route('/api/auth/logout', methods=['POST'])
+def oauth_logout():
+    """Logout user and revoke OAuth token"""
+    auth = request.headers.get('Authorization', '')
+    if auth.startswith('Bearer '):
+        token = auth.split(' ', 1)[1]
+        
+        # Try to revoke OAuth token
+        if oauth_manager.revoke_oauth_token(token):
+            return jsonify({'success': True, 'message': 'Logged out successfully'})
+        
+        # Try to revoke traditional token
+        with get_db() as conn:
+            cursor = conn.execute('DELETE FROM tokens WHERE token = ?', (token,))
+            conn.commit()
+            if cursor.rowcount > 0:
+                tokens.pop(token, None)
+                return jsonify({'success': True, 'message': 'Logged out successfully'})
+    
+    return jsonify({'error': 'Invalid token'}), 401
+
+
+@app.route('/api/auth/user', methods=['GET'])
+def get_current_user():
+    """Get current user information"""
+    auth = request.headers.get('Authorization', '')
+    if auth.startswith('Bearer '):
+        token = auth.split(' ', 1)[1]
+        
+        # Check OAuth2 user
+        oauth_user = oauth_manager.get_user_from_oauth_token(token)
+        if oauth_user:
+            return jsonify({
+                'id': oauth_user['id'],
+                'name': oauth_user['name'],
+                'email': oauth_user['email'],
+                'avatar_url': oauth_user['avatar_url'],
+                'provider': oauth_user['provider'],
+                'auth_type': 'oauth2'
+            })
+        
+        # Check traditional user
+        user_id = get_user_id_from_token()
+        if user_id:
+            with get_db() as conn:
+                conn.row_factory = sqlite3.Row
+                user = conn.execute('SELECT id, username FROM users WHERE id = ?', (user_id,)).fetchone()
+                if user:
+                    return jsonify({
+                        'id': user['id'],
+                        'name': user['username'],
+                        'email': None,
+                        'avatar_url': None,
+                        'provider': 'local',
+                        'auth_type': 'traditional'
+                    })
+    
+    return jsonify({'error': 'Unauthorized'}), 401
 
 
 @app.errorhandler(404)

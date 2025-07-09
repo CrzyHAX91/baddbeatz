@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | BaddBeatz</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="nav__brand">
+        <img src="assets/images/TBG-himself.jpeg" alt="TheBadGuyHimself logo" class="nav__logo">
+      </div>
+      <button class="nav__toggle" aria-label="Toggle navigation">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+      <ul class="nav__links">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="gallery.html">Gallery</a></li>
+        <li><a class="nav__link" href="bookings.html">Bookings</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="login-main">
+    <div class="login-container">
+      <div class="login-header">
+        <h1 class="login-title">Access the Beat Vault</h1>
+        <p class="login-subtitle">Login to upload and download exclusive tracks</p>
+      </div>
+
+      <div class="login-content">
+        <!-- OAuth2 Login Options -->
+        <div class="oauth-section">
+          <h2 class="section-title">Quick Login</h2>
+          <div class="oauth-buttons">
+            <button class="oauth-btn oauth-btn--google" onclick="loginWithGoogle()">
+              <i class="fab fa-google"></i>
+              <span>Continue with Google</span>
+            </button>
+            <button class="oauth-btn oauth-btn--github" onclick="loginWithGitHub()">
+              <i class="fab fa-github"></i>
+              <span>Continue with GitHub</span>
+            </button>
+            <button class="oauth-btn oauth-btn--discord" onclick="loginWithDiscord()">
+              <i class="fab fa-discord"></i>
+              <span>Continue with Discord</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="divider">
+          <span class="divider-text">or</span>
+        </div>
+
+        <!-- Traditional Login Form -->
+        <div class="form-section">
+          <h2 class="section-title">Traditional Login</h2>
+          <form id="loginForm" class="login-form">
+            <div class="form-group">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" id="username" name="username" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+            <button type="submit" class="btn-primary btn-login">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
+            </button>
+          </form>
+
+          <div class="form-footer">
+            <p>Don't have an account? <a href="#" onclick="showRegisterForm()" class="link-accent">Register here</a></p>
+          </div>
+        </div>
+
+        <!-- Registration Form (Hidden by default) -->
+        <div class="form-section" id="registerSection" style="display: none;">
+          <h2 class="section-title">Create Account</h2>
+          <form id="registerForm" class="login-form">
+            <div class="form-group">
+              <label for="regUsername" class="form-label">Username</label>
+              <input type="text" id="regUsername" name="username" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="regPassword" class="form-label">Password</label>
+              <input type="password" id="regPassword" name="password" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+            </div>
+            <button type="submit" class="btn-primary btn-login">
+              <i class="fas fa-user-plus"></i>
+              Register
+            </button>
+          </form>
+
+          <div class="form-footer">
+            <p>Already have an account? <a href="#" onclick="showLoginForm()" class="link-accent">Login here</a></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Messages -->
+      <div id="statusMessage" class="status-message" style="display: none;"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 TheBadGuy / BaddBeatz. All rights reserved.</p>
+  </footer>
+
+  <style>
+    .login-main {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    .login-container {
+      max-width: 500px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .login-subtitle {
+      color: #ccc;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.3rem;
+      color: #00ffff;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .oauth-section {
+      margin-bottom: 2rem;
+    }
+
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .oauth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem;
+      border: 2px solid;
+      border-radius: 12px;
+      background: transparent;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .oauth-btn--google {
+      border-color: #db4437;
+    }
+
+    .oauth-btn--google:hover {
+      background: #db4437;
+      box-shadow: 0 0 20px rgba(219, 68, 55, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .oauth-btn--github {
+      border-color: #333;
+    }
+
+    .oauth-btn--github:hover {
+      background: #333;
+      box-shadow: 0 0 20px rgba(51, 51, 51, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .oauth-btn--discord {
+      border-color: #5865f2;
+    }
+
+    .oauth-btn--discord:hover {
+      background: #5865f2;
+      box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    }
+
+    .divider-text {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 0 1rem;
+      color: #00ffff;
+      font-weight: 600;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-label {
+      color: #00ffff;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      padding: 1rem;
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .btn-login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .form-footer p {
+      color: #ccc;
+      margin: 0;
+    }
+
+    .link-accent {
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .link-accent:hover {
+      color: #ff00ff;
+    }
+
+    .status-message {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .status-message.success {
+      background: rgba(0, 255, 0, 0.1);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      color: #00ff00;
+    }
+
+    .status-message.error {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      color: #ff0000;
+    }
+
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+      }
+
+      .login-title {
+        font-size: 2rem;
+      }
+
+      .oauth-btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+
+  <script>
+    // OAuth2 Configuration
+    const OAUTH_CONFIG = {
+      google: {
+        clientId: 'YOUR_GOOGLE_CLIENT_ID',
+        redirectUri: window.location.origin + '/api/auth/google/callback',
+        scope: 'openid email profile'
+      },
+      github: {
+        clientId: 'YOUR_GITHUB_CLIENT_ID',
+        redirectUri: window.location.origin + '/api/auth/github/callback',
+        scope: 'user:email'
+      },
+      discord: {
+        clientId: 'YOUR_DISCORD_CLIENT_ID',
+        redirectUri: window.location.origin + '/api/auth/discord/callback',
+        scope: 'identify email'
+      }
+    };
+
+    // OAuth2 Login Functions
+    function loginWithGoogle() {
+      window.location.href = '/api/auth/google';
+    }
+
+    function loginWithGitHub() {
+      window.location.href = '/api/auth/github';
+    }
+
+    function loginWithDiscord() {
+      window.location.href = '/api/auth/discord';
+    }
+
+    function generateState() {
+      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
+    // Form Management
+    function showRegisterForm() {
+      document.getElementById('registerSection').style.display = 'block';
+      document.querySelector('.form-section:first-of-type').style.display = 'none';
+    }
+
+    function showLoginForm() {
+      document.getElementById('registerSection').style.display = 'none';
+      document.querySelector('.form-section:first-of-type').style.display = 'block';
+    }
+
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = `status-message ${type}`;
+      statusEl.style.display = 'block';
+      
+      setTimeout(() => {
+        statusEl.style.display = 'none';
+      }, 5000);
+    }
+
+    // Traditional Login Form Handler
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        username: formData.get('username'),
+        password: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('authToken', result.token);
+          showStatus('Login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'files.html';
+          }, 1500);
+        } else {
+          showStatus(result.error || 'Login failed', 'error');
+        }
+      } catch (error) {
+        showStatus('Network error. Please try again.', 'error');
+      }
+    });
+
+    // Registration Form Handler
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const password = formData.get('password');
+      const confirmPassword = formData.get('confirmPassword');
+
+      if (password !== confirmPassword) {
+        showStatus('Passwords do not match', 'error');
+        return;
+      }
+
+      const data = {
+        username: formData.get('username'),
+        password: password
+      };
+
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('authToken', result.token);
+          showStatus('Registration successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'files.html';
+          }, 1500);
+        } else {
+          showStatus(result.error || 'Registration failed', 'error');
+        }
+      } catch (error) {
+        showStatus('Network error. Please try again.', 'error');
+      }
+    });
+
+    // Check if user is already logged in
+    if (localStorage.getItem('authToken')) {
+      window.location.href = 'files.html';
+    }
+
+    // Handle OAuth callback if present
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('code')) {
+      showStatus('Processing OAuth login...', 'success');
+    }
+  </script>
+</body>
+</html>

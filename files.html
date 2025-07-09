@@ -50,6 +50,31 @@
     <section class="auth-section" id="authSection">
       <h2>🔐 Login Required</h2>
       <p>Please login to access the file manager</p>
+      
+      <!-- OAuth Login Options -->
+      <div class="oauth-section">
+        <h3>Quick Login</h3>
+        <div class="oauth-buttons">
+          <button class="oauth-btn oauth-btn--google" onclick="loginWithGoogle()">
+            <span>🔍</span>
+            <span>Continue with Google</span>
+          </button>
+          <button class="oauth-btn oauth-btn--github" onclick="loginWithGitHub()">
+            <span>🐙</span>
+            <span>Continue with GitHub</span>
+          </button>
+          <button class="oauth-btn oauth-btn--discord" onclick="loginWithDiscord()">
+            <span>🎮</span>
+            <span>Continue with Discord</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider">
+        <span class="divider-text">or</span>
+      </div>
+
+      <!-- Traditional Login -->
       <form id="loginForm" class="auth-form">
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
@@ -400,6 +425,67 @@
       loadStorageInfo();
       loadFileList();
     }
+
+    // OAuth2 Login Functions
+    function loginWithGoogle() {
+      window.location.href = '/api/auth/google';
+    }
+
+    function loginWithGitHub() {
+      window.location.href = '/api/auth/github';
+    }
+
+    function loginWithDiscord() {
+      window.location.href = '/api/auth/discord';
+    }
+
+    // Check for OAuth token in URL on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+    if (tokenFromUrl) {
+      authToken = tokenFromUrl;
+      localStorage.setItem('authToken', authToken);
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      showFileManager();
+    }
+
+    // Load current user info
+    async function loadCurrentUser() {
+      if (!authToken) return;
+      
+      try {
+        const response = await fetch('/api/auth/user', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        if (response.ok) {
+          currentUser = await response.json();
+          updateUserDisplay();
+        }
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+    }
+
+    function updateUserDisplay() {
+      if (currentUser) {
+        // Update logout button to show user info
+        const logoutBtn = document.querySelector('button[onclick="logout()"]');
+        if (logoutBtn) {
+          logoutBtn.innerHTML = `👤 ${currentUser.name} | 🚪 Logout`;
+        }
+      }
+    }
+
+    // Enhanced showFileManager function
+    const originalShowFileManager = showFileManager;
+    showFileManager = function() {
+      originalShowFileManager();
+      loadCurrentUser();
+    };
   </script>
 
   <style>
