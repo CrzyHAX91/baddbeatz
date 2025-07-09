@@ -3,6 +3,7 @@
   "name": "worker",
   "version": "1.0.0",
   "description": "A template for kick starting a Cloudflare Workers project",
+  "type": "module",
   "main": "index.js",
   "author": "Ashley Lewis <ashleymichal@gmail.com>",
   "license": "MIT",

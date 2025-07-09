@@ -1,4 +1,6 @@
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+import youtubeLogic from '../youtube_logic.js';
+const { getLatestVideos } = youtubeLogic;
 
 export default {
   async fetch(request, env, ctx) {
@@ -61,6 +63,32 @@ export default {
         });
       } catch (err) {
         return new Response(JSON.stringify({ error: 'AI request failed' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    if (url.pathname === '/api/youtube' && request.method === 'GET') {
+      const channelId =
+        url.searchParams.get('channel_id') || url.searchParams.get('channelId');
+      if (!channelId) {
+        return new Response(
+          JSON.stringify({ error: 'channel_id required' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      try {
+        const data = await getLatestVideos(
+          channelId,
+          env.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY
+        );
+        return new Response(JSON.stringify(data), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: 'Failed to fetch videos' }), {
           status: 500,
           headers: { 'Content-Type': 'application/json' }
         });
