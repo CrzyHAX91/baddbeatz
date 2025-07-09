@@ -40,11 +40,18 @@ Then open `http://localhost:8000` in your browser.
 
 ## Flask Backend on a VM or Container
 
-The Flask application in `app.py` can run on any VM or container platform.
+The Flask application in `server.py` can run on any VM or container platform.
 
 1. Install Python 3 and run `pip install -r requirements.txt`.
-2. Initialize the database with `python3 scripts/init_db.py` (optional `DB_PATH`).
-3. Expose the desired `PORT` and start the app with `python3 app.py`.
+2. **Important:** In case you encounter errors related to `pg_config` or building psycopg2 from source, ensure:
+   - You have **not** installed the source version of psycopg2.
+   - Uninstall any conflicting package by running:  
+     ```
+     pip uninstall psycopg2
+     ```
+   - Reinstall using the binary package as specified in `requirements.txt` (psycopg2-binary).
+3. Initialize the database with `python3 scripts/init_db.py` (optional `DB_PATH`).
+4. Expose the desired `PORT` and start the app with `python3 server.py`.
 
 When using Docker, copy the repository contents into an image based on
 `python:3` and set the `PORT` and `DB_PATH` environment variables as needed.

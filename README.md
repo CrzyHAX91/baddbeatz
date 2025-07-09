@@ -225,3 +225,30 @@ python3 app.py
 ```
 
 Deploy this app to any VM or container platform that can run Python 3. Ensure the chosen host exposes the configured `PORT` and persists the database file. The Cloudflare Worker defined in `wrangler.toml` should remain deployed to handle `/api/ask` requests.
+
+## 🔧 Troubleshooting
+
+### psycopg2 Installation Issues
+
+If you encounter an error such as:
+```
+python setup.py build_ext --pg-config /path/to/pg_config build ...
+```
+this may be because the system is attempting to build psycopg2 from source (which requires PostgreSQL's `pg_config`).  
+
+**Solution:**  
+- Ensure you are installing the binary package version by running:  
+  ```
+  pip install -r requirements.txt
+  ```
+- If necessary, remove any source-installed psycopg2 using:  
+  ```
+  pip uninstall psycopg2
+  ```
+Then try reinstalling. Our project uses **psycopg2-binary** (version 2.9.9) to avoid these build issues.
+
+### Common Development Issues
+
+- **Port already in use:** If port 8000 is occupied, set a different `PORT` environment variable
+- **Database errors:** Ensure the `data/` directory exists and is writable
+- **Missing dependencies:** Always run `pip install -r requirements.txt` after pulling updates

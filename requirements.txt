@@ -108,7 +108,7 @@ protobuf==5.29.5
     #   googleapis-common-protos
     #   grpcio-status
     #   proto-plus
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.9  # Using binary distribution to avoid pg_config build errors
     # via -r requirements.in
 pyasn1==0.6.1
     # via

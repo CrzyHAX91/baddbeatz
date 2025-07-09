@@ -303,10 +303,17 @@ def storage_info():
     return jsonify(info)
 
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return send_from_directory(app.static_folder, '404.html'), 404
+
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path:path>')
 def static_files(path: str):
-    return send_from_directory(app.static_folder, path)
+    try:
+        return send_from_directory(app.static_folder, path)
+    except FileNotFoundError:
+        return send_from_directory(app.static_folder, '404.html'), 404
 
 
 if __name__ == '__main__':
