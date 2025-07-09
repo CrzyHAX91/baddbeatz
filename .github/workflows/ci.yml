@@ -25,14 +25,12 @@ jobs:
         id: requirements-dev
         run: echo "exists=$(if [ -f requirements-dev.txt ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
         working-directory: ${{ github.workspace }}
-
       - uses: actions/setup-python@v4
         if: steps.requirements-dev.outputs.exists == 'true'
         with:
           python-version: '3.x'
           cache: 'pip'
           cache-dependency-path: requirements-dev.txt
-
       - run: pip install -r requirements-dev.txt
         if: steps.requirements-dev.outputs.exists == 'true'
         working-directory: ${{ github.workspace }}
