@@ -6,6 +6,10 @@ from flask import Flask, request, jsonify, send_from_directory
 from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from file_manager import (
+    upload_music_file, get_music_files, download_music_file, 
+    delete_music_file, get_storage_info
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -232,6 +236,71 @@ def agent_status():
     except Exception as exc:
         logger.error(f"Error getting agent status: {exc}", exc_info=True)
         return jsonify({'error': 'Failed to get agent status'}), 500
+
+
+# File Management Endpoints
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    """Upload a music file."""
+    user_id = get_user_id_from_token()
+    if not user_id:
+        return jsonify({'error': 'Unauthorized - Login required'}), 401
+    
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+    
+    file = request.files['file']
+    result = upload_music_file(file, user_id)
+    
+    if result['success']:
+        return jsonify(result), 201
+    else:
+        return jsonify(result), 400
+
+
+@app.route('/api/files', methods=['GET'])
+def list_files():
+    """Get list of uploaded music files."""
+    files = get_music_files()
+    storage_info = get_storage_info()
+    
+    return jsonify({
+        'files': files,
+        'storage_info': storage_info
+    })
+
+
+@app.route('/api/download/<filename>', methods=['GET'])
+def download_file(filename):
+    """Download a music file."""
+    result = download_music_file(filename)
+    
+    if isinstance(result, dict) and not result.get('success'):
+        return jsonify(result), 404
+    
+    return result
+
+
+@app.route('/api/delete/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    """Delete a music file."""
+    user_id = get_user_id_from_token()
+    if not user_id:
+        return jsonify({'error': 'Unauthorized - Login required'}), 401
+    
+    result = delete_music_file(filename, user_id)
+    
+    if result['success']:
+        return jsonify(result)
+    else:
+        return jsonify(result), 400
+
+
+@app.route('/api/storage', methods=['GET'])
+def storage_info():
+    """Get storage information."""
+    info = get_storage_info()
+    return jsonify(info)
 
 
 @app.route('/', defaults={'path': 'index.html'})
