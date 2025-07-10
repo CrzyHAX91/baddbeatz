@@ -212,7 +212,7 @@ def delete_music_file(filename, user_id=None):
         
     except Exception as e:
         logger.error(f"Error deleting file {filename}: {str(e)}")
-        return {'success': False, 'error': f'Delete failed: {str(e)}'}
+        return {'success': False, 'error': 'An internal error occurred while deleting the file.'}
 
 def get_storage_info():
     """

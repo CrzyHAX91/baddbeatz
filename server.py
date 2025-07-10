@@ -308,7 +308,7 @@ def delete_file(filename):
     if result['success']:
         return jsonify(result)
     else:
-        return jsonify(result), 400
+        return jsonify({'success': False, 'error': 'Failed to delete the file.'}), 400
 
 
 @app.route('/api/storage', methods=['GET'])
