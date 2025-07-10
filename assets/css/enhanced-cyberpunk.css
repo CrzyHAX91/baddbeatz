@@ -543,6 +543,17 @@ body {
    ENHANCED BOOKING & CONTACT SECTIONS
    ================================================================= */
 
+/* Main Section Styles */
+.booking-section,
+.contact-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
 /* Booking Contact Section */
 .booking-contact {
   padding: var(--spacing-xxl) 0;
