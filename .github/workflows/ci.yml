@@ -113,7 +113,7 @@ jobs:
     
     - name: Build application
       run: |
-        python scripts/build-docs.cjs || echo "Build script not found, skipping"
+        node scripts/build-docs.cjs || echo "Build script not found, skipping"
         npm run build || echo "No build script found, skipping"
     
     - name: Test production build

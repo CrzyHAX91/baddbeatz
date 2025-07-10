@@ -52,9 +52,10 @@ jobs:
         cp robots.txt docs/ || true
         cp sitemap.xml docs/ || true
         cp CNAME docs/ || true
+        cp -r data docs/ || true
         
-        # Generate any dynamic content
-        python scripts/build-docs.cjs || echo "Build script not found, using static files"
+        # Generate any dynamic content using Node.js
+        node scripts/build-docs.cjs || echo "Build script not found, using static files"
     
     - name: Setup Pages
       uses: actions/configure-pages@v3
