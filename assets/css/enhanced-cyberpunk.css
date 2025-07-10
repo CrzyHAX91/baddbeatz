@@ -543,15 +543,36 @@ body {
    ENHANCED BOOKING & CONTACT SECTIONS
    ================================================================= */
 
-/* Main Section Styles */
+/* Main Section Styles - Override conflicts */
 .booking-section,
 .contact-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--spacing-xl);
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: var(--spacing-xl) !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Ensure all content is visible */
+.booking-section *,
+.contact-section * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix main content visibility */
+main {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* Booking Contact Section */
