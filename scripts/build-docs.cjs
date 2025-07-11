@@ -22,6 +22,10 @@ async function main() {
     'gallery.html',
     'bookings.html',
     'contact.html',
+    'files.html',
+    'login.html',
+    'playlist.html',
+    'profile.html',
     '404.html'
   ];
   const otherFiles = ['robots.txt', 'sitemap.xml', 'CNAME'];

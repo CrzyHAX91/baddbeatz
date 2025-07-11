@@ -33,9 +33,21 @@ multidict==6.0.5
 openai==1.30.4
 packaging==24.1
 propcache==0.3.2
-proto-plus==1.23.0
-protobuf==5.27.0
-psycopg2-binary==2.9.9
+    # via
+    #   aiohttp
+    #   yarl
+proto-plus==1.26.1
+    # via
+    #   google-ai-generativelanguage
+    #   google-api-core
+protobuf==5.29.5
+    # via
+    #   google-ai-generativelanguage
+    #   google-api-core
+    #   google-generativeai
+    #   googleapis-common-protos
+    #   grpcio-status
+    #   proto-plus
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pydantic==2.11.7
