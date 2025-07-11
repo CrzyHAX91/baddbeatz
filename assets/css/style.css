@@ -318,6 +318,62 @@ section h2 {
   border-radius: 50%;
 }
 
+/* About page styles */
+.about-hero {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.about-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 15px;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.about-content {
+  flex: 1;
+}
+
+.about-tagline {
+  font-size: 1.2rem;
+  color: #00ffff;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.about-details h2 {
+  color: #ff0033;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem 0;
+  text-align: left;
+}
+
+.about-details p {
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+}
+
+@media (max-width: 768px) {
+  .about-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .about-image {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+  }
+}
+
 /* Playlist styles */
 #playlist {
   list-style: none;
@@ -606,6 +662,9 @@ footer a:hover {
 }
 
 #youtubeVideos li:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.3);
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
