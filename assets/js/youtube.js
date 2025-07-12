@@ -75,16 +75,11 @@ async function loadYoutubeVideos() {
       <li class="error-message">
         <div class="error-content">
           <p class="error-text">⚠️ Failed to load videos: ${err.message}</p>
-          <button class="retry-btn" onclick="retryLoadVideos()">🔄 Retry</button>
+          <button class="retry-btn" onclick="loadYoutubeVideosWithRetry()">🔄 Retry</button>
         </div>
       </li>
     `;
   }
-}
-
-function retryLoadVideos() {
-  console.log('Retrying YouTube video load...');
-  loadYoutubeVideos();
 }
 
 // Auto-retry mechanism with exponential backoff

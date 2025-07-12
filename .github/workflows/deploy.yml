@@ -35,9 +35,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install dependencies without psycopg2-binary for static site deployment
-        pip install flask==2.3.2 flask-sqlalchemy==3.0.3 python-dotenv==1.0.0 werkzeug==3.0.6
-        pip install requests==2.32.4 gunicorn==23.0.0 || echo "Optional dependencies skipped"
+        pip install -r requirements.txt
     
     - name: Install Node dependencies
       run: |
@@ -51,13 +49,13 @@ jobs:
         # Copy static files
         cp -r assets docs/
         cp *.html docs/
-        cp robots.txt docs/ || true
-        cp sitemap.xml docs/ || true
-        cp CNAME docs/ || true
-        cp -r data docs/ || true
+        cp robots.txt docs/
+        cp sitemap.xml docs/
+        cp CNAME docs/
+        cp -r data docs/
         
         # Generate any dynamic content using Node.js
-        node scripts/build-docs.cjs || echo "Build script not found, using static files"
+        node scripts/build-docs.cjs
     
     - name: Setup Pages
       uses: actions/configure-pages@v4

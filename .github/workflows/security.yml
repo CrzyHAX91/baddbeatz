@@ -74,13 +74,13 @@ jobs:
     - name: Update Python dependencies
       run: |
         python -m pip install --upgrade pip pip-tools
-        pip-compile --upgrade requirements.in || echo "No requirements.in found"
-        pip-compile --upgrade requirements-dev.txt || echo "No requirements-dev.in found"
+        pip-compile --upgrade requirements.in
+        pip-compile --upgrade requirements-dev.in
     
     - name: Update Node dependencies
       run: |
         npm update
-        npm audit fix || true
+        npm audit fix
     
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
@@ -114,16 +114,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install core dependencies for security testing
-        pip install flask==2.3.2 flask-sqlalchemy==3.0.3 python-dotenv==1.0.0 werkzeug==3.0.6
-        pip install requests==2.32.4 gunicorn==23.0.0
-        # Install additional dependencies if available
-        pip install -r requirements.txt || echo "Some optional dependencies skipped"
+        pip install -r requirements.txt
     
     - name: Start server
       run: |
         python server.py &
-        sleep 10
+        ./scripts/wait-for-it.sh localhost:8000 --timeout=30 --strict -- echo "Server is up"
       env:
         FLASK_ENV: production
         DB_PATH: ":memory:"

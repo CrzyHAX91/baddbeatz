@@ -37,33 +37,48 @@
   function initMobileNavigation() {
     const navToggle = document.querySelector('.nav__toggle');
     const navLinks = document.querySelector('.nav__links');
+    const body = document.body;
     
     if (!navToggle || !navLinks) return;
 
+    // Toggle mobile menu
     navToggle.addEventListener('click', () => {
       const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-      navToggle.setAttribute('aria-expanded', String(!expanded));
+      const isActive = !expanded;
+      
+      navToggle.setAttribute('aria-expanded', String(isActive));
       navToggle.classList.toggle('nav__toggle--active');
       navLinks.classList.toggle('nav__links--active');
-    });
-
-    // Close mobile menu when clicking on a link
-    navLinks.addEventListener('click', (e) => {
-      if (e.target.classList.contains('nav__link')) {
-        navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.classList.remove('nav__toggle--active');
-        navLinks.classList.remove('nav__links--active');
+      
+      // Prevent body scroll when menu is open
+      if (isActive) {
+        body.classList.add('nav-open');
+      } else {
+        body.classList.remove('nav-open');
       }
     });
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!navToggle.contains(e.target) && !navLinks.contains(e.target)) {
-        navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.classList.remove('nav__toggle--active');
-        navLinks.classList.remove('nav__links--active');
+        closeMenu();
       }
     });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    // Helper function to close menu
+    function closeMenu() {
+      navToggle.setAttribute('aria-expanded', 'false');
+      navToggle.classList.remove('nav__toggle--active');
+      navLinks.classList.remove('nav__links--active');
+      body.classList.remove('nav-open');
+    }
   }
 
   // Smooth scrolling for anchor links

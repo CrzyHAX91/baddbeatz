@@ -17,7 +17,7 @@ def start_server(port, db_path):
     env = os.environ.copy()
     env["PORT"] = str(port)
     env["DB_PATH"] = db_path
-    return subprocess.Popen(["python3", "server.py"], env=env,
+    return subprocess.Popen(["python", "server.py"], env=env,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
