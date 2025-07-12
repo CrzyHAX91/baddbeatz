@@ -2,7 +2,7 @@ import os
 import sqlite3
 import secrets
 import logging
-from flask import Flask, request, jsonify, send_from_directory, redirect, url_for, session
+from flask import Flask, request, jsonify, send_from_directory, redirect, url_for, session, Blueprint
 from youtube_logic import get_latest_videos
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -19,8 +19,9 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Serve files from the `docs` directory if it exists, else from the repo root
-static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else ''
-app = Flask(__name__, static_folder=static_dir or '.', static_url_path='')
+static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else '.'
+app = Flask(__name__, static_folder=static_dir)
+api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 # Configure Flask for OAuth2
 app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(32))
@@ -86,14 +87,14 @@ def get_user_id_from_token() -> int | None:
     return None
 
 
-@app.route('/api/tracks', methods=['GET'])
+@api_bp.route('/tracks', methods=['GET'])
 def get_tracks():
     with get_db() as conn:
         rows = conn.execute('SELECT id, title, url FROM tracks').fetchall()
     return jsonify({'tracks': [dict(row) for row in rows]})
 
 
-@app.route('/api/tracks', methods=['POST'])
+@api_bp.route('/tracks', methods=['POST'])
 def add_track():
     if not get_user_id_from_token():
         return jsonify({'error': 'Unauthorized'}), 401
@@ -109,7 +110,7 @@ def add_track():
     return jsonify(track), 201
 
 
-@app.route('/api/register', methods=['POST'])
+@api_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json(silent=True) or {}
     username = data.get('username')
@@ -135,7 +136,7 @@ def register():
     return jsonify({'token': token})
 
 
-@app.route('/api/login', methods=['POST'])
+@api_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json(silent=True) or {}
     username = data.get('username')
@@ -156,7 +157,7 @@ def login():
     return jsonify({'token': token})
 
 
-@app.route('/api/youtube')
+@api_bp.route('/youtube')
 def youtube_videos():
     """Return recent YouTube videos for a given channel."""
     channel_id = request.args.get('channel_id') or request.args.get('channelId')
@@ -170,7 +171,7 @@ def youtube_videos():
     return jsonify(data)
 
 
-@app.route('/api/ask', methods=['POST'])
+@api_bp.route('/ask', methods=['POST'])
 def ask_dj():
     """AI chat endpoint for asking questions about TheBadGuy."""
     data = request.get_json(silent=True) or {}
@@ -221,7 +222,7 @@ def ask_dj():
         return jsonify({'error': 'An internal error occurred while processing your question.'}), 500
 
 
-@app.route('/api/trigger-agent', methods=['POST'])
+@api_bp.route('/trigger-agent', methods=['POST'])
 def trigger_agent():
     """Manually trigger the automated agent tasks."""
     # Check for authorization
@@ -241,7 +242,7 @@ def trigger_agent():
         return jsonify({'error': 'Failed to trigger automated agent'}), 500
 
 
-@app.route('/api/agent-status', methods=['GET'])
+@api_bp.route('/agent-status', methods=['GET'])
 def agent_status():
     """Get the current status of the automated agent."""
     try:
@@ -254,7 +255,7 @@ def agent_status():
 
 
 # File Management Endpoints
-@app.route('/api/upload', methods=['POST'])
+@api_bp.route('/upload', methods=['POST'])
 def upload_file():
     """Upload a music file."""
     user_id = get_user_id_from_token()
@@ -273,7 +274,7 @@ def upload_file():
         return jsonify(result), 400
 
 
-@app.route('/api/files', methods=['GET'])
+@api_bp.route('/files', methods=['GET'])
 def list_files():
     """Get list of uploaded music files."""
     files = get_music_files()
@@ -285,7 +286,7 @@ def list_files():
     })
 
 
-@app.route('/api/download/<filename>', methods=['GET'])
+@api_bp.route('/download/<filename>', methods=['GET'])
 def download_file(filename):
     """Download a music file."""
     result = download_music_file(filename)
@@ -296,7 +297,7 @@ def download_file(filename):
     return result
 
 
-@app.route('/api/delete/<filename>', methods=['DELETE'])
+@api_bp.route('/delete/<filename>', methods=['DELETE'])
 def delete_file(filename):
     """Delete a music file."""
     user_id = get_user_id_from_token()
@@ -311,7 +312,7 @@ def delete_file(filename):
         return jsonify({'success': False, 'error': 'Failed to delete the file.'}), 400
 
 
-@app.route('/api/storage', methods=['GET'])
+@api_bp.route('/storage', methods=['GET'])
 def storage_info():
     """Get storage information."""
     info = get_storage_info()
@@ -319,7 +320,7 @@ def storage_info():
 
 
 # OAuth2 Authentication Routes
-@app.route('/api/auth/<provider>')
+@api_bp.route('/auth/<provider>')
 def oauth_login(provider):
     """Initiate OAuth2 login with specified provider"""
     if provider == 'google':
@@ -335,7 +336,7 @@ def oauth_login(provider):
         return jsonify({'error': 'Unsupported provider'}), 400
 
 
-@app.route('/api/auth/<provider>/callback')
+@api_bp.route('/auth/<provider>/callback')
 def oauth_callback(provider):
     """Handle OAuth2 callback from providers"""
     code = request.args.get('code')
@@ -358,7 +359,7 @@ def oauth_callback(provider):
         return redirect(f'/login.html?error={result.get("error", "oauth_failed")}')
 
 
-@app.route('/api/auth/logout', methods=['POST'])
+@api_bp.route('/auth/logout', methods=['POST'])
 def oauth_logout():
     """Logout user and revoke OAuth token"""
     auth = request.headers.get('Authorization', '')
@@ -380,7 +381,7 @@ def oauth_logout():
     return jsonify({'error': 'Invalid token'}), 401
 
 
-@app.route('/api/auth/user', methods=['GET'])
+@api_bp.route('/auth/user', methods=['GET'])
 def get_current_user():
     """Get current user information"""
     auth = request.headers.get('Authorization', '')
@@ -418,17 +419,15 @@ def get_current_user():
     return jsonify({'error': 'Unauthorized'}), 401
 
 
+app.register_blueprint(api_bp)
+
 @app.errorhandler(404)
 def not_found_error(error):
     return send_from_directory(app.static_folder, '404.html'), 404
 
-@app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path:path>')
-def static_files(path: str):
-    try:
-        return send_from_directory(app.static_folder, path)
-    except FileNotFoundError:
-        return send_from_directory(app.static_folder, '404.html'), 404
+def static_proxy(path):
+    return send_from_directory('.', path)
 
 
 if __name__ == '__main__':
