@@ -16,12 +16,17 @@
   <link rel="stylesheet" href="assets/css/embed.css">
   <link rel="stylesheet" href="assets/css/cyberpunk.css">
   <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/ui-enhancements.css">
+  <link rel="stylesheet" href="assets/css/animation-styles.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
   <link rel="stylesheet" href="assets/css/video-enhancements.css">
   <link rel="stylesheet" href="assets/css/mobile-fixes.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
   <script defer src="assets/js/main.js"></script>
   <script defer src="assets/js/youtube.js"></script>
+  <script defer src="assets/js/ui-utils.js"></script>
+  <script defer src="assets/js/enhanced-animations.js"></script>
+  <script defer src="assets/js/ai-chat-improved.js"></script>
 </head>
 <body>
   <header>
@@ -86,12 +91,13 @@
     </section>
 
     <section class="ai-chat fade-in">
-      <h2>🎤 Ask the DJ</h2>
+      <h2>🎤 Ask the DJ (Premium Feature)</h2>
       <p>Curious about TheBadGuyHimself's setup, vibe, or availability? Ask below!</p>
       <p class="ai-disclaimer">Responses come from an AI and may contain errors.</p>
       <textarea id="userInput" placeholder="Type your question..."></textarea>
-      <button onclick="askDJ()">Ask</button>
+      <button id="askButton">Ask</button>
       <pre id="aiResponse"></pre>
+      <div id="premiumMessage" style="display: none; color: #ff6b6b;">This is a premium feature. Please login and upgrade to premium to use the AI chat.</div>
     </section>
   </main>
 
@@ -99,36 +105,5 @@
     <p>&copy; 2025 TheBadGuyHimself</p>
     <a href="contact.html">Contact</a>
   </footer>
-
-  <script>
-    async function askDJ() {
-      const input = document.getElementById('userInput').value;
-      const responseBox = document.getElementById('aiResponse');
-      
-      if (!input.trim()) {
-        responseBox.textContent = 'Please enter a question.';
-        return;
-      }
-      
-      responseBox.textContent = 'Thinking...';
-      
-      try {
-        const res = await fetch('/api/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: input })
-        });
-        
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
-        
-        const data = await res.json();
-        responseBox.textContent = data.choices?.[0]?.message?.content || data.error || 'No response received.';
-      } catch (err) {
-        responseBox.textContent = `Error: ${err.message}`;
-      }
-    }
-  </script>
 </body>
 </html>
