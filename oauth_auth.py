@@ -1,11 +1,14 @@
 import os
 import secrets
 import sqlite3
+import logging
 from typing import Optional, Dict, Any
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, session, request, jsonify, redirect, url_for
 import requests
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -164,7 +167,8 @@ class OAuth2Manager:
                     'user': user_data
                 }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            logger.error(f"Google OAuth error: {e}")
+            return {'success': False, 'error': 'Authentication failed'}
     
     def handle_github_callback(self, code: str) -> Dict[str, Any]:
         """Handle GitHub OAuth2 callback"""
@@ -196,7 +200,8 @@ class OAuth2Manager:
                 'user': user_data
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            logger.error(f"GitHub OAuth error: {e}")
+            return {'success': False, 'error': 'Authentication failed'}
     
     def handle_discord_callback(self, code: str) -> Dict[str, Any]:
         """Handle Discord OAuth2 callback"""
@@ -223,7 +228,8 @@ class OAuth2Manager:
                 'user': user_data
             }
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            logger.error(f"Discord OAuth error: {e}")
+            return {'success': False, 'error': 'Authentication failed'}
     
     def revoke_oauth_token(self, token: str) -> bool:
         """Revoke OAuth token"""

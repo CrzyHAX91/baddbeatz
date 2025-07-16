@@ -29,7 +29,9 @@ app = Flask(__name__, static_folder=static_dir)
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 # Security Configuration
-app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(32))
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
+if not app.secret_key:
+    raise ValueError("FLASK_SECRET_KEY environment variable is required")
 app.config['MAX_CONTENT_LENGTH'] = int(os.getenv('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))  # 16MB max file size
 app.config['WTF_CSRF_TIME_LIMIT'] = None
 
@@ -491,6 +493,16 @@ def ask_dj():
 
 # Exempt API endpoints from CSRF protection
 csrf.exempt(api_bp)
+
+# Add security headers
+@app.after_request
+def add_security_headers(response):
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 # Register blueprint
 app.register_blueprint(api_bp)
