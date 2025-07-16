@@ -47,12 +47,10 @@ limiter = Limiter(
 )
 
 # Initialize caching with proper configuration
-cache_config = {
-    'CACHE_TYPE': 'simple',
+cache = Cache(app, config={
+    'CACHE_TYPE': 'SimpleCache',
     'CACHE_DEFAULT_TIMEOUT': 300
-}
-cache = Cache()
-cache.init_app(app, config=cache_config)
+})
 
 DB_PATH = os.getenv('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'app.db'))
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)

@@ -1,0 +1,32 @@
+# Ignore virtual environment
+temp_venv/
+venv/
+env/
+.venv/
+
+# Ignore node modules
+node_modules/
+
+# Ignore build directories
+build/
+dist/
+.build/
+
+# Ignore cache directories
+.cache/
+__pycache__/
+.pytest_cache/
+
+# Ignore coverage files
+.coverage
+coverage.xml
+htmlcov/
+
+# Ignore uploaded files
+uploads/
+
+# Ignore temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db

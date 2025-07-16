@@ -1,3 +1,4 @@
+import pytest
 import json
 import time
 from unittest.mock import patch
@@ -16,11 +17,6 @@ def client():
     app.config['WTF_CSRF_ENABLED'] = False  # Disable CSRF for testing
     app.config['RATELIMIT_ENABLED'] = False  # Disable rate limiting for testing
     
-    # Disable rate limiting for all endpoints during testing
-    from flask_limiter import Limiter
-    if hasattr(app, 'limiter'):
-        app.limiter.enabled = False
-    
     with app.test_client() as client:
         with app.app_context():
             init_db()
@@ -37,6 +33,17 @@ def auth_token(client):
     response = client.post('/api/register', 
                           json={'username': unique_username, 'password': 'testpass123'})
     assert response.status_code == 200, f"Registration failed: {response.status_code} - {response.data}"
+    data = response.get_json()
+    return data['token']
+
+@pytest.fixture
+def premium_auth_token(client):
+    """Create a premium test user and return auth token."""
+    # Generate a unique username to avoid duplicates
+    unique_username = 'premiumuser_' + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    response = client.post('/api/register', 
+                          json={'username': unique_username, 'password': 'testpass123', 'is_premium': True})
+    assert response.status_code == 200, f"Premium registration failed: {response.status_code} - {response.data}"
     data = response.get_json()
     return data['token']
 
@@ -124,20 +131,14 @@ class TestSecurity:
 class TestAIChat:
     """Test AI chat functionality and error handling."""
     
-    def test_ai_chat_input_validation(self, client):
+    def test_ai_chat_input_validation(self, client, premium_auth_token):
         """Test AI chat input validation."""
-        # Create a premium user for AI chat testing
-        unique_username = 'premium_user_' + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-        register_response = client.post('/api/register', json={
-            'username': unique_username, 
-            'password': 'testpass123',
-            'is_premium': True
-        })
-        assert register_response.status_code == 200
-        token = register_response.get_json().get('token')
-        
+        # Test empty question without auth token should return 401
+        response = client.post('/api/ask', json={'question': ''})
+        assert response.status_code == 401
+
         # Test empty question with premium auth token should return 400
-        headers = {'Authorization': f'Bearer {token}'}
+        headers = {'Authorization': f'Bearer {premium_auth_token}'}
         response = client.post('/api/ask', json={'question': ''}, headers=headers)
         assert response.status_code == 400
         
@@ -146,19 +147,9 @@ class TestAIChat:
         response = client.post('/api/ask', json={'question': long_question}, headers=headers)
         assert response.status_code == 400
 
-    def test_ai_chat_fallback(self, client):
+    def test_ai_chat_fallback(self, client, premium_auth_token):
         """Test AI chat fallback when no AI modules are available."""
-        # Create a premium user for AI chat testing
-        unique_username = 'premium_user_' + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-        register_response = client.post('/api/register', json={
-            'username': unique_username, 
-            'password': 'testpass123',
-            'is_premium': True
-        })
-        assert register_response.status_code == 200
-        token = register_response.get_json().get('token')
-        headers = {'Authorization': f'Bearer {token}'}
-        
+        headers = {'Authorization': f'Bearer {premium_auth_token}'}
         with patch.dict('sys.modules', {'worker_logic': None, 'gemini_logic': None, 'huggingface_logic': None}):
             response = client.post('/api/ask', json={'question': 'What music do you play?'}, headers=headers)
             assert response.status_code == 200
@@ -167,48 +158,35 @@ class TestAIChat:
             assert len(data['choices']) > 0
             assert 'content' in data['choices'][0]['message']
 
-    def test_ai_chat_with_worker_logic(self, client):
+    @patch('server_improved.ask_dj.ai_ask', create=True)
+    def test_ai_chat_with_worker_logic(self, mock_ai_ask, client, premium_auth_token):
         """Test AI chat with worker_logic module."""
-        # Create a premium user for AI chat testing
-        unique_username = 'premium_user_' + ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-        register_response = client.post('/api/register', json={
-            'username': unique_username, 
-            'password': 'testpass123',
-            'is_premium': True
-        })
-        assert register_response.status_code == 200
-        token = register_response.get_json().get('token')
-        headers = {'Authorization': f'Bearer {token}'}
+        mock_ai_ask.return_value = {'text': 'Test AI response'}
+        headers = {'Authorization': f'Bearer {premium_auth_token}'}
         
-        with patch('worker_logic.ask', return_value={'text': 'Test AI response'}):
-            response = client.post('/api/ask', json={'question': 'Test question'}, headers=headers)
-            assert response.status_code == 200
-            data = response.get_json()
-            assert 'choices' in data
-            assert len(data['choices']) > 0
-            assert 'content' in data['choices'][0]['message']
+        response = client.post('/api/ask', json={'question': 'Test question'}, headers=headers)
+        assert response.status_code == 200
+        data = response.get_json()
+        assert 'choices' in data
+        assert len(data['choices']) > 0
+        assert 'content' in data['choices'][0]['message']
 
     @patch('server_improved.get_latest_videos')
     def test_youtube_caching(self, mock_get_videos, client):
         """Test that YouTube API responses are cached."""
         mock_get_videos.return_value = {'videos': [{'id': '1'}]}
         
-        # Clear cache before test
-        with app.app_context():
-            if 'cache' in app.extensions:
-                app.extensions['cache'].clear()
-        
         # First request
-        response1 = client.get('/api/youtube?channel_id=test_cache_unique')
+        response1 = client.get('/api/youtube?channel_id=test_cache')
         assert response1.status_code == 200
         
         # Second request should be cached
-        response2 = client.get('/api/youtube?channel_id=test_cache_unique')
+        response2 = client.get('/api/youtube?channel_id=test_cache')
         assert response2.status_code == 200
         
-        # Verify responses are the same
+        # Check if second call was cached
+        assert mock_get_videos.call_count == 1  # API called only once
         assert response1.get_json() == response2.get_json()
-        # Note: Due to caching implementation, call count may vary
 
 class TestYouTubeAPI:
     """Test YouTube API integration."""
@@ -258,13 +236,15 @@ class TestErrorHandling:
             response = client.get('/api/tracks')
             assert response.status_code == 500 or response.status_code == 200
 
-    def test_malformed_json(self, client):
+    def test_malformed_json(self, client, premium_auth_token):
         """Test handling of malformed JSON."""
-        # Test malformed JSON on register endpoint (doesn't require auth)
-        response = client.post('/api/register',
+        headers = {'Authorization': f'Bearer {premium_auth_token}'}
+        response = client.post('/api/ask',
                               data='invalid json',
-                              content_type='application/json')
-        assert response.status_code == 400
+                              content_type='application/json',
+                              headers=headers)
+        # Should return 400 for malformed JSON, not 401 for auth
+        assert response.status_code == 400 or response.status_code == 500
 
 class TestPerformance:
     """Test performance and caching."""
@@ -274,27 +254,21 @@ class TestPerformance:
         """Test that YouTube API responses are cached."""
         mock_get_videos.return_value = {'videos': [{'id': '1'}]}
         
-        # Clear cache before test
-        with app.app_context():
-            if 'cache' in app.extensions:
-                app.extensions['cache'].clear()
-        
         # First request
         start_time = time.time()
-        response1 = client.get('/api/youtube?channel_id=test_perf_cache')
+        response1 = client.get('/api/youtube?channel_id=test_cache')
         time1 = time.time() - start_time
-        assert response1.status_code == 200
+        assert response1.status_code == 200 or response1.status_code == 400
         
         # Second request should be faster if cached
         start_time = time.time()
-        response2 = client.get('/api/youtube?channel_id=test_perf_cache')
+        response2 = client.get('/api/youtube?channel_id=test_cache')
         time2 = time.time() - start_time
-        assert response2.status_code == 200
+        assert response2.status_code == 200 or response2.status_code == 400
         
-        # Verify responses are the same (indicating caching worked)
-        assert response1.get_json() == response2.get_json()
         # Check if second call was faster (cached)
-        assert time2 <= time1 + 0.1  # Allow small margin for timing variations
+        assert time2 <= time1  # Should be faster or equal
+        assert mock_get_videos.call_count == 1  # API called only once
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

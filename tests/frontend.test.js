@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import '@testing-library/jest-dom';
 import { fireEvent, waitFor } from '@testing-library/dom';
+import '@testing-library/jest-dom';
 
 describe('Premium Chatroom Forum UI', () => {
   beforeEach(() => {
@@ -21,8 +21,8 @@ describe('Premium Chatroom Forum UI', () => {
     `;
 
     // Mock localStorage
-    Storage.prototype.getItem = () => 'mock-token';
-    Storage.prototype.setItem = () => {};
+    Storage.prototype.getItem = jest.fn(() => 'mock-token');
+    Storage.prototype.setItem = jest.fn(() => {});
 
     // Mock fetch
     global.fetch = jest.fn(() => Promise.resolve({
@@ -32,11 +32,14 @@ describe('Premium Chatroom Forum UI', () => {
   });
 
   afterEach(() => {
-    global.fetch.mockClear();
+    if (global.fetch && global.fetch.mockClear) {
+      global.fetch.mockClear();
+    }
+    jest.restoreAllMocks();
   });
 
   test('shows error if not logged in', () => {
-    Storage.prototype.getItem = () => null;
+    Storage.prototype.getItem = jest.fn(() => null);
     const errorMessageEl = document.getElementById('error-message');
     const forumListEl = document.getElementById('forum-list');
     const messagesEl = document.getElementById('messages');
