@@ -42,7 +42,7 @@ csrf = CSRFProtect(app)
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"],
+    default_limits=["10000 per day", "1000 per hour"],  # Much more reasonable for website usage
     storage_uri=os.getenv('RATE_LIMIT_STORAGE_URL', 'memory://')
 )
 
@@ -117,7 +117,7 @@ def get_user_id_from_token() -> int | None:
     return None
 
 @api_bp.route('/tracks', methods=['GET'])
-@limiter.limit("30 per minute")
+@limiter.limit("100 per minute")  # Increase for normal browsing
 def get_tracks():
     try:
         with get_db() as conn:
@@ -198,7 +198,7 @@ def register():
         return jsonify({'error': 'Registration completed but login failed'}), 500
 
 @api_bp.route('/forums', methods=['GET'])
-@limiter.limit("30 per minute")
+@limiter.limit("100 per minute")  # Increase for normal browsing
 def get_forums():
     try:
         with get_db() as conn:
@@ -234,7 +234,7 @@ def create_forum():
         return jsonify({'error': 'Failed to create forum'}), 500
 
 @api_bp.route('/forums/<int:forum_id>/messages', methods=['GET'])
-@limiter.limit("30 per minute")
+@limiter.limit("100 per minute")  # Increase for normal browsing
 def get_messages(forum_id):
     user_id = get_user_id_from_token()
     if not user_id:
@@ -314,7 +314,7 @@ def login():
         return jsonify({'error': 'Login failed'}), 500
 
 @api_bp.route('/auth/user', methods=['GET'])
-@limiter.limit("30 per minute")
+@limiter.limit("200 per minute")  # High limit for user status checks
 def get_current_user():
     """Get current user information including premium status"""
     auth = request.headers.get('Authorization', '')
@@ -354,7 +354,7 @@ def get_current_user():
     return jsonify({'error': 'Unauthorized'}), 401
 
 @api_bp.route('/youtube')
-@limiter.limit("20 per minute")
+@limiter.limit("60 per minute")  # Increase for YouTube API calls
 @cache.cached(timeout=300)  # Cache for 5 minutes
 def youtube_videos():
     """Return recent YouTube videos for a given channel."""
@@ -507,6 +507,7 @@ def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/<path:path>')
+@limiter.exempt  # Exempt static files from rate limiting
 def static_proxy(path):
     return send_from_directory('.', path)
 
