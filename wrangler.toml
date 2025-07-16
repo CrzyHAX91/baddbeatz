@@ -6,7 +6,7 @@ main = "workers-site/index.js"
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
 # Replace the IDs below with your own namespace IDs
-id = "00000000000000000000000000000000"
+id = "61eafb449cdd4ea98a8faba809a5145f"
 preview_id = "00000000000000000000000000000000"
 
 [site]
