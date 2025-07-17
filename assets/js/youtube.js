@@ -9,58 +9,48 @@ async function loadYoutubeVideos() {
   list.innerHTML = '<li class="loading-message">Loading latest videos...</li>';
   
   try {
-    const channelId = list.dataset.channelId || 'UC_x5XG1OV2P6uZZ5FSM9Ttw';
-    const res = await fetch(`/api/youtube?channel_id=${encodeURIComponent(channelId)}`);
+    const channelId = list.dataset.channelId || 'UCqHpI2_Z48G9CuDFYQpsc2Q';
     
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    }
-    
-    const data = await res.json();
-    
-    // Check for API errors
-    if (data.error) {
-      throw new Error(data.error);
-    }
-    
-    // Clear loading state
-    if (window.AppUtils && window.AppUtils.hideLoading) {
-      window.AppUtils.hideLoading(list);
-    }
-    list.innerHTML = '';
-    
-    const videos = data.videos || [];
-    
-    if (videos.length === 0) {
-      list.innerHTML = '<li class="no-videos">No videos found. Check back later!</li>';
-      return;
-    }
-    
-    videos.forEach(v => {
-      const li = document.createElement('li');
-      li.className = 'video-item';
+    // Try server-side API first
+    try {
+      const res = await fetch(`/api/youtube?channel_id=${encodeURIComponent(channelId)}`);
       
-      const a = document.createElement('a');
-      a.href = v.url || `https://www.youtube.com/watch?v=${v.id}`;
-      a.textContent = v.title || 'Untitled Video';
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      
-      // Add video description if available
-      if (v.description) {
-        const desc = document.createElement('p');
-        desc.className = 'video-description';
-        desc.textContent = v.description.substring(0, 100) + (v.description.length > 100 ? '...' : '');
-        li.appendChild(a);
-        li.appendChild(desc);
-      } else {
-        li.appendChild(a);
+      if (res.ok) {
+        const data = await res.json();
+        
+        if (!data.error && data.videos && data.videos.length > 0) {
+          displayYouTubeVideos(data.videos, list);
+          return;
+        }
       }
-      
-      list.appendChild(li);
-    });
+    } catch (serverError) {
+      console.log('Server-side YouTube API not available, using fallback');
+    }
     
-    console.log(`Successfully loaded ${videos.length} YouTube videos`);
+    // Fallback: Display static video links for TheBadGuyHimself channel
+    const fallbackVideos = [
+      {
+        id: 'vfDLTqShdSE',
+        title: '🔥 TheBadGuyHimself - Underground Techno Mix',
+        description: 'High-energy underground techno and hardstyle performance',
+        url: 'https://www.youtube.com/watch?v=vfDLTqShdSE'
+      },
+      {
+        id: 'channel',
+        title: '🎵 Latest Mixes & Performances',
+        description: 'Check out all my latest content on YouTube',
+        url: 'https://www.youtube.com/@TheBadGuyHimself/videos'
+      },
+      {
+        id: 'subscribe',
+        title: '🔔 Subscribe for New Content',
+        description: 'Never miss a new mix or performance',
+        url: 'https://www.youtube.com/@TheBadGuyHimself?sub_confirmation=1'
+      }
+    ];
+    
+    displayYouTubeVideos(fallbackVideos, list);
+    console.log('Using fallback YouTube content for TheBadGuyHimself');
     
   } catch (err) {
     console.error('Error loading YouTube videos:', err);
@@ -70,16 +60,58 @@ async function loadYoutubeVideos() {
       window.AppUtils.hideLoading(list);
     }
     
-    // Create error message with retry option
+    // Create error message with direct channel link
     list.innerHTML = `
       <li class="error-message">
         <div class="error-content">
-          <p class="error-text">⚠️ Failed to load videos: ${err.message}</p>
-          <button class="retry-btn" onclick="loadYoutubeVideosWithRetry()">🔄 Retry</button>
+          <p class="error-text">🎥 YouTube Content Available</p>
+          <p class="error-description">Visit my channel directly for all the latest mixes!</p>
+          <a href="https://www.youtube.com/@TheBadGuyHimself/videos" target="_blank" class="retry-btn">
+            ▶️ Visit YouTube Channel
+          </a>
         </div>
       </li>
     `;
   }
+}
+
+function displayYouTubeVideos(videos, list) {
+  // Clear loading state
+  if (window.AppUtils && window.AppUtils.hideLoading) {
+    window.AppUtils.hideLoading(list);
+  }
+  list.innerHTML = '';
+  
+  if (videos.length === 0) {
+    list.innerHTML = '<li class="no-videos">No videos found. Check back later!</li>';
+    return;
+  }
+  
+  videos.forEach(v => {
+    const li = document.createElement('li');
+    li.className = 'video-item';
+    
+    const a = document.createElement('a');
+    a.href = v.url || `https://www.youtube.com/watch?v=${v.id}`;
+    a.textContent = v.title || 'Untitled Video';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    
+    // Add video description if available
+    if (v.description) {
+      const desc = document.createElement('p');
+      desc.className = 'video-description';
+      desc.textContent = v.description.substring(0, 100) + (v.description.length > 100 ? '...' : '');
+      li.appendChild(a);
+      li.appendChild(desc);
+    } else {
+      li.appendChild(a);
+    }
+    
+    list.appendChild(li);
+  });
+  
+  console.log(`Successfully loaded ${videos.length} YouTube videos`);
 }
 
 // Auto-retry mechanism with exponential backoff
