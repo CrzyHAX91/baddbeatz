@@ -72,6 +72,15 @@ jobs:
         python server.py &
         ./scripts/wait-for-it.sh localhost:8000 --timeout=30 --strict -- echo "Server is up"
         python test_api.py
+        # Test all HTML pages are accessible
+        curl -f http://localhost:8000/
+        curl -f http://localhost:8000/about.html
+        curl -f http://localhost:8000/music.html
+        curl -f http://localhost:8000/video.html
+        curl -f http://localhost:8000/playlist.html
+        curl -f http://localhost:8000/gallery.html
+        curl -f http://localhost:8000/bookings.html
+        curl -f http://localhost:8000/contact.html
         pkill -f "python server.py"
       env:
         FLASK_ENV: testing

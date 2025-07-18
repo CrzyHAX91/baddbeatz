@@ -134,6 +134,8 @@ jobs:
           http://localhost:8000
           http://localhost:8000/about.html
           http://localhost:8000/music.html
+          http://localhost:8000/video.html
+          http://localhost:8000/playlist.html
           http://localhost:8000/gallery.html
           http://localhost:8000/bookings.html
           http://localhost:8000/contact.html
