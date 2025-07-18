@@ -6,11 +6,14 @@ updates:
   # Python dependencies
   - package-ecosystem: "pip"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "daily"
       time: "03:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    insecure-external-code-execution: "deny"
     reviewers:
       - "CrzyHAX91"
     assignees:
@@ -51,11 +54,14 @@ updates:
   # Node.js dependencies
   - package-ecosystem: "npm"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "daily"
       time: "03:30"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    insecure-external-code-execution: "deny"
     reviewers:
       - "CrzyHAX91"
     assignees:
@@ -87,12 +93,14 @@ updates:
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "04:00"
       timezone: "UTC"
     open-pull-requests-limit: 5
+    rebase-strategy: "auto"
     reviewers:
       - "CrzyHAX91"
     assignees:
@@ -110,12 +118,14 @@ updates:
   # Docker dependencies (if applicable)
   - package-ecosystem: "docker"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "tuesday"
       time: "04:00"
       timezone: "UTC"
     open-pull-requests-limit: 3
+    rebase-strategy: "auto"
     reviewers:
       - "CrzyHAX91"
     assignees:
