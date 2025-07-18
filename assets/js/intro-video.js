@@ -107,10 +107,14 @@ class IntroVideoManager {
             }
 
             #intro-video {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+                max-width: 90vw;
+                max-height: 90vh;
+                width: auto;
+                height: auto;
+                object-fit: contain;
                 background: #000;
+                border-radius: 12px;
+                box-shadow: 0 0 30px rgba(255, 0, 51, 0.3);
             }
 
             .intro-controls {

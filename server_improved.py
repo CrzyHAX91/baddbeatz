@@ -23,9 +23,8 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-# Serve files from the `docs` directory if it exists, else from the repo root
-static_dir = 'docs' if os.path.isdir(os.path.join(os.path.dirname(__file__), 'docs')) else '.'
-app = Flask(__name__, static_folder=static_dir)
+# Always serve files from the current directory (repo root)
+app = Flask(__name__, static_folder='.', static_url_path='')
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 # Security Configuration
@@ -497,7 +496,20 @@ csrf.exempt(api_bp)
 # Add security headers
 @app.after_request
 def add_security_headers(response):
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    # Updated CSP to allow external resources needed by the site
+    csp_policy = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data: https: http:; "
+        "media-src 'self' data: https: http:; "
+        "frame-src 'self' https://www.youtube.com https://w.soundcloud.com; "
+        "connect-src 'self' https://api.soundcloud.com https://www.googleapis.com; "
+        "object-src 'none'; "
+        "base-uri 'self'"
+    )
+    response.headers['Content-Security-Policy'] = csp_policy
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
@@ -507,9 +519,68 @@ def add_security_headers(response):
 # Register blueprint
 app.register_blueprint(api_bp)
 
+# Add explicit routes for main pages to ensure they're served correctly
+@app.route('/')
+def index():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/index.html')
+def index_html():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/about.html')
+def about():
+    return send_from_directory('.', 'about.html')
+
+@app.route('/music.html')
+def music():
+    return send_from_directory('.', 'music.html')
+
+@app.route('/playlist.html')
+def playlist():
+    return send_from_directory('.', 'playlist.html')
+
+@app.route('/gallery.html')
+def gallery():
+    return send_from_directory('.', 'gallery.html')
+
+@app.route('/bookings.html')
+def bookings():
+    return send_from_directory('.', 'bookings.html')
+
+@app.route('/contact.html')
+def contact():
+    return send_from_directory('.', 'contact.html')
+
+@app.route('/files.html')
+def files():
+    return send_from_directory('.', 'files.html')
+
+@app.route('/forum.html')
+def forum():
+    return send_from_directory('.', 'forum.html')
+
+@app.route('/login.html')
+def login_page():
+    return send_from_directory('.', 'login.html')
+
+@app.route('/profile.html')
+def profile():
+    return send_from_directory('.', 'profile.html')
+
+@app.route('/test.html')
+def test():
+    return send_from_directory('.', 'test.html')
+
 @app.errorhandler(404)
 def not_found_error(error):
-    return send_from_directory(app.static_folder, '404.html'), 404
+    """Enhanced 404 handler with better error logging"""
+    logger.warning(f"404 error for path: {request.path}")
+    try:
+        return send_from_directory('.', '404.html'), 404
+    except Exception as e:
+        logger.error(f"Error serving 404 page: {e}")
+        return jsonify({'error': 'Page not found'}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -519,7 +590,19 @@ def internal_error(error):
 @app.route('/<path:path>')
 @limiter.exempt  # Exempt static files from rate limiting
 def static_proxy(path):
-    return send_from_directory('.', path)
+    """Enhanced static file serving with better error handling"""
+    try:
+        # Check if the file exists before trying to serve it
+        file_path = os.path.join('.', path)
+        if os.path.isfile(file_path):
+            return send_from_directory('.', path)
+        else:
+            logger.warning(f"File not found: {path}")
+            # Try to serve 404.html instead of raising an error
+            return send_from_directory('.', '404.html'), 404
+    except Exception as e:
+        logger.error(f"Error serving static file {path}: {e}")
+        return jsonify({'error': 'File not found'}), 404
 
 if __name__ == '__main__':
     init_db()

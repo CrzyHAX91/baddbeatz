@@ -317,7 +317,7 @@ body {
   transition: all var(--transition-slow);
 }
 
-.fade-in--appear {
+.fade-in.appear {
   opacity: 1;
   transform: translateY(0);
 }
