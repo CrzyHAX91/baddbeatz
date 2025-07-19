@@ -209,7 +209,11 @@ function featureTrack(trackId) {
     // Add visual indicator
     const musicCard = document.querySelector(`[onclick="featureTrack('${trackId}')"]`).closest('.music-card');
     musicCard.style.border = '2px solid #ffaa00';
-    musicCard.querySelector('.music-info').insertAdjacentHTML('afterbegin', '<span class="featured-badge">FEATURED</span>');
+    
+    const featuredBadge = document.createElement('span');
+    featuredBadge.className = 'featured-badge';
+    featuredBadge.textContent = 'FEATURED';
+    musicCard.querySelector('.music-info').insertBefore(featuredBadge, musicCard.querySelector('.music-info').firstChild);
 }
 
 function removeTrack(trackId) {
@@ -437,11 +441,19 @@ function updateActivityFeed() {
         
         const activityItem = document.createElement('div');
         activityItem.className = 'activity-item';
-        activityItem.innerHTML = `
-            <i class="${randomActivity.icon}"></i>
-            <span>${randomActivity.text}</span>
-            <time>${randomActivity.time}</time>
-        `;
+        
+        const icon = document.createElement('i');
+        icon.className = randomActivity.icon;
+        
+        const span = document.createElement('span');
+        span.textContent = randomActivity.text;
+        
+        const time = document.createElement('time');
+        time.textContent = randomActivity.time;
+        
+        activityItem.appendChild(icon);
+        activityItem.appendChild(span);
+        activityItem.appendChild(time);
         
         activityList.insertBefore(activityItem, activityList.firstChild);
         
@@ -470,15 +482,29 @@ function showNotification(message, type = 'info') {
     
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-${getNotificationIcon(type)}"></i>
-            <span>${message}</span>
-            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
+    const notificationContent = document.createElement('div');
+    notificationContent.className = 'notification-content';
+    
+    const icon = document.createElement('i');
+    icon.className = `fas fa-${getNotificationIcon(type)}`;
+    
+    const span = document.createElement('span');
+    span.textContent = message;
+    
+    const closeButton = document.createElement('button');
+    closeButton.className = 'notification-close';
+    closeButton.addEventListener('click', function() {
+        notification.remove();
+    });
+    
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fas fa-times';
+    closeButton.appendChild(closeIcon);
+    
+    notificationContent.appendChild(icon);
+    notificationContent.appendChild(span);
+    notificationContent.appendChild(closeButton);
+    notification.appendChild(notificationContent);
     
     // Add styles
     notification.style.cssText = `
@@ -550,19 +576,33 @@ function showModal(title, content) {
     
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay';
-    modalOverlay.innerHTML = `
-        <div class="modal">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <button class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-content">
-                ${content}
-            </div>
-        </div>
-    `;
+    const modalElement = document.createElement('div');
+    modalElement.className = 'modal';
+    
+    const headerElement = document.createElement('div');
+    headerElement.className = 'modal-header';
+    
+    const titleElement = document.createElement('h3');
+    titleElement.textContent = title;
+    
+    const closeButton = document.createElement('button');
+    closeButton.className = 'modal-close';
+    closeButton.addEventListener('click', closeModal);
+    
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fas fa-times';
+    closeButton.appendChild(closeIcon);
+    
+    headerElement.appendChild(titleElement);
+    headerElement.appendChild(closeButton);
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    modalContent.innerHTML = content; // This needs to be sanitized separately
+    
+    modalElement.appendChild(headerElement);
+    modalElement.appendChild(modalContent);
+    modalOverlay.appendChild(modalElement);
     
     // Add styles
     modalOverlay.style.cssText = `
@@ -579,8 +619,7 @@ function showModal(title, content) {
         animation: fadeIn 0.3s ease;
     `;
     
-    const modal = modalOverlay.querySelector('.modal');
-    modal.style.cssText = `
+    modalElement.style.cssText = `
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         border: 2px solid #00ffff;
         border-radius: 15px;
@@ -592,8 +631,7 @@ function showModal(title, content) {
         animation: slideUp 0.3s ease;
     `;
     
-    const modalHeader = modal.querySelector('.modal-header');
-    modalHeader.style.cssText = `
+    headerElement.style.cssText = `
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -602,13 +640,12 @@ function showModal(title, content) {
         border-bottom: 1px solid rgba(0, 255, 255, 0.3);
     `;
     
-    modalHeader.querySelector('h3').style.cssText = `
+    titleElement.style.cssText = `
         color: #00ffff;
         margin: 0;
     `;
     
-    const closeBtn = modalHeader.querySelector('.modal-close');
-    closeBtn.style.cssText = `
+    closeButton.style.cssText = `
         background: none;
         border: none;
         color: #00ffff;
@@ -617,7 +654,7 @@ function showModal(title, content) {
         padding: 0.25rem;
     `;
     
-    modal.querySelector('.modal-content').style.cssText = `
+    modalContent.style.cssText = `
         color: white;
     `;
     

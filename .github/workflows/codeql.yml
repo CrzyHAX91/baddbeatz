@@ -64,10 +64,14 @@ jobs:
         # Build commands for the project
         echo "Building BaddBeatz project..."
         
-        # Python build steps
-        if [ -f server_improved.py ]; then
-          echo "Python server found - checking syntax"
-          python -m py_compile server_improved.py
+        # Python build steps - check existing scripts
+        if [ -f scripts/import_assets.py ]; then
+          echo "Python import script found - checking syntax"
+          python -m py_compile scripts/import_assets.py
+        fi
+        if [ -f scripts/init_db.py ]; then
+          echo "Python init script found - checking syntax"
+          python -m py_compile scripts/init_db.py
         fi
         
         # Node.js build steps

@@ -201,15 +201,35 @@ class BaddBeatzDashboard {
 
         const activityList = document.getElementById('activityList');
         if (activityList) {
-            activityList.innerHTML = activities.map(activity => `
-                <div class="activity-item">
-                    <div class="activity-icon">${activity.icon}</div>
-                    <div class="activity-content">
-                        <p><strong>${activity.content}</strong></p>
-                        <span class="activity-time">${activity.time}</span>
-                    </div>
-                </div>
-            `).join('');
+            activityList.innerHTML = '';
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                const activityIcon = document.createElement('div');
+                activityIcon.className = 'activity-icon';
+                activityIcon.textContent = activity.icon;
+                
+                const activityContent = document.createElement('div');
+                activityContent.className = 'activity-content';
+                
+                const contentP = document.createElement('p');
+                const strongEl = document.createElement('strong');
+                strongEl.textContent = activity.content;
+                contentP.appendChild(strongEl);
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'activity-time';
+                timeSpan.textContent = activity.time;
+                
+                activityContent.appendChild(contentP);
+                activityContent.appendChild(timeSpan);
+                
+                activityItem.appendChild(activityIcon);
+                activityItem.appendChild(activityContent);
+                
+                activityList.appendChild(activityItem);
+            });
         }
     }
 
@@ -249,29 +269,88 @@ class BaddBeatzDashboard {
         const tracksGrid = document.getElementById('tracksGrid');
         if (!tracksGrid) return;
 
-        tracksGrid.innerHTML = tracks.map(track => `
-            <div class="track-card" data-track-id="${track.id}">
-                <div class="track-artwork">
-                    <img src="${track.artwork}" alt="${track.title} Artwork">
-                    <div class="track-overlay">
-                        <button class="play-btn" onclick="playTrack(${track.id})">▶️</button>
-                    </div>
-                </div>
-                <div class="track-info">
-                    <h3>${track.title}</h3>
-                    <p class="track-genre">${track.genre}</p>
-                    <div class="track-stats">
-                        <span>👁️ ${track.plays} plays</span>
-                        <span>❤️ ${track.likes} likes</span>
-                    </div>
-                </div>
-                <div class="track-actions">
-                    <button class="action-btn" title="Edit" onclick="editTrack(${track.id})">✏️</button>
-                    <button class="action-btn" title="Share" onclick="shareTrack(${track.id})">🔗</button>
-                    <button class="action-btn" title="Delete" onclick="deleteTrack(${track.id})">🗑️</button>
-                </div>
-            </div>
-        `).join('');
+        tracksGrid.innerHTML = '';
+        tracks.forEach(track => {
+            const trackCard = document.createElement('div');
+            trackCard.className = 'track-card';
+            trackCard.setAttribute('data-track-id', track.id);
+            
+            const trackArtwork = document.createElement('div');
+            trackArtwork.className = 'track-artwork';
+            
+            const img = document.createElement('img');
+            img.src = track.artwork;
+            img.alt = `${track.title} Artwork`;
+            
+            const trackOverlay = document.createElement('div');
+            trackOverlay.className = 'track-overlay';
+            
+            const playBtn = document.createElement('button');
+            playBtn.className = 'play-btn';
+            playBtn.textContent = '▶️';
+            playBtn.addEventListener('click', () => playTrack(track.id));
+            
+            trackOverlay.appendChild(playBtn);
+            trackArtwork.appendChild(img);
+            trackArtwork.appendChild(trackOverlay);
+            
+            const trackInfo = document.createElement('div');
+            trackInfo.className = 'track-info';
+            
+            const title = document.createElement('h3');
+            title.textContent = track.title;
+            
+            const genre = document.createElement('p');
+            genre.className = 'track-genre';
+            genre.textContent = track.genre;
+            
+            const trackStats = document.createElement('div');
+            trackStats.className = 'track-stats';
+            
+            const playsSpan = document.createElement('span');
+            playsSpan.textContent = `👁️ ${track.plays} plays`;
+            
+            const likesSpan = document.createElement('span');
+            likesSpan.textContent = `❤️ ${track.likes} likes`;
+            
+            trackStats.appendChild(playsSpan);
+            trackStats.appendChild(likesSpan);
+            
+            trackInfo.appendChild(title);
+            trackInfo.appendChild(genre);
+            trackInfo.appendChild(trackStats);
+            
+            const trackActions = document.createElement('div');
+            trackActions.className = 'track-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn';
+            editBtn.title = 'Edit';
+            editBtn.textContent = '✏️';
+            editBtn.addEventListener('click', () => editTrack(track.id));
+            
+            const shareBtn = document.createElement('button');
+            shareBtn.className = 'action-btn';
+            shareBtn.title = 'Share';
+            shareBtn.textContent = '🔗';
+            shareBtn.addEventListener('click', () => shareTrack(track.id));
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn';
+            deleteBtn.title = 'Delete';
+            deleteBtn.textContent = '🗑️';
+            deleteBtn.addEventListener('click', () => deleteTrack(track.id));
+            
+            trackActions.appendChild(editBtn);
+            trackActions.appendChild(shareBtn);
+            trackActions.appendChild(deleteBtn);
+            
+            trackCard.appendChild(trackArtwork);
+            trackCard.appendChild(trackInfo);
+            trackCard.appendChild(trackActions);
+            
+            tracksGrid.appendChild(trackCard);
+        });
     }
 
     switchSection(sectionName) {
@@ -356,12 +435,24 @@ class BaddBeatzDashboard {
 
         if (uploadQueue && queueList) {
             uploadQueue.style.display = 'block';
-            queueList.innerHTML = this.uploadQueue.map(file => `
-                <div class="queue-item">
-                    <span class="file-name">${file.name}</span>
-                    <span class="file-size">${this.formatFileSize(file.size)}</span>
-                </div>
-            `).join('');
+            queueList.innerHTML = '';
+            this.uploadQueue.forEach(file => {
+                const queueItem = document.createElement('div');
+                queueItem.className = 'queue-item';
+                
+                const fileName = document.createElement('span');
+                fileName.className = 'file-name';
+                fileName.textContent = file.name;
+                
+                const fileSize = document.createElement('span');
+                fileSize.className = 'file-size';
+                fileSize.textContent = this.formatFileSize(file.size);
+                
+                queueItem.appendChild(fileName);
+                queueItem.appendChild(fileSize);
+                
+                queueList.appendChild(queueItem);
+            });
         }
 
         // Pre-fill form if single file
