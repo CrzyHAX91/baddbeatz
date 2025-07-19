@@ -18,7 +18,9 @@
   <link rel="stylesheet" href="assets/css/cyberpunk.css">
   <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/mobile-fixes.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <script src="assets/js/youtube.js" defer></script>
 </head>
 <body>
   <header>
@@ -35,9 +37,11 @@
         <li><a class="nav__link" href="index.html">Home</a></li>
         <li><a class="nav__link" href="about.html">About</a></li>
         <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="playlist.html">Playlist</a></li>
         <li><a class="nav__link" href="gallery.html">Gallery</a></li>
         <li><a class="nav__link" href="bookings.html">Bookings</a></li>
         <li><a class="nav__link" href="contact.html">Contact</a></li>
+        <li><a class="nav__link" href="files.html">Files</a></li>
       </ul>
     </nav>
   </header>
@@ -55,11 +59,11 @@
           <div class="primary-contact-card bg-card">
             <h2 class="text-glow-primary">Direct Contact</h2>
             <div class="contact-methods">
-              <a href="mailto:beheer2291@outlook.com" class="contact-method">
+              <a href="mailto:Baddbeatzbookings@outlook.com" class="contact-method">
                 <span class="contact-icon">📧</span>
                 <div class="contact-details">
                   <span class="contact-label">Email</span>
-                  <span class="contact-value">beheer2291@outlook.com</span>
+                  <span class="contact-value">Baddbeatzbookings@outlook.com</span>
                 </div>
               </a>
               <a href="mailto:gunzell75@gmail.com" class="contact-method">
@@ -136,18 +140,7 @@
           <!-- Latest Content Card -->
           <div class="latest-content-card bg-card">
             <h2 class="text-glow-primary">Latest Content</h2>
-            <div class="video-embed">
-              <iframe
-                width="100%"
-                height="315"
-                src="https://www.youtube.com/embed?listType=user_uploads&amp;list=TheBadGuyHimself"
-                title="Latest Videos playlist"
-                loading="lazy"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-              </iframe>
-            </div>
+            <div id="youtubeVideos" data-channel-id="UC_x5XG1OV2P6uZZ5FSM9Ttw"></div>
             <p class="video-description">Check out the latest sets and behind-the-scenes content</p>
           </div>
         </div>

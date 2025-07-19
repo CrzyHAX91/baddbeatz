@@ -2,25 +2,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Official site of TheBadGuyHimself – underground DJ and producer." />
+  <meta name="description" content="TheBadGuyHimself - Professional DJ specializing in underground techno, hardstyle, and electronic music. Book DJ services, listen to latest mixes, and experience high-energy performances." />
   <meta property="og:type" content="website">
   <meta property="og:title" content="Home | TheBadGuyHimself">
-  <meta property="og:description" content="Official site of TheBadGuyHimself – underground DJ and producer.">
+  <meta property="og:description" content="TheBadGuyHimself - Professional DJ specializing in underground techno, hardstyle, and electronic music. Book DJ services, listen to latest mixes, and experience high-energy performances.">
   <meta property="og:image" content="assets/images/TBG-himself.jpeg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Home | TheBadGuyHimself">
-  <meta name="twitter:description" content="Official site of TheBadGuyHimself – underground DJ and producer.">
+  <meta name="twitter:description" content="TheBadGuyHimself - Professional DJ specializing in underground techno, hardstyle, and electronic music. Book DJ services, listen to latest mixes, and experience high-energy performances.">
   <meta name="twitter:image" content="assets/images/TBG-himself.jpeg">
   <title>Home | TheBadGuyHimself</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/embed.css">
   <link rel="stylesheet" href="assets/css/cyberpunk.css">
   <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/ui-enhancements.css">
+  <link rel="stylesheet" href="assets/css/animation-styles.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
   <link rel="stylesheet" href="assets/css/video-enhancements.css">
+  <link rel="stylesheet" href="assets/css/mobile-fixes.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <script defer src="assets/js/intro-video.js"></script>
   <script defer src="assets/js/main.js"></script>
   <script defer src="assets/js/youtube.js"></script>
+  <script defer src="assets/js/ui-utils.js"></script>
+  <script defer src="assets/js/enhanced-animations.js"></script>
+  <script defer src="assets/js/ai-chat-improved.js"></script>
 </head>
 <body>
   <header>
@@ -37,6 +44,8 @@
         <li><a class="nav__link" href="index.html">Home</a></li>
         <li><a class="nav__link" href="about.html">About</a></li>
         <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="playlist.html">Playlist</a></li>
+        <li><a class="nav__link" href="video.html">Videos</a></li>
         <li><a class="nav__link" href="gallery.html">Gallery</a></li>
         <li><a class="nav__link" href="bookings.html">Bookings</a></li>
         <li><a class="nav__link" href="contact.html">Contact</a></li>
@@ -70,64 +79,54 @@
       <div class="sc-credit">
         <a href="https://soundcloud.com/thebadguyhimself" title="TBGxTheBadGuy" target="_blank">TBGxTheBadGuy</a>
         &middot;
-        <a href="https://soundcloud.com/thebadguyhimself/sets/house-mixes-2025" title="House mixes 2025" target="_blank">House mixes 2025</a>
+        <a href="https://soundcloud.com/thebadguyhimself/sets/house-mixes-2024" title="House mixes 2024" target="_blank">House mixes 2024</a>
       </div>
     </section>
 
     <section class="video-section fade-in">
       <div class="video-embed">
-        <h2>Latest Videos</h2>
-        <div class="youtube-container">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=UUqHpI2_Z48G9CuDFYQpsc2Q" title="TheBadGuyHimself YouTube Music Channel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <div class="youtube-header">
+          <h2>🎥 Latest Videos</h2>
+          <div class="youtube-channel-info">
+            <p>Check out my latest mixes and performances</p>
+            <a href="https://www.youtube.com/@TheBadGuyHimself/videos" target="_blank" class="btn-youtube">
+              <span class="youtube-icon">▶️</span>
+              Visit My YouTube Channel
+            </a>
+          </div>
         </div>
-        <ul id="youtubeVideos" data-channel-id="UCqHpI2_Z48G9CuDFYQpsc2Q"></ul>
+        
+        <div class="youtube-container">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=user_uploads&list=UCqHpI2_Z48G9CuDFYQpsc2Q" title="TheBadGuyHimself YouTube Music Channel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        
+        <div class="youtube-videos-grid">
+          <ul id="youtubeVideos" data-channel-id="UCqHpI2_Z48G9CuDFYQpsc2Q"></ul>
+        </div>
+        
+        <div class="youtube-subscribe-section">
+          <p>🔔 Don't miss any new content!</p>
+          <a href="https://www.youtube.com/@TheBadGuyHimself?sub_confirmation=1" target="_blank" class="btn-subscribe">
+            Subscribe to TheBadGuyHimself
+          </a>
+        </div>
       </div>
     </section>
 
     <section class="ai-chat fade-in">
-      <h2>🎤 Ask the DJ</h2>
+      <h2>🎤 Ask the DJ (Premium Feature)</h2>
       <p>Curious about TheBadGuyHimself's setup, vibe, or availability? Ask below!</p>
       <p class="ai-disclaimer">Responses come from an AI and may contain errors.</p>
       <textarea id="userInput" placeholder="Type your question..."></textarea>
-      <button onclick="askDJ()">Ask</button>
+      <button id="askButton">Ask</button>
       <pre id="aiResponse"></pre>
+      <div id="premiumMessage" style="display: none; color: #ff6b6b;">This is a premium feature. Please login and upgrade to premium to use the AI chat.</div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 TheBadGuyHimself</p>
+    <p>&copy; 2024 TheBadGuyHimself</p>
     <a href="contact.html">Contact</a>
   </footer>
-
-  <script>
-    async function askDJ() {
-      const input = document.getElementById('userInput').value;
-      const responseBox = document.getElementById('aiResponse');
-      
-      if (!input.trim()) {
-        responseBox.textContent = 'Please enter a question.';
-        return;
-      }
-      
-      responseBox.textContent = 'Thinking...';
-      
-      try {
-        const res = await fetch('/api/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: input })
-        });
-        
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
-        
-        const data = await res.json();
-        responseBox.textContent = data.choices?.[0]?.message?.content || data.error || 'No response received.';
-      } catch (err) {
-        responseBox.textContent = `Error: ${err.message}`;
-      }
-    }
-  </script>
 </body>
 </html>

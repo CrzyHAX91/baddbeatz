@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="assets/css/cyberpunk.css">
   <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/mobile-fixes.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -34,13 +35,17 @@
         <li><a class="nav__link" href="index.html">Home</a></li>
         <li><a class="nav__link" href="about.html">About</a></li>
         <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="playlist.html">Playlist</a></li>
         <li><a class="nav__link" href="gallery.html">Gallery</a></li>
         <li><a class="nav__link" href="bookings.html">Bookings</a></li>
         <li><a class="nav__link" href="contact.html">Contact</a></li>
+        <li><a class="nav__link" href="files.html">Files</a></li>
       </ul>
     </nav>
   </header>
-
+  <div class="cta-buttons" style="text-align: center; margin-bottom: 2rem;">
+    <a href="bookings.html" class="btn-primary">📩 Book Now</a>
+  </div>
   <main class="booking-section fade-in">
     <div class="container">
       <section id="booking-contact" class="booking-contact">
@@ -58,7 +63,7 @@
             <h2 class="text-glow-primary">Direct Contact</h2>
             <p class="contact-email">
               <span class="contact-icon">📧</span>
-              Mail direct: <a href="mailto:beheer2291@outlook.com" class="contact-link">beheer2291@outlook.com</a>
+              Mail direct: <a href="mailto:Baddbeatzbookings@outlook.com" class="contact-link">Baddbeatzbookings@outlook.com</a>
             </p>
             <div class="socials">
               <h3 class="text-glow-secondary">Social Media</h3>
@@ -79,7 +84,7 @@
           <!-- Booking Form Card -->
           <div class="form-card bg-card">
             <h2 class="text-glow-primary">Booking Aanvraag</h2>
-            <form action="mailto:beheer2291@outlook.com" method="POST" enctype="text/plain" class="booking-form">
+            <form action="mailto:Baddbeatzbookings@outlook.com" method="POST" enctype="text/plain" class="booking-form">
               <div class="form-group">
                 <input type="text" name="naam" placeholder="Naam*" required class="form-input" />
                 <span class="form-highlight"></span>
@@ -171,5 +176,9 @@
   <footer>
     <p>&copy; 2025 TheBadGuy / BaddBeatz. All rights reserved.</p>
   </footer>
+
+  <!-- JavaScript Files -->
+  <script defer src="assets/js/main.js"></script>
+  <script defer src="assets/js/enhanced-animations.js"></script>
 </body>
 </html>

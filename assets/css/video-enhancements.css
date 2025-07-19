@@ -1,5 +1,133 @@
 /* Enhanced Video Section Styles */
 
+/* YouTube Header Section */
+.youtube-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 0, 51, 0.1), rgba(0, 255, 255, 0.1));
+  border-radius: 16px;
+  border: 1px solid rgba(255, 0, 51, 0.2);
+}
+
+.youtube-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #ff0033;
+  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  text-shadow: 0 0 15px rgba(255, 0, 51, 0.6);
+}
+
+.youtube-channel-info {
+  margin-top: 1rem;
+}
+
+.youtube-channel-info p {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* YouTube Channel Button */
+.btn-youtube {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(45deg, #ff0000, #cc0000);
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+  border: 2px solid transparent;
+}
+
+.btn-youtube:hover {
+  background: linear-gradient(45deg, #cc0000, #ff0000);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.youtube-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+}
+
+/* Subscribe Button */
+.btn-subscribe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(45deg, #ff0000, #ff4444);
+  color: #fff;
+  text-decoration: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-subscribe:hover {
+  background: linear-gradient(45deg, #ff4444, #ff0000);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* YouTube Subscribe Section */
+.youtube-subscribe-section {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 0, 0, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.youtube-subscribe-section p {
+  color: #ff6666;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* YouTube Videos Grid */
+.youtube-videos-grid {
+  margin: 2rem 0;
+}
+
+.youtube-videos-grid ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.youtube-videos-grid li {
+  background: rgba(17, 17, 17, 0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.youtube-videos-grid li:hover {
+  border-color: rgba(0, 255, 255, 0.4);
+  background: rgba(0, 255, 255, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+}
+
 /* YouTube container styling */
 .youtube-container {
   position: relative;

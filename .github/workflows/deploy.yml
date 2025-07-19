@@ -49,13 +49,13 @@ jobs:
         # Copy static files
         cp -r assets docs/
         cp *.html docs/
-        cp robots.txt docs/ || true
-        cp sitemap.xml docs/ || true
-        cp CNAME docs/ || true
-        cp -r data docs/ || true
+        cp robots.txt docs/
+        cp sitemap.xml docs/
+        cp CNAME docs/
+        cp -r data docs/
         
         # Generate any dynamic content using Node.js
-        node scripts/build-docs.cjs || echo "Build script not found, using static files"
+        node scripts/build-docs.cjs
     
     - name: Setup Pages
       uses: actions/configure-pages@v4

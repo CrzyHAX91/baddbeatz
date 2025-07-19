@@ -19,6 +19,7 @@ async function main() {
     'index.html',
     'about.html',
     'music.html',
+    'video.html',
     'gallery.html',
     'bookings.html',
     'contact.html',

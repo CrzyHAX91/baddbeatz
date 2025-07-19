@@ -48,7 +48,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov requests-mock
+        pip install -r requirements-dev.txt
     
     - name: Install Node dependencies
       run: |
@@ -58,7 +58,7 @@ jobs:
       run: |
         pip install flake8
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
     
     - name: Run Python tests
       run: |
@@ -70,8 +70,17 @@ jobs:
     - name: Test API endpoints
       run: |
         python server.py &
-        sleep 5
+        ./scripts/wait-for-it.sh localhost:8000 --timeout=30 --strict -- echo "Server is up"
         python test_api.py
+        # Test all HTML pages are accessible
+        curl -f http://localhost:8000/
+        curl -f http://localhost:8000/about.html
+        curl -f http://localhost:8000/music.html
+        curl -f http://localhost:8000/video.html
+        curl -f http://localhost:8000/playlist.html
+        curl -f http://localhost:8000/gallery.html
+        curl -f http://localhost:8000/bookings.html
+        curl -f http://localhost:8000/contact.html
         pkill -f "python server.py"
       env:
         FLASK_ENV: testing
@@ -108,20 +117,24 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Install core dependencies for build
+        pip install flask==2.3.2 flask-sqlalchemy==3.0.3 python-dotenv==1.0.0 werkzeug==3.0.6
+        pip install requests==2.32.4 gunicorn==23.0.0
+        # Install additional dependencies if available
+        pip install -r requirements.txt || echo "Some optional dependencies skipped"
         npm ci
     
     - name: Build application
       run: |
-        node scripts/build-docs.cjs || echo "Build script not found, skipping"
-        npm run build || echo "No build script found, skipping"
+        node scripts/build-docs.cjs
+        npm run build
     
     - name: Test production build
       run: |
         python server.py &
-        sleep 5
-        curl -f http://localhost:8000/ || exit 1
-        curl -f http://localhost:8000/api/tracks || exit 1
+        ./scripts/wait-for-it.sh localhost:8000 --timeout=30 --strict -- echo "Server is up"
+        curl -f http://localhost:8000/
+        curl -f http://localhost:8000/api/tracks
         pkill -f "python server.py"
       env:
         FLASK_ENV: production
