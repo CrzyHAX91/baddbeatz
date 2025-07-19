@@ -1,0 +1,5 @@
+# Security and Performance Enhancements
+flask-wtf==1.2.1
+flask-limiter==3.8.0
+redis==5.0.1
+flask-caching==2.3.0

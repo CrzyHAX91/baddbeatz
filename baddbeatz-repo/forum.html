@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Chatroom Forum - TheBadGuy</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/ui-enhancements.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #eee;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 1rem;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: #0ff;
+      letter-spacing: 0.1em;
+    }
+    #forum-list {
+      background-color: #222;
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: 150px;
+      border-bottom: 1px solid #0ff;
+    }
+    #forum-list button {
+      background: none;
+      border: none;
+      color: #0ff;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 1rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    #forum-list button.active {
+      background-color: #0ff;
+      color: #121212;
+      font-weight: bold;
+    }
+    #chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      overflow: hidden;
+    }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #181818;
+      border: 1px solid #0ff;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    #messages .message {
+      margin-bottom: 0.75rem;
+    }
+    #messages .username {
+      font-weight: bold;
+      color: #0ff;
+      margin-right: 0.5rem;
+    }
+    #message-form {
+      display: flex;
+    }
+    #message-input {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #0ff;
+      border-radius: 4px 0 0 4px;
+      background-color: #121212;
+      color: #eee;
+    }
+    #send-button {
+      background-color: #0ff;
+      border: none;
+      color: #121212;
+      font-weight: bold;
+      padding: 0 1rem;
+      cursor: pointer;
+      border-radius: 0 4px 4px 0;
+      transition: background-color 0.3s ease;
+    }
+    #send-button:hover {
+      background-color: #0cc;
+    }
+    #error-message {
+      color: #f66;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      height: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>Premium Chatroom Forum</header>
+  <section id="forum-list" aria-label="Available forums" role="list"></section>
+  <section id="chat-container" aria-live="polite">
+    <div id="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+    <form id="message-form" aria-label="Send message">
+      <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" required />
+      <button type="submit" id="send-button">Send</button>
+    </form>
+    <div id="error-message" role="alert" aria-live="assertive"></div>
+  </section>
+
+  <script>
+    const forumListEl = document.getElementById('forum-list');
+    const messagesEl = document.getElementById('messages');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const errorMessageEl = document.getElementById('error-message');
+
+    let currentForumId = null;
+    let authToken = null;
+
+    // Fetch auth token from localStorage or prompt login
+    function getAuthToken() {
+      return localStorage.getItem('authToken');
+    }
+
+    function setAuthToken(token) {
+      localStorage.setItem('authToken', token);
+      authToken = token;
+    }
+
+    // Check if user is logged in before allowing forum access
+    function checkLogin() {
+      authToken = getAuthToken();
+      if (!authToken) {
+        errorMessageEl.textContent = 'You must be logged in to join the forum. Please login first.';
+        forumListEl.innerHTML = '';
+        messagesEl.innerHTML = '';
+        messageForm.style.display = 'none';
+        return false;
+      }
+      messageForm.style.display = 'flex';
+      errorMessageEl.textContent = '';
+      return true;
+    }
+
+    // Fetch forums from backend
+    async function fetchForums() {
+      if (!checkLogin()) return;
+      try {
+        const res = await fetch('/api/forums', {
+          headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+        if (!res.ok) throw new Error('Failed to fetch forums');
+        const data = await res.json();
+        renderForumList(data.forums);
+      } catch (err) {
+        errorMessageEl.textContent = err.message;
+      }
+    }
+
+    // Render forum buttons
+    function renderForumList(forums) {
+      forumListEl.innerHTML = '';
+      forums.forEach(forum => {
+        const btn = document.createElement('button');
+        btn.textContent = forum.name + (forum.premium_only ? ' (Premium)' : '');
+        btn.classList.toggle('active', forum.id === currentForumId);
+        btn.addEventListener('click', () => {
+          if (forum.id !== currentForumId) {
+            currentForumId = forum.id;
+            loadMessages();
+            renderForumList(forums);
+          }
+        });
+        forumListEl.appendChild(btn);
+      });
+    }
+
+    // Load messages for current forum
+    async function loadMessages() {
+      if (!currentForumId) return;
+      errorMessageEl.textContent = '';
+      try {
+        const res = await fetch(`/api/forums/${currentForumId}/messages`, {
+          headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+        if (res.status === 403) {
+          errorMessageEl.textContent = 'Premium access required to view this forum.';
+          messagesEl.innerHTML = '';
+          return;
+        }
+        if (!res.ok) throw new Error('Failed to load messages');
+        const data = await res.json();
+        renderMessages(data.messages);
+      } catch (err) {
+        errorMessageEl.textContent = err.message;
+      }
+    }
+
+    // Render messages in chat window
+    function renderMessages(messages) {
+      messagesEl.innerHTML = '';
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.innerHTML = `<span class="username">${msg.username}:</span> ${msg.content}`;
+        messagesEl.appendChild(div);
+      });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // Send new message
+    messageForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentForumId) {
+        errorMessageEl.textContent = 'Please select a forum first.';
+        return;
+      }
+      const content = messageInput.value.trim();
+      if (!content) return;
+      errorMessageEl.textContent = '';
+      try {
+        const res = await fetch(`/api/forums/${currentForumId}/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+          },
+          body: JSON.stringify({ content })
+        });
+        if (res.status === 403) {
+          errorMessageEl.textContent = 'Premium access required to post messages.';
+          return;
+        }
+        if (!res.ok) throw new Error('Failed to send message');
+        messageInput.value = '';
+        loadMessages();
+      } catch (err) {
+        errorMessageEl.textContent = err.message;
+      }
+    });
+
+    // Initialization
+    (function init() {
+      authToken = getAuthToken();
+      if (!authToken) {
+        errorMessageEl.textContent = 'Please login to access premium chatrooms.';
+        return;
+      }
+      fetchForums();
+    })();
+  </script>
+</body>
+</html>

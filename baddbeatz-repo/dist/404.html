@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | BaddBeatz</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="nav__brand">
+    <img src="assets/images/TBG-himself.jpeg" alt="TheBadGuyHimself logo" class="nav__logo">
+  </div>
+      <button class="nav__toggle" aria-label="Toggle navigation">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+      <ul class="nav__links">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="playlist.html">Playlist</a></li>
+        <li><a class="nav__link" href="gallery.html">Gallery</a></li>
+        <li><a class="nav__link" href="bookings.html">Bookings</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+        <li><a class="nav__link" href="files.html">Files</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="info-section fade-in">
+    <div class="error-container">
+      <div class="error-image">
+        <img src="https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800" alt="DJ mixing console in dark neon lighting" class="error-img">
+      </div>
+      <div class="error-content">
+        <h1 class="error-title">404 - Track Not Found</h1>
+        <p class="error-message">Looks like this beat got lost in the mix. The page you're looking for doesn't exist in our playlist.</p>
+        <div class="error-actions">
+          <a href="index.html" class="btn-primary">Back to Main Stage</a>
+          <a href="music.html" class="btn-secondary">Browse Tracks</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <style>
+    .error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      gap: 2rem;
+    }
+    
+    .error-image {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+      border: 2px solid rgba(0, 255, 255, 0.3);
+    }
+    
+    .error-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: brightness(0.8) contrast(1.2);
+    }
+    
+    .error-content {
+      color: #fff;
+    }
+    
+    .error-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 3rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #00ffff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+    
+    .error-message {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      color: #ccc;
+      max-width: 600px;
+    }
+    
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    
+    .btn-secondary:hover {
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .error-title {
+        font-size: 2rem;
+      }
+      
+      .error-message {
+        font-size: 1rem;
+      }
+      
+      .error-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn-primary,
+      .btn-secondary {
+        width: 200px;
+        text-align: center;
+      }
+    }
+  </style>
+  <footer>
+    <p>&copy; 2025 TheBadGuy / BaddBeatz. All rights reserved.</p>
+  </footer>
+</body>
+</html>

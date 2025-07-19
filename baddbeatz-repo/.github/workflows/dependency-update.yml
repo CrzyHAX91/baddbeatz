@@ -1,0 +1,50 @@
+name: Dependency Update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Run weekly on Sunday at midnight
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install pip-tools
+      run: pip install pip-tools
+
+    - name: Update Python dependencies
+      run: |
+        pip-compile --upgrade requirements.in
+        pip-compile --upgrade requirements-dev.in
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install npm-check-updates
+      run: npm install -g npm-check-updates
+
+    - name: Update Node.js dependencies
+      run: |
+        ncu -u
+        npm install
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: Update dependencies"
+        title: "chore: Update dependencies"
+        body: "This PR updates Python and Node.js dependencies to their latest versions."
+        branch: "dependency-updates"
+        delete-branch: true

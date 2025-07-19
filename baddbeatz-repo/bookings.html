@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Book TheBadGuy (TBG) for your club night, festival, or underground event. Pure energy and powerful sets.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bookings | TheBadGuy">
+  <meta property="og:description" content="Book TheBadGuy (TBG) for your club night, festival, or underground event. Pure energy and powerful sets.">
+  <meta property="og:image" content="assets/images/TBG-himself.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bookings | TheBadGuy">
+  <meta name="twitter:description" content="Book TheBadGuy (TBG) for your club night, festival, or underground event. Pure energy and powerful sets.">
+  <meta name="twitter:image" content="assets/images/TBG-himself.jpeg">
+  <title>Bookings | TheBadGuy</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/mobile-fixes.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="nav__brand">
+        <img src="assets/images/Logo.png" alt="BaddBeatz Logo" class="nav__logo">
+      </div>
+      <button class="nav__toggle" aria-label="Toggle navigation">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+      <ul class="nav__links">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="playlist.html">Playlist</a></li>
+        <li><a class="nav__link" href="gallery.html">Gallery</a></li>
+        <li><a class="nav__link" href="bookings.html">Bookings</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+        <li><a class="nav__link" href="files.html">Files</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="cta-buttons" style="text-align: center; margin-bottom: 2rem;">
+    <a href="bookings.html" class="btn-primary">📩 Book Now</a>
+  </div>
+  <main class="booking-section fade-in">
+    <div class="container">
+      <section id="booking-contact" class="booking-contact">
+        <div class="booking-header">
+          <h1 class="hero__title hero__title--glitch" data-text="Book BaddBeatz">Book BaddBeatz</h1>
+          <p class="hero__subtitle">
+            <strong>Wil je BaddBeatz boeken of info over prijzen?</strong><br>
+            Schappelijke tarieven, alles bespreekbaar.
+          </p>
+        </div>
+
+        <div class="booking-grid">
+          <!-- Contact Info Card -->
+          <div class="contact-card bg-card">
+            <h2 class="text-glow-primary">Direct Contact</h2>
+            <p class="contact-email">
+              <span class="contact-icon">📧</span>
+              Mail direct: <a href="mailto:Baddbeatzbookings@outlook.com" class="contact-link">Baddbeatzbookings@outlook.com</a>
+            </p>
+            <div class="socials">
+              <h3 class="text-glow-secondary">Social Media</h3>
+              <p>Of boek snel via:</p>
+              <div class="social-links">
+                <a href="https://instagram.com/baddbeatz" target="_blank" class="social-link">
+                  <span class="social-icon">📸</span>
+                  @baddbeatz
+                </a>
+                <a href="https://www.tiktok.com/@thebadguy91.official" target="_blank" class="social-link">
+                  <span class="social-icon">🎵</span>
+                  @thebadguy91.official
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Form Card -->
+          <div class="form-card bg-card">
+            <h2 class="text-glow-primary">Booking Aanvraag</h2>
+            <form action="mailto:Baddbeatzbookings@outlook.com" method="POST" enctype="text/plain" class="booking-form">
+              <div class="form-group">
+                <input type="text" name="naam" placeholder="Naam*" required class="form-input" />
+                <span class="form-highlight"></span>
+              </div>
+              <div class="form-group">
+                <input type="email" name="email" placeholder="E-mail*" required class="form-input" />
+                <span class="form-highlight"></span>
+              </div>
+              <div class="form-group">
+                <input type="text" name="event" placeholder="Type event*" required class="form-input" />
+                <span class="form-highlight"></span>
+              </div>
+              <div class="form-group">
+                <input type="text" name="datum" placeholder="Datum & Tijd" class="form-input" />
+                <span class="form-highlight"></span>
+              </div>
+              <div class="form-group">
+                <textarea name="wensen" placeholder="Wensen of opmerkingen" class="form-input form-textarea"></textarea>
+                <span class="form-highlight"></span>
+              </div>
+              <button type="submit" class="btn btn--primary btn--glow">
+                <span class="btn-text">Verzenden</span>
+                <span class="btn-icon">🚀</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Pricing Card -->
+          <div class="pricing-card bg-card">
+            <h2 class="text-glow-accent">Indicatie Prijzen</h2>
+            <div class="pricing-list">
+              <div class="pricing-item">
+                <span class="pricing-type">Clubset (1 uur)</span>
+                <span class="pricing-amount">vanaf €175</span>
+              </div>
+              <div class="pricing-item">
+                <span class="pricing-type">Festival/outdoor (tot 4 uur)</span>
+                <span class="pricing-amount">vanaf €350</span>
+              </div>
+              <div class="pricing-item">
+                <span class="pricing-type">Privéfeest</span>
+                <span class="pricing-amount">vanaf €200</span>
+              </div>
+              <div class="pricing-item">
+                <span class="pricing-type">Extra uren</span>
+                <span class="pricing-amount">€60/uur</span>
+              </div>
+            </div>
+            <div class="pricing-note">
+              <p>✨ Inclusief DJ gear, licht & rook (indien nodig)</p>
+            </div>
+          </div>
+
+          <!-- Services Card -->
+          <div class="services-card bg-card">
+            <h2 class="text-glow-secondary">Beschikbaar voor</h2>
+            <div class="services-grid">
+              <div class="service-item">
+                <span class="service-icon">🔥</span>
+                <span class="service-name">Club Nights</span>
+              </div>
+              <div class="service-item">
+                <span class="service-icon">⚡</span>
+                <span class="service-name">Festivals & Raves</span>
+              </div>
+              <div class="service-item">
+                <span class="service-icon">🎥</span>
+                <span class="service-name">Livestream Sets</span>
+              </div>
+              <div class="service-item">
+                <span class="service-icon">🎧</span>
+                <span class="service-name">Private Events</span>
+              </div>
+              <div class="service-item">
+                <span class="service-icon">🎪</span>
+                <span class="service-name">Outdoor Events</span>
+              </div>
+              <div class="service-item">
+                <span class="service-icon">💫</span>
+                <span class="service-name">Special Occasions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 TheBadGuy / BaddBeatz. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript Files -->
+  <script defer src="assets/js/main.js"></script>
+  <script defer src="assets/js/enhanced-animations.js"></script>
+</body>
+</html>
