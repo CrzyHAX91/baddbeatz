@@ -1,6 +1,6 @@
 # wrangler.toml
 name = "baddbeatz"
-compatibility_date = "2025-05-21"
+compatibility_date = "2024-12-01"
 main = "workers-site/index.js"
 
 [[kv_namespaces]]
@@ -10,11 +10,9 @@ id = "61eafb449cdd4ea98a8faba809a5145f"
 preview_id = "00000000000000000000000000000000"
 
 [site]
-bucket = "./"
-routes = [
-  { pattern = "www.baddbeatz.nl", custom_domain = true }
-]
-
+bucket = "./dist"
+include = ["**/*.html", "**/*.css", "**/*.js", "**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.gif", "**/*.ico", "**/*.xml", "**/*.txt", "**/*.json", "**/*.mp3", "**/*.mp4", "**/*.webm", "**/*.pdf"]
+exclude = ["node_modules/**", "*.md", "*.py", "tests/**", "__pycache__/**", "scripts/**", "requirements*.txt", ".env*", "temp_venv/**", ".git/**", ".github/**"]
 
 [vars]
 # Provide your OpenAI API key via `wrangler secret put OPENAI_API_KEY`
@@ -23,3 +21,27 @@ routes = [
 
 [observability.logs]
 enabled = true
+
+# Development environment
+[env.development]
+name = "baddbeatz-dev"
+compatibility_date = "2024-12-01"
+
+[[env.development.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "61eafb449cdd4ea98a8faba809a5145f"
+preview_id = "00000000000000000000000000000000"
+
+# Production environment
+[env.production]
+name = "baddbeatz"
+compatibility_date = "2024-12-01"
+routes = [
+  { pattern = "www.baddbeatz.nl", custom_domain = true },
+  { pattern = "baddbeatz.nl", custom_domain = true }
+]
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "61eafb449cdd4ea98a8faba809a5145f"
+preview_id = "00000000000000000000000000000000"
