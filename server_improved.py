@@ -592,10 +592,16 @@ def internal_error(error):
 def static_proxy(path):
     """Enhanced static file serving with better error handling"""
     try:
-        # Check if the file exists before trying to serve it
-        file_path = os.path.join('.', path)
-        if os.path.isfile(file_path):
-            return send_from_directory('.', path)
+        # Normalize and secure the path to prevent path traversal
+        base_dir = os.path.abspath('.')
+        safe_path = os.path.normpath(path)
+        abs_file_path = os.path.abspath(os.path.join(base_dir, safe_path))
+        # Ensure the file is within the base directory
+        if not abs_file_path.startswith(base_dir + os.sep):
+            logger.warning(f"Attempted path traversal attack: {path}")
+            return send_from_directory('.', '404.html'), 404
+        if os.path.isfile(abs_file_path):
+            return send_from_directory('.', safe_path)
         else:
             logger.warning(f"File not found: {path}")
             # Try to serve 404.html instead of raising an error
