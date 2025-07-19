@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BaddBeatz Member Dashboard - Upload your music, manage your profile, and connect with the community." />
+  <title>Dashboard | BaddBeatz Community</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+  <link rel="stylesheet" href="assets/css/ui-enhancements.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter&display=swap" rel="stylesheet">
+  <script defer src="assets/js/main.js"></script>
+  <script defer src="assets/js/dashboard.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="nav__brand">
+        <img src="assets/images/Logo.png" alt="BaddBeatz Logo" class="nav__logo">
+      </div>
+      <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+        <span class="nav__toggle-line"></span>
+      </button>
+      <ul class="nav__links">
+        <li><a class="nav__link" href="index.html">Home</a></li>
+        <li><a class="nav__link" href="about.html">About</a></li>
+        <li><a class="nav__link" href="music.html">Music</a></li>
+        <li><a class="nav__link" href="community.html">Community</a></li>
+        <li><a class="nav__link nav__link--active" href="dashboard.html">Dashboard</a></li>
+        <li><a class="nav__link" href="contact.html">Contact</a></li>
+        <li class="nav__user">
+          <div class="user-menu">
+            <button class="user-avatar" id="userMenuToggle">
+              <img src="assets/images/default-avatar.png" alt="User Avatar" id="userAvatarImg">
+              <span id="userDisplayName">Loading...</span>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+              <a href="#" class="dropdown-item" onclick="showSection('profile')">👤 Profile</a>
+              <a href="#" class="dropdown-item" onclick="showSection('settings')">⚙️ Settings</a>
+              <a href="#" class="dropdown-item" onclick="logout()">🚪 Logout</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+      <!-- Sidebar Navigation -->
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-header">
+          <h2>🎵 Dashboard</h2>
+          <p class="user-role" id="userRole">Member</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <button class="sidebar-item active" data-section="overview">
+            <span class="sidebar-icon">📊</span>
+            Overview
+          </button>
+          <button class="sidebar-item" data-section="upload">
+            <span class="sidebar-icon">⬆️</span>
+            Upload Music
+          </button>
+          <button class="sidebar-item" data-section="my-music">
+            <span class="sidebar-icon">🎧</span>
+            My Music
+          </button>
+          <button class="sidebar-item" data-section="analytics">
+            <span class="sidebar-icon">📈</span>
+            Analytics
+          </button>
+          <button class="sidebar-item" data-section="community">
+            <span class="sidebar-icon">👥</span>
+            Community
+          </button>
+          <button class="sidebar-item" data-section="profile">
+            <span class="sidebar-icon">👤</span>
+            Profile
+          </button>
+          <button class="sidebar-item" data-section="settings">
+            <span class="sidebar-icon">⚙️</span>
+            Settings
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="storage-info">
+            <h4>Storage Used</h4>
+            <div class="storage-bar">
+              <div class="storage-fill" style="width: 35%"></div>
+            </div>
+            <p>350 MB / 1 GB</p>
+          </div>
+          <button class="btn-upgrade">⭐ Upgrade Plan</button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="dashboard-content">
+        <!-- Overview Section -->
+        <section class="content-section active" id="overview">
+          <div class="section-header">
+            <h1>Welcome back, <span id="welcomeUserName">Artist</span>! 🎵</h1>
+            <p>Here's what's happening with your music</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">🎧</div>
+              <div class="stat-content">
+                <h3 id="totalPlays">1,247</h3>
+                <p>Total Plays</p>
+                <span class="stat-change positive">+12% this week</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🎵</div>
+              <div class="stat-content">
+                <h3 id="totalTracks">8</h3>
+                <p>Uploaded Tracks</p>
+                <span class="stat-change positive">+2 this month</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-content">
+                <h3 id="totalFollowers">156</h3>
+                <p>Followers</p>
+                <span class="stat-change positive">+8 this week</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-content">
+                <h3 id="totalLikes">423</h3>
+                <p>Total Likes</p>
+                <span class="stat-change positive">+15 this week</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list" id="activityList">
+              <div class="activity-item">
+                <div class="activity-icon">🎵</div>
+                <div class="activity-content">
+                  <p><strong>New track uploaded:</strong> "Underground Vibes Mix"</p>
+                  <span class="activity-time">2 hours ago</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon">❤️</div>
+                <div class="activity-content">
+                  <p><strong>Your track got 15 new likes:</strong> "Techno Madness"</p>
+                  <span class="activity-time">1 day ago</span>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon">👤</div>
+                <div class="activity-content">
+                  <p><strong>New follower:</strong> DJ_ElectroBeats started following you</p>
+                  <span class="activity-time">2 days ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Upload Music Section -->
+        <section class="content-section" id="upload">
+          <div class="section-header">
+            <h1>Upload Your Music 🎵</h1>
+            <p>Share your beats with the BaddBeatz community</p>
+          </div>
+
+          <div class="upload-container">
+            <div class="upload-area" id="uploadArea">
+              <div class="upload-icon">🎵</div>
+              <h3>Drag & Drop Your Music Files</h3>
+              <p>Or click to browse files</p>
+              <p class="upload-formats">Supported: MP3, WAV, FLAC (Max 50MB each)</p>
+              <input type="file" id="fileInput" multiple accept=".mp3,.wav,.flac" style="display: none;">
+            </div>
+
+            <div class="upload-queue" id="uploadQueue" style="display: none;">
+              <h3>Upload Queue</h3>
+              <div class="queue-list" id="queueList"></div>
+            </div>
+
+            <form class="track-details-form" id="trackDetailsForm" style="display: none;">
+              <h3>Track Details</h3>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="trackTitle">Track Title *</label>
+                  <input type="text" id="trackTitle" required>
+                </div>
+                <div class="form-group">
+                  <label for="trackGenre">Genre *</label>
+                  <select id="trackGenre" required>
+                    <option value="">Select Genre</option>
+                    <option value="techno">Techno</option>
+                    <option value="hardstyle">Hardstyle</option>
+                    <option value="house">House</option>
+                    <option value="trance">Trance</option>
+                    <option value="dubstep">Dubstep</option>
+                    <option value="drum-bass">Drum & Bass</option>
+                    <option value="hardcore">Hardcore</option>
+                    <option value="progressive">Progressive</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="trackDescription">Description</label>
+                <textarea id="trackDescription" placeholder="Tell us about this track, your inspiration, or the story behind it..." rows="4"></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="trackTags">Tags (comma separated)</label>
+                  <input type="text" id="trackTags" placeholder="underground, techno, dark, energetic">
+                </div>
+                <div class="form-group">
+                  <label for="trackBPM">BPM</label>
+                  <input type="number" id="trackBPM" min="60" max="200">
+                </div>
+              </div>
+
+              <div class="form-options">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="allowDownload">
+                  <span class="checkmark"></span>
+                  Allow downloads
+                </label>
+                <label class="checkbox-container">
+                  <input type="checkbox" id="featuredTrack">
+                  <span class="checkmark"></span>
+                  Submit for featuring
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="cancelUpload()">Cancel</button>
+                <button type="submit" class="btn-primary">🚀 Upload Track</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- My Music Section -->
+        <section class="content-section" id="my-music">
+          <div class="section-header">
+            <h1>My Music Library 🎧</h1>
+            <p>Manage your uploaded tracks</p>
+          </div>
+
+          <div class="music-controls">
+            <div class="search-bar">
+              <input type="text" placeholder="Search your tracks..." id="trackSearch">
+              <button class="search-btn">🔍</button>
+            </div>
+            <div class="filter-controls">
+              <select id="genreFilter">
+                <option value="">All Genres</option>
+                <option value="techno">Techno</option>
+                <option value="hardstyle">Hardstyle</option>
+                <option value="house">House</option>
+              </select>
+              <select id="sortBy">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="most-played">Most Played</option>
+                <option value="title">Title A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tracks-grid" id="tracksGrid">
+            <!-- Sample tracks - will be populated by JavaScript -->
+            <div class="track-card">
+              <div class="track-artwork">
+                <img src="assets/images/default-track.png" alt="Track Artwork">
+                <div class="track-overlay">
+                  <button class="play-btn">▶️</button>
+                </div>
+              </div>
+              <div class="track-info">
+                <h3>Underground Vibes Mix</h3>
+                <p class="track-genre">Techno</p>
+                <div class="track-stats">
+                  <span>👁️ 234 plays</span>
+                  <span>❤️ 18 likes</span>
+                </div>
+              </div>
+              <div class="track-actions">
+                <button class="action-btn" title="Edit">✏️</button>
+                <button class="action-btn" title="Share">🔗</button>
+                <button class="action-btn" title="Delete">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="content-section" id="analytics">
+          <div class="section-header">
+            <h1>Analytics Dashboard 📈</h1>
+            <p>Track your music's performance</p>
+          </div>
+
+          <div class="analytics-content">
+            <div class="chart-container">
+              <h3>Plays Over Time</h3>
+              <div class="chart-placeholder">
+                <p>📊 Interactive charts coming soon!</p>
+                <p>Track plays, likes, and engagement metrics</p>
+              </div>
+            </div>
+
+            <div class="top-tracks">
+              <h3>Top Performing Tracks</h3>
+              <div class="track-ranking">
+                <div class="rank-item">
+                  <span class="rank-number">1</span>
+                  <div class="rank-info">
+                    <h4>Techno Madness</h4>
+                    <p>456 plays • 32 likes</p>
+                  </div>
+                </div>
+                <div class="rank-item">
+                  <span class="rank-number">2</span>
+                  <div class="rank-info">
+                    <h4>Underground Vibes Mix</h4>
+                    <p>234 plays • 18 likes</p>
+                  </div>
+                </div>
+                <div class="rank-item">
+                  <span class="rank-number">3</span>
+                  <div class="rank-info">
+                    <h4>Dark Energy</h4>
+                    <p>189 plays • 15 likes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Community Section -->
+        <section class="content-section" id="community">
+          <div class="section-header">
+            <h1>Community Hub 👥</h1>
+            <p>Connect with other artists and discover new music</p>
+          </div>
+
+          <div class="community-content">
+            <div class="community-feed">
+              <h3>Latest from the Community</h3>
+              <div class="feed-item">
+                <div class="feed-avatar">🎤</div>
+                <div class="feed-content">
+                  <h4>DJ_ElectroBeats</h4>
+                  <p>Just dropped a new hardstyle banger! Check it out 🔥</p>
+                  <span class="feed-time">2 hours ago</span>
+                </div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-avatar">🎵</div>
+                <div class="feed-content">
+                  <h4>TechnoMaster</h4>
+                  <p>Looking for collaboration on a progressive house track</p>
+                  <span class="feed-time">5 hours ago</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="featured-artists">
+              <h3>Featured Artists This Week</h3>
+              <div class="artist-grid">
+                <div class="artist-card">
+                  <img src="assets/images/default-avatar.png" alt="Artist">
+                  <h4>BassDropper</h4>
+                  <p>Dubstep Producer</p>
+                  <button class="btn-follow">Follow</button>
+                </div>
+                <div class="artist-card">
+                  <img src="assets/images/default-avatar.png" alt="Artist">
+                  <h4>TranceQueen</h4>
+                  <p>Trance DJ</p>
+                  <button class="btn-follow">Follow</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section class="content-section" id="profile">
+          <div class="section-header">
+            <h1>Profile Settings 👤</h1>
+            <p>Manage your public profile</p>
+          </div>
+
+          <form class="profile-form" id="profileForm">
+            <div class="profile-avatar-section">
+              <div class="avatar-upload">
+                <img src="assets/images/default-avatar.png" alt="Profile Avatar" id="profileAvatar">
+                <button type="button" class="avatar-change-btn">📷 Change Photo</button>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profileFirstName">First Name</label>
+                <input type="text" id="profileFirstName" value="Demo">
+              </div>
+              <div class="form-group">
+                <label for="profileLastName">Last Name</label>
+                <input type="text" id="profileLastName" value="User">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="profileArtistName">Artist/DJ Name</label>
+              <input type="text" id="profileArtistName" value="DemoBeats">
+            </div>
+
+            <div class="form-group">
+              <label for="profileBio">Bio</label>
+              <textarea id="profileBio" rows="4" placeholder="Tell the community about yourself, your music style, and what drives your creativity...">Underground techno producer with a passion for dark, driving beats that move the soul.</textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="profileGenre">Primary Genre</label>
+                <select id="profileGenre">
+                  <option value="techno" selected>Techno</option>
+                  <option value="hardstyle">Hardstyle</option>
+                  <option value="house">House</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="profileLocation">Location</label>
+                <input type="text" id="profileLocation" placeholder="City, Country">
+              </div>
+            </div>
+
+            <div class="social-links-section">
+              <h3>Social Media Links</h3>
+              <div class="form-group">
+                <label for="soundcloudUrl">SoundCloud</label>
+                <input type="url" id="soundcloudUrl" placeholder="https://soundcloud.com/yourusername">
+              </div>
+              <div class="form-group">
+                <label for="spotifyUrl">Spotify</label>
+                <input type="url" id="spotifyUrl" placeholder="https://open.spotify.com/artist/...">
+              </div>
+              <div class="form-group">
+                <label for="youtubeUrl">YouTube</label>
+                <input type="url" id="youtubeUrl" placeholder="https://youtube.com/@yourusername">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary">Cancel</button>
+              <button type="submit" class="btn-primary">💾 Save Profile</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Settings Section -->
+        <section class="content-section" id="settings">
+          <div class="section-header">
+            <h1>Account Settings ⚙️</h1>
+            <p>Manage your account preferences</p>
+          </div>
+
+          <div class="settings-sections">
+            <div class="settings-section">
+              <h3>Privacy Settings</h3>
+              <div class="setting-item">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="publicProfile" checked>
+                  <span class="checkmark"></span>
+                  Make my profile public
+                </label>
+              </div>
+              <div class="setting-item">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="allowMessages" checked>
+                  <span class="checkmark"></span>
+                  Allow messages from other users
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Notification Preferences</h3>
+              <div class="setting-item">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="emailNotifications" checked>
+                  <span class="checkmark"></span>
+                  Email notifications
+                </label>
+              </div>
+              <div class="setting-item">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="newFollowerNotif" checked>
+                  <span class="checkmark"></span>
+                  New follower notifications
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Account Actions</h3>
+              <button class="btn-secondary">🔄 Change Password</button>
+              <button class="btn-secondary">📧 Change Email</button>
+              <button class="btn-danger">⚠️ Delete Account</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 BaddBeatz Community</p>
+    <div class="footer-links">
+      <a href="contact.html">Contact</a>
+      <a href="#" class="terms-link">Terms</a>
+      <a href="#" class="privacy-link">Privacy</a>
+      <a href="#" class="help-link">Help</a>
+    </div>
+  </footer>
+
+  <!-- Upload Progress Modal -->
+  <div id="uploadModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3>Uploading Your Track 🎵</h3>
+      <div class="upload-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="uploadProgress"></div>
+        </div>
+        <p id="uploadStatus">Preparing upload...</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
