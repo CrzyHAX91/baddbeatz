@@ -152,6 +152,57 @@
 
                     <!-- Chat Sidebar -->
                     <div class="stream-sidebar">
+                        <!-- Social Media Login Section -->
+                        <div class="social-login-section">
+                            <div class="social-login-header">
+                                <h4>🔗 Connect & Interact</h4>
+                                <p>Login with your social media to chat and interact</p>
+                            </div>
+                            
+                            <div class="social-login-buttons">
+                                <button class="social-login-btn twitch-login" onclick="loginWithTwitch()">
+                                    <span class="social-icon">📺</span>
+                                    <div class="login-text">
+                                        <span class="platform-name">Twitch</span>
+                                        <span class="login-subtitle">Chat & Follow</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="social-login-btn youtube-login" onclick="loginWithYouTube()">
+                                    <span class="social-icon">▶️</span>
+                                    <div class="login-text">
+                                        <span class="platform-name">YouTube</span>
+                                        <span class="login-subtitle">Subscribe & Comment</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="social-login-btn facebook-login" onclick="loginWithFacebook()">
+                                    <span class="social-icon">📘</span>
+                                    <div class="login-text">
+                                        <span class="platform-name">Facebook</span>
+                                        <span class="login-subtitle">Like & Share</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="social-login-btn tiktok-login" onclick="loginWithTikTok()">
+                                    <span class="social-icon">🎵</span>
+                                    <div class="login-text">
+                                        <span class="platform-name">TikTok</span>
+                                        <span class="login-subtitle">Follow & React</span>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <!-- Connected Accounts Display -->
+                            <div id="connected-accounts" class="connected-accounts" style="display: none;">
+                                <h5>✅ Connected Accounts</h5>
+                                <div id="connected-list"></div>
+                                <button class="btn-small disconnect-all" onclick="disconnectAll()">
+                                    Disconnect All
+                                </button>
+                            </div>
+                        </div>
+
                         <div id="live-chat-container">
                             <!-- Chat will be loaded here -->
                             <div class="chat-placeholder">
@@ -163,7 +214,7 @@
                                 </div>
                                 <div class="chat-welcome">
                                     <p>🎵 Welcome to the BaddBeatz community!</p>
-                                    <p>Chat will be active during live streams.</p>
+                                    <p>Connect with your social media accounts above to participate in chat!</p>
                                     <p>Join the conversation and request your favorite tracks!</p>
                                 </div>
                             </div>
@@ -429,6 +480,207 @@
             alert('Calendar integration coming soon! 📅');
         }
         
+        // Social Media Login Functions
+        let connectedAccounts = [];
+        
+        function loginWithTwitch() {
+            // Simulate Twitch OAuth login
+            const twitchAuth = {
+                platform: 'twitch',
+                username: 'TechnoFan2024',
+                avatar: '📺',
+                permissions: ['chat', 'follow', 'subscribe']
+            };
+            
+            connectAccount(twitchAuth);
+            showLoginSuccess('Twitch', 'You can now chat and follow on Twitch!');
+        }
+        
+        function loginWithYouTube() {
+            // Simulate YouTube OAuth login
+            const youtubeAuth = {
+                platform: 'youtube',
+                username: 'ElectronicMusicLover',
+                avatar: '▶️',
+                permissions: ['comment', 'subscribe', 'like']
+            };
+            
+            connectAccount(youtubeAuth);
+            showLoginSuccess('YouTube', 'You can now comment and subscribe on YouTube!');
+        }
+        
+        function loginWithFacebook() {
+            // Simulate Facebook OAuth login
+            const facebookAuth = {
+                platform: 'facebook',
+                username: 'DJ Music Fan',
+                avatar: '📘',
+                permissions: ['like', 'share', 'comment']
+            };
+            
+            connectAccount(facebookAuth);
+            showLoginSuccess('Facebook', 'You can now like and share on Facebook!');
+        }
+        
+        function loginWithTikTok() {
+            // Simulate TikTok OAuth login
+            const tiktokAuth = {
+                platform: 'tiktok',
+                username: 'BeatDropper',
+                avatar: '🎵',
+                permissions: ['follow', 'like', 'comment']
+            };
+            
+            connectAccount(tiktokAuth);
+            showLoginSuccess('TikTok', 'You can now follow and react on TikTok!');
+        }
+        
+        function connectAccount(authData) {
+            // Add to connected accounts
+            connectedAccounts.push(authData);
+            
+            // Update UI
+            updateConnectedAccountsDisplay();
+            updateLoginButtonState(authData.platform, true);
+            
+            // Enable chat functionality
+            enableChatForPlatform(authData.platform);
+        }
+        
+        function updateConnectedAccountsDisplay() {
+            const connectedSection = document.getElementById('connected-accounts');
+            const connectedList = document.getElementById('connected-list');
+            
+            if (connectedAccounts.length > 0) {
+                connectedSection.style.display = 'block';
+                
+                connectedList.innerHTML = connectedAccounts.map(account => `
+                    <div class="connected-account">
+                        <span class="account-avatar">${account.avatar}</span>
+                        <div class="account-info">
+                            <span class="account-platform">${account.platform.charAt(0).toUpperCase() + account.platform.slice(1)}</span>
+                            <span class="account-username">@${account.username}</span>
+                        </div>
+                        <button class="btn-tiny disconnect-btn" onclick="disconnectAccount('${account.platform}')">
+                            ✕
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                connectedSection.style.display = 'none';
+            }
+        }
+        
+        function updateLoginButtonState(platform, connected) {
+            const button = document.querySelector(`.${platform}-login`);
+            if (connected) {
+                button.classList.add('connected');
+                button.innerHTML = `
+                    <span class="social-icon">✅</span>
+                    <div class="login-text">
+                        <span class="platform-name">${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                        <span class="login-subtitle">Connected</span>
+                    </div>
+                `;
+                button.disabled = true;
+            }
+        }
+        
+        function disconnectAccount(platform) {
+            connectedAccounts = connectedAccounts.filter(account => account.platform !== platform);
+            updateConnectedAccountsDisplay();
+            
+            // Reset login button
+            const button = document.querySelector(`.${platform}-login`);
+            button.classList.remove('connected');
+            button.disabled = false;
+            
+            // Restore original button content
+            const platformData = {
+                twitch: { icon: '📺', subtitle: 'Chat & Follow' },
+                youtube: { icon: '▶️', subtitle: 'Subscribe & Comment' },
+                facebook: { icon: '📘', subtitle: 'Like & Share' },
+                tiktok: { icon: '🎵', subtitle: 'Follow & React' }
+            };
+            
+            const data = platformData[platform];
+            button.innerHTML = `
+                <span class="social-icon">${data.icon}</span>
+                <div class="login-text">
+                    <span class="platform-name">${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                    <span class="login-subtitle">${data.subtitle}</span>
+                </div>
+            `;
+            
+            showLoginSuccess(platform.charAt(0).toUpperCase() + platform.slice(1), 'Account disconnected successfully!');
+        }
+        
+        function disconnectAll() {
+            connectedAccounts = [];
+            updateConnectedAccountsDisplay();
+            
+            // Reset all login buttons
+            document.querySelectorAll('.social-login-btn').forEach(button => {
+                button.classList.remove('connected');
+                button.disabled = false;
+            });
+            
+            // Restore original button content for all platforms
+            loginWithTwitch = () => loginWithTwitch();
+            location.reload(); // Simple way to reset all buttons
+        }
+        
+        function enableChatForPlatform(platform) {
+            // Update chat welcome message
+            const chatWelcome = document.querySelector('.chat-welcome');
+            chatWelcome.innerHTML = `
+                <p>🎵 Welcome to the BaddBeatz community!</p>
+                <p>✅ Connected to ${platform.charAt(0).toUpperCase() + platform.slice(1)}! You can now participate in chat!</p>
+                <p>Join the conversation and request your favorite tracks!</p>
+                <div class="chat-actions">
+                    <button class="btn-small" onclick="sendTestMessage('${platform}')">
+                        💬 Send Test Message
+                    </button>
+                    <button class="btn-small" onclick="requestTrack()">
+                        🎵 Request Track
+                    </button>
+                </div>
+            `;
+        }
+        
+        function sendTestMessage(platform) {
+            alert(`💬 Test message sent via ${platform.charAt(0).toUpperCase() + platform.slice(1)}!\n\n"Hello from the BaddBeatz community! 🎵"`);
+        }
+        
+        function requestTrack() {
+            const track = prompt('🎵 What track would you like to request?');
+            if (track) {
+                alert(`🎵 Track request submitted: "${track}"\n\nThe DJ will consider your request during the next set!`);
+            }
+        }
+        
+        function showLoginSuccess(platform, message) {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.className = 'login-notification success';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">✅</span>
+                    <div class="notification-text">
+                        <strong>${platform} Connected!</strong>
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
         // Initialize page
         document.addEventListener('DOMContentLoaded', () => {
             // Add platform switching functionality
@@ -765,6 +1017,266 @@
             font-size: 0.9rem;
         }
         
+        /* Social Media Login Styles */
+        .social-login-section {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-login-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-login-header h4 {
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .social-login-header p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .social-login-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .social-login-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #fff;
+            text-align: left;
+        }
+        
+        .social-login-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .social-login-btn.connected {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: rgba(0, 255, 0, 0.5);
+            cursor: default;
+        }
+        
+        .social-login-btn.connected:hover {
+            transform: none;
+        }
+        
+        .social-login-btn .social-icon {
+            font-size: 1.5rem;
+            min-width: 24px;
+        }
+        
+        .login-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .platform-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .login-subtitle {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+        
+        .connected-accounts {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .connected-accounts h5 {
+            color: #00ff00;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .connected-account {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .account-avatar {
+            font-size: 1.2rem;
+        }
+        
+        .account-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .account-platform {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #00ff00;
+        }
+        
+        .account-username {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+        
+        .disconnect-btn {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff4444;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .disconnect-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .disconnect-all {
+            margin-top: 1rem;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff4444;
+        }
+        
+        .disconnect-all:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .chat-actions .btn-small {
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            color: #00ffff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-actions .btn-small:hover {
+            background: rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Login Notification Styles */
+        .login-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 255, 0, 0.5);
+            border-radius: 10px;
+            padding: 1rem;
+            max-width: 300px;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .login-notification.success {
+            border-color: rgba(0, 255, 0, 0.5);
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .notification-icon {
+            font-size: 1.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-text strong {
+            color: #00ff00;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notification-text p {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Platform-specific button colors */
+        .twitch-login:hover {
+            border-color: rgba(145, 70, 255, 0.8);
+            background: rgba(145, 70, 255, 0.1);
+        }
+        
+        .youtube-login:hover {
+            border-color: rgba(255, 0, 0, 0.8);
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        .facebook-login:hover {
+            border-color: rgba(24, 119, 242, 0.8);
+            background: rgba(24, 119, 242, 0.1);
+        }
+        
+        .tiktok-login:hover {
+            border-color: rgba(255, 0, 80, 0.8);
+            background: rgba(255, 0, 80, 0.1);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .stream-layout {
@@ -783,6 +1295,16 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+            
+            .login-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .chat-actions {
+                flex-direction: column;
             }
         }
     </style>
