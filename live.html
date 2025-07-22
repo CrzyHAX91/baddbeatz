@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Watch TheBadGuyHimself live DJ sets - Real-time streaming of underground techno, hardstyle, and electronic music performances across Europe">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Live Stream | TheBadGuyHimself - Electronic Music DJ">
+    <meta property="og:description" content="Join the live electronic music experience! Watch real-time DJ sets, interact with the community, and request your favorite tracks.">
+    <meta property="og:image" content="assets/images/live-stream-preview.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Live Stream | TheBadGuyHimself">
+    <meta name="twitter:description" content="Experience live electronic music streaming with real-time chat and track requests">
+    <meta name="twitter:image" content="assets/images/live-stream-preview.jpg">
+    <title>Live Stream | TheBadGuyHimself - BaddBeatz</title>
+    
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/cyberpunk.css">
+    <link rel="stylesheet" href="assets/css/enhanced-cyberpunk.css">
+    <link rel="stylesheet" href="assets/css/ui-enhancements.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Live Stream Specific Styles -->
+    <link rel="stylesheet" href="assets/css/live-stream.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script defer src="assets/js/main.js"></script>
+    <script defer src="assets/js/ui-utils.js"></script>
+    <script defer src="assets/js/live-stream-manager.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav class="nav">
+            <div class="nav__brand">
+                <img src="assets/images/Logo.png" alt="BaddBeatz Logo" class="nav__logo">
+            </div>
+            <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="nav__toggle-line"></span>
+                <span class="nav__toggle-line"></span>
+                <span class="nav__toggle-line"></span>
+            </button>
+            <ul class="nav__links">
+                <li><a class="nav__link" href="index.html">Home</a></li>
+                <li><a class="nav__link" href="about.html">About</a></li>
+                <li><a class="nav__link" href="music.html">Music</a></li>
+                <li><a class="nav__link nav__link--active" href="live.html">🔴 Live</a></li>
+                <li><a class="nav__link" href="playlist.html">Playlist</a></li>
+                <li><a class="nav__link" href="video.html">Videos</a></li>
+                <li><a class="nav__link" href="gallery.html">Gallery</a></li>
+                <li><a class="nav__link" href="bookings.html">Bookings</a></li>
+                <li><a class="nav__link" href="contact.html">Contact</a></li>
+                <li><a class="nav__link nav__link--login" href="login.html">🎵 Join Community</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero hero--live">
+        <div class="hero-bg-live">
+            <div class="live-particles"></div>
+        </div>
+        <div class="overlay">
+            <h1 class="hero__title">
+                <span class="live-pulse">🔴</span>
+                LIVE ELECTRONIC EXPERIENCE
+            </h1>
+            <p class="hero__tagline">Real-time DJ sets • Interactive chat • European electronic music community</p>
+            <div class="live-status" id="live-status">
+                <div class="status-indicator offline" id="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Currently Offline</span>
+                </div>
+                <div class="next-stream" id="next-stream">
+                    Next stream: Loading...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- Live Stream Section -->
+        <section class="live-stream-section">
+            <div class="container">
+                <div class="stream-header">
+                    <h2>🎧 Live DJ Performance</h2>
+                    <div class="stream-platforms">
+                        <button class="platform-btn active" data-platform="twitch">
+                            <span class="platform-icon">📺</span>
+                            Twitch
+                        </button>
+                        <button class="platform-btn" data-platform="youtube">
+                            <span class="platform-icon">▶️</span>
+                            YouTube
+                        </button>
+                        <button class="platform-btn" data-platform="facebook">
+                            <span class="platform-icon">📘</span>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Stream Container -->
+                <div class="stream-layout">
+                    <div class="stream-main">
+                        <div id="live-stream-container">
+                            <!-- Stream will be loaded here -->
+                            <div class="stream-placeholder">
+                                <div class="placeholder-content">
+                                    <div class="placeholder-icon">🎵</div>
+                                    <h3>Stream Starting Soon</h3>
+                                    <p>Get ready for an epic electronic music journey!</p>
+                                    <button class="btn-primary" onclick="testStream()">🔴 Start Demo Stream</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stream Controls -->
+                        <div class="stream-controls">
+                            <div class="control-group">
+                                <button class="control-btn" id="quality-btn" title="Stream Quality">
+                                    <span class="control-icon">⚙️</span>
+                                    Auto
+                                </button>
+                                <button class="control-btn" id="fullscreen-btn" title="Fullscreen">
+                                    <span class="control-icon">⛶</span>
+                                </button>
+                                <button class="control-btn" id="share-btn" title="Share Stream">
+                                    <span class="control-icon">🔗</span>
+                                </button>
+                            </div>
+                            <div class="stream-stats">
+                                <span class="stat-item">
+                                    <span class="stat-icon">👥</span>
+                                    <span id="live-viewers">0</span> viewers
+                                </span>
+                                <span class="stat-item">
+                                    <span class="stat-icon">⏱️</span>
+                                    <span id="stream-duration">00:00</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Sidebar -->
+                    <div class="stream-sidebar">
+                        <div id="live-chat-container">
+                            <!-- Chat will be loaded here -->
+                            <div class="chat-placeholder">
+                                <div class="chat-header">
+                                    <h4>💬 Live Chat</h4>
+                                    <div class="chat-controls">
+                                        <button class="btn-small">Settings</button>
+                                    </div>
+                                </div>
+                                <div class="chat-welcome">
+                                    <p>🎵 Welcome to the BaddBeatz community!</p>
+                                    <p>Chat will be active during live streams.</p>
+                                    <p>Join the conversation and request your favorite tracks!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stream Schedule -->
+        <section class="schedule-section">
+            <div class="container">
+                <h2>📅 Upcoming Live Streams</h2>
+                <p class="schedule-subtitle">All times shown in Central European Time (CET/CEST)</p>
+                
+                <div id="stream-schedule">
+                    <!-- Schedule will be loaded here -->
+                    <div class="schedule-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading stream schedule...</p>
+                    </div>
+                </div>
+
+                <div class="schedule-actions">
+                    <button class="btn-secondary" onclick="requestNotifications()">
+                        🔔 Enable Stream Notifications
+                    </button>
+                    <button class="btn-secondary" onclick="addToCalendar()">
+                        📅 Add to Calendar
+                    </button>
+                    <button class="btn-primary" href="bookings.html">
+                        📩 Book Private Stream
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Genre Showcase -->
+        <section class="genre-showcase">
+            <div class="container">
+                <h2>🎵 Electronic Music Genres</h2>
+                <p>Experience the full spectrum of European electronic music</p>
+                
+                <div class="genre-grid">
+                    <div class="genre-card" data-genre="house">
+                        <div class="genre-icon">🏠</div>
+                        <h3>House</h3>
+                        <p>120-130 BPM</p>
+                        <div class="genre-waveform house-wave"></div>
+                    </div>
+                    
+                    <div class="genre-card" data-genre="techno">
+                        <div class="genre-icon">⚡</div>
+                        <h3>Techno</h3>
+                        <p>130-150 BPM</p>
+                        <div class="genre-waveform techno-wave"></div>
+                    </div>
+                    
+                    <div class="genre-card" data-genre="hard-techno">
+                        <div class="genre-icon">🔥</div>
+                        <h3>Hard Techno</h3>
+                        <p>140-160 BPM</p>
+                        <div class="genre-waveform hard-techno-wave"></div>
+                    </div>
+                    
+                    <div class="genre-card" data-genre="rawstyle">
+                        <div class="genre-icon">💀</div>
+                        <h3>Rawstyle</h3>
+                        <p>150-180 BPM</p>
+                        <div class="genre-waveform rawstyle-wave"></div>
+                    </div>
+                    
+                    <div class="genre-card" data-genre="hardcore">
+                        <div class="genre-icon">💥</div>
+                        <h3>Hardcore</h3>
+                        <p>160-200 BPM</p>
+                        <div class="genre-waveform hardcore-wave"></div>
+                    </div>
+                    
+                    <div class="genre-card" data-genre="uptempo">
+                        <div class="genre-icon">🚀</div>
+                        <h3>Uptempo</h3>
+                        <p>180+ BPM</p>
+                        <div class="genre-waveform uptempo-wave"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Features -->
+        <section class="community-features">
+            <div class="container">
+                <h2>🌟 Interactive Features</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Real-time Chat</h3>
+                        <p>Connect with fellow electronic music fans from across Europe during live streams</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🎵</div>
+                        <h3>Track Requests</h3>
+                        <p>Request your favorite tracks and vote on others' suggestions during live sets</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Live Stats</h3>
+                        <p>See real-time BPM, track info, and crowd energy levels during performances</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>Smart Notifications</h3>
+                        <p>Get notified 15 minutes before your favorite DJ goes live</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🎮</div>
+                        <h3>Interactive Games</h3>
+                        <p>Play beat matching games and music trivia during stream breaks</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h3>Community Rewards</h3>
+                        <p>Earn badges and unlock exclusive content through active participation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Experience Live Electronic Music?</h2>
+                    <p>Join thousands of electronic music fans across Europe for unforgettable live DJ experiences</p>
+                    
+                    <div class="cta-buttons">
+                        <a href="login.html" class="btn-primary">
+                            🎵 Join Community
+                        </a>
+                        <a href="bookings.html" class="btn-secondary">
+                            📩 Book Private Stream
+                        </a>
+                    </div>
+                    
+                    <div class="social-proof">
+                        <div class="proof-item">
+                            <strong>10,000+</strong>
+                            <span>Active Community Members</span>
+                        </div>
+                        <div class="proof-item">
+                            <strong>500+</strong>
+                            <span>Hours Streamed</span>
+                        </div>
+                        <div class="proof-item">
+                            <strong>25+</strong>
+                            <span>European Cities Reached</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Live Streaming</h4>
+                    <ul>
+                        <li><a href="#stream-schedule">Stream Schedule</a></li>
+                        <li><a href="bookings.html">Private Streams</a></li>
+                        <li><a href="#notifications">Notifications</a></li>
+                        <li><a href="login.html">Community Access</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Platforms</h4>
+                    <ul>
+                        <li><a href="https://twitch.tv/thebadguyhimself" target="_blank">Twitch</a></li>
+                        <li><a href="https://youtube.com/@TheBadGuyHimself" target="_blank">YouTube Live</a></li>
+                        <li><a href="#" target="_blank">Facebook Live</a></li>
+                        <li><a href="https://soundcloud.com/thebadguyhimself" target="_blank">SoundCloud</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="contact.html">Technical Support</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="disclaimer.html">Streaming Guidelines</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 TheBadGuyHimself - BaddBeatz. All rights reserved.</p>
+                <p>🎵 Bringing European electronic music to the world, one beat at a time.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Demo Stream Script -->
+    <script>
+        // Demo functionality for testing
+        function testStream() {
+            const streamData = {
+                id: 'demo-stream',
+                title: 'Friday Night Techno Session - LIVE',
+                djName: 'TheBadGuyHimself',
+                genre: 'Techno',
+                startTime: new Date().toISOString(),
+                channel: 'thebadguyhimself'
+            };
+            
+            // Simulate stream start
+            document.dispatchEvent(new CustomEvent('streamStart', {
+                detail: {
+                    platform: 'twitch',
+                    streamData: streamData
+                }
+            }));
+            
+            // Update live status
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = statusIndicator.querySelector('.status-text');
+            statusIndicator.className = 'status-indicator live';
+            statusText.textContent = 'LIVE NOW';
+        }
+        
+        function requestNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('🔔 Stream notifications enabled!', {
+                            body: 'You\'ll be notified before live streams start.',
+                            icon: 'assets/images/Logo.png'
+                        });
+                    }
+                });
+            }
+        }
+        
+        function addToCalendar() {
+            // Generate calendar event
+            const event = {
+                title: 'BaddBeatz Live Stream',
+                start: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+                duration: 2 * 60 * 60 * 1000, // 2 hours
+                description: 'Live electronic music stream with TheBadGuyHimself'
+            };
+            
+            alert('Calendar integration coming soon! 📅');
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add platform switching functionality
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+            
+            // Add genre card interactions
+            document.querySelectorAll('.genre-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const genre = card.dataset.genre;
+                    alert(`🎵 ${genre.charAt(0).toUpperCase() + genre.slice(1)} music coming up in future streams!`);
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Additional styles for live page */
+        .hero--live {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg-live {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 0, 255, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(0, 255, 255, 0.3) 0%, transparent 50%);
+        }
+        
+        .live-pulse {
+            animation: pulse 2s infinite;
+            display: inline-block;
+        }
+        
+        .live-status {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .status-indicator.offline {
+            background: rgba(128, 128, 128, 0.2);
+            border: 1px solid rgba(128, 128, 128, 0.5);
+            color: #ccc;
+        }
+        
+        .status-indicator.live {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff4444;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .stream-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .stream-platforms {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .platform-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .platform-btn.active,
+        .platform-btn:hover {
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            color: #000;
+            border-color: transparent;
+        }
+        
+        .stream-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .stream-placeholder {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px dashed rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .placeholder-content {
+            text-align: center;
+            color: #fff;
+        }
+        
+        .placeholder-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stream-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+        }
+        
+        .stream-stats {
+            display: flex;
+            gap: 1rem;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .chat-welcome {
+            padding: 2rem;
+            text-align: center;
+            color: #ccc;
+        }
+        
+        .schedule-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4rem 0;
+        }
+        
+        .schedule-subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+        
+        .schedule-loading {
+            text-align: center;
+            padding: 2rem;
+            color: #ccc;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 255, 0.3);
+            border-top: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .schedule-actions {
+            text-align: center;
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .genre-showcase {
+            padding: 4rem 0;
+        }
+        
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .genre-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .genre-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+        }
+        
+        .genre-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .genre-waveform {
+            height: 30px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            margin-top: 1rem;
+            border-radius: 15px;
+            opacity: 0.7;
+        }
+        
+        .community-features {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4rem 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cta-buttons {
+            margin: 2rem 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .social-proof {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .proof-item {
+            text-align: center;
+        }
+        
+        .proof-item strong {
+            display: block;
+            font-size: 2rem;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .proof-item span {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stream-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .stream-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .social-proof {
+                gap: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</body>
+</html>
