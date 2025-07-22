@@ -105,7 +105,7 @@
   function renderPlaylist() {
     if (!list) return;
     
-    list.innerHTML = '';
+    list.textContent = '';
     
     if (playlist.length === 0) {
       const emptyMessage = document.createElement('li');

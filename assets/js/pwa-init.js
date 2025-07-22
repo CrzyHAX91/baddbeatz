@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 /**
  * PWA Initialization Script
  * Registers service worker and handles PWA installation
@@ -47,8 +50,8 @@ let deferredPrompt;
 const installButton = document.createElement('button');
 installButton.id = 'pwa-install-button';
 installButton.className = 'pwa-install-btn';
-installButton.innerHTML = `
-  <span class="install-icon">📱</span>
+installButton.innerHTML = '
+  <span class=' /* SECURITY: Review this innerHTML usage */install-icon">📱</span>
   <span class="install-text">Install App</span>
 `;
 installButton.style.display = 'none';
@@ -123,8 +126,8 @@ window.addEventListener('appinstalled', () => {
 function showUpdateNotification() {
   const notification = document.createElement('div');
   notification.className = 'pwa-update-notification';
-  notification.innerHTML = `
-    <div class="update-content">
+  notification.innerHTML = '
+    <div class=' /* SECURITY: Review this innerHTML usage */update-content">
       <span class="update-icon">🔄</span>
       <div class="update-text">
         <strong>Update Available!</strong>

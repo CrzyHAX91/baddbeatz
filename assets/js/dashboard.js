@@ -201,7 +201,7 @@ class BaddBeatzDashboard {
 
         const activityList = document.getElementById('activityList');
         if (activityList) {
-            activityList.innerHTML = '';
+            activityList.textContent = '';
             activities.forEach(activity => {
                 const activityItem = document.createElement('div');
                 activityItem.className = 'activity-item';
@@ -269,7 +269,7 @@ class BaddBeatzDashboard {
         const tracksGrid = document.getElementById('tracksGrid');
         if (!tracksGrid) return;
 
-        tracksGrid.innerHTML = '';
+        tracksGrid.textContent = '';
         tracks.forEach(track => {
             const trackCard = document.createElement('div');
             trackCard.className = 'track-card';
@@ -435,7 +435,7 @@ class BaddBeatzDashboard {
 
         if (uploadQueue && queueList) {
             uploadQueue.style.display = 'block';
-            queueList.innerHTML = '';
+            queueList.textContent = '';
             this.uploadQueue.forEach(file => {
                 const queueItem = document.createElement('div');
                 queueItem.className = 'queue-item';

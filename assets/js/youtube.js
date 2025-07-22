@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 async function loadYoutubeVideos() {
   const list = document.getElementById('youtubeVideos');
   if (!list) return;
@@ -6,7 +9,7 @@ async function loadYoutubeVideos() {
   if (window.AppUtils && window.AppUtils.showLoading) {
     window.AppUtils.showLoading(list);
   }
-  list.innerHTML = '<li class="loading-message">Loading latest videos...</li>';
+  list.innerHTML = '<li class=' /* SECURITY: Review this innerHTML usage */loading-message">Loading latest videos...</li>';
   
   try {
     const channelId = list.dataset.channelId || 'UCqHpI2_Z48G9CuDFYQpsc2Q';
@@ -61,8 +64,8 @@ async function loadYoutubeVideos() {
     }
     
     // Create error message with direct channel link
-    list.innerHTML = `
-      <li class="error-message">
+    list.innerHTML = '
+      <li class=' /* SECURITY: Review this innerHTML usage */error-message">
         <div class="error-content">
           <p class="error-text">🎥 YouTube Content Available</p>
           <p class="error-description">Visit my channel directly for all the latest mixes!</p>
@@ -80,10 +83,10 @@ function displayYouTubeVideos(videos, list) {
   if (window.AppUtils && window.AppUtils.hideLoading) {
     window.AppUtils.hideLoading(list);
   }
-  list.innerHTML = '';
+  list.textContent = '';
   
   if (videos.length === 0) {
-    list.innerHTML = '<li class="no-videos">No videos found. Check back later!</li>';
+    list.innerHTML = '<li class=' /* SECURITY: Review this innerHTML usage */no-videos">No videos found. Check back later!</li>';
     return;
   }
   

@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 /**
  * Intro Video System for BaddBeatz Website
  * Plays intro-video.mp4 when users first visit the site
@@ -41,8 +44,8 @@ class IntroVideoManager {
         // Create overlay container
         const overlay = document.createElement('div');
         overlay.id = 'intro-video-overlay';
-        overlay.innerHTML = `
-            <div class="intro-video-container">
+        overlay.innerHTML = '
+            <div class=' /* SECURITY: Review this innerHTML usage */intro-video-container">
                 <video 
                     id="intro-video" 
                     autoplay 

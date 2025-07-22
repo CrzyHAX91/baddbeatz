@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 /**
  * BaddBeatz Live Stream Manager
  * Handles multi-platform streaming integration with real-time chat
@@ -140,8 +143,8 @@ class LiveStreamManager {
     addStreamOverlay(streamData) {
         const overlay = document.createElement('div');
         overlay.className = 'stream-overlay';
-        overlay.innerHTML = `
-            <div class="stream-info">
+        overlay.innerHTML = '
+            <div class=' /* SECURITY: Review this innerHTML usage */stream-info">
                 <div class="dj-info">
                     <h3>🎧 ${streamData.djName || 'TheBadGuyHimself'}</h3>
                     <p class="genre-tag">${streamData.genre}</p>
@@ -268,8 +271,8 @@ class LiveStreamManager {
             minute: '2-digit'
         });
         
-        messageElement.innerHTML = `
-            <div class="message-header">
+        messageElement.innerHTML = '
+            <div class=' /* SECURITY: Review this innerHTML usage */message-header">
                 <span class="username">${messageData.username}</span>
                 <span class="timestamp">${timestamp}</span>
             </div>
@@ -291,8 +294,8 @@ class LiveStreamManager {
     showTrackRequestModal() {
         const modal = document.createElement('div');
         modal.className = 'modal track-request-modal';
-        modal.innerHTML = `
-            <div class="modal-content">
+        modal.innerHTML = '
+            <div class=' /* SECURITY: Review this innerHTML usage */modal-content">
                 <div class="modal-header">
                     <h3>🎵 Request a Track</h3>
                     <button class="close-modal">&times;</button>
@@ -374,8 +377,8 @@ class LiveStreamManager {
 
         const requestElement = document.createElement('div');
         requestElement.className = 'track-request';
-        requestElement.innerHTML = `
-            <div class="request-info">
+        requestElement.innerHTML = '
+            <div class=' /* SECURITY: Review this innerHTML usage */request-info">
                 <strong>${request.artist} - ${request.title}</strong>
                 ${request.genre ? `<span class="genre-tag">${request.genre}</span>` : ''}
                 ${request.message ? `<p class="request-message">${request.message}</p>` : ''}

@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 /**
  * Enhanced Animations for BaddBeatz Website
  * Advanced visual effects and interactive animations
@@ -405,19 +408,19 @@
         
         switch (type) {
           case 'dots':
-            spinner.innerHTML = '<div></div><div></div><div></div>';
+            spinner.innerHTML = '<div></div><div></div><div></div>' /* SECURITY: Review this innerHTML usage */;
             break;
           case 'pulse':
-            spinner.innerHTML = '<div class="pulse-ring"></div>';
+            spinner.innerHTML = '<div class=' /* SECURITY: Review this innerHTML usage */pulse-ring"></div>';
             break;
           case 'cyberpunk':
-            spinner.innerHTML = `
-              <div class="cyber-ring"></div>
+            spinner.innerHTML = '
+              <div class=' /* SECURITY: Review this innerHTML usage */cyber-ring"></div>
               <div class="cyber-ring cyber-ring--delay"></div>
             `;
             break;
           default:
-            spinner.innerHTML = '<div class="spinner-circle"></div>';
+            spinner.innerHTML = '<div class=' /* SECURITY: Review this innerHTML usage */spinner-circle"></div>';
         }
         
         container.appendChild(spinner);

@@ -1,3 +1,6 @@
+// SECURITY: Consider using DOMPurify for sanitization
+// import DOMPurify from 'dompurify';
+
 // Admin Panel JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     initializeAdmin();
