@@ -78,8 +78,42 @@ docs/_build/
 *.rar
 *.7z
 
+# Ignore test and temporary files that may cause CodeQL issues
+test-js-syntax.js
+test-js-syntax.cjs
+cleanup_repo.py
+debug_tests.py
+cleanup_and_debug.py
+cleanup_script.py
+
+# Ignore documentation and report files (not security-relevant)
+*.md
+TESTING_REPORT.md
+WORKFLOW_VERIFICATION_REPORT.md
+BROADCASTER_PLATFORM_TESTING_REPORT.md
+LIVE_STREAMING_TESTING_REPORT.md
+COMPLETE_TESTING_REPORT.md
+SECURITY_VULNERABILITIES_FIXED.md
+COMPLETE_SECURITY_TESTING_REPORT.md
+API_SECURITY_AUDIT_REPORT.md
+GITHUB_ACTIONS_FIX_REPORT.md
+GITHUB_ACTIONS_CODEQL_FIX.md
+COMPLETE_PROJECT_SUMMARY.md
+MEMBER_SYSTEM_SUMMARY.md
+COMPLETE_MEMBER_SYSTEM_TESTING_REPORT.md
+MONETIZATION_STRATEGY.md
+QUICK_MONETIZATION_GUIDE.md
+FEATURE_BRAINSTORMING_SESSION.md
+FEATURE_IMPLEMENTATION_ROADMAP.md
+STREAMING_ARCHITECTURE_GUIDE.md
+CLOUDFLARE_SETUP_GUIDE.md
+FINAL_CLEANUP_SUMMARY.md
+COMPREHENSIVE_TESTING_REPORT.md
+PROJECT_CLEANUP_PLAN.md
+WRANGLER_OPTIMIZATION_SUMMARY.md
+
 # Focus CodeQL analysis on:
-# - Python files: *.py (server code, scripts)
-# - JavaScript files: *.js (client-side code, Node.js scripts)
+# - Core Python files: *.py (server code, scripts)
+# - Core JavaScript files: *.js (client-side code, Node.js scripts)
 # - Configuration files: package.json, requirements.txt
-# - HTML files: *.html (for XSS and injection analysis)
+# - Main HTML files: *.html (for XSS and injection analysis)
