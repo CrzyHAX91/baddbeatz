@@ -4,16 +4,36 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://baddbeatz.com',
-  credentials: true
-}));
+
+// CORS configuration with multiple origins support
+const corsOptions = {
+  origin: function(origin, callback) {
+    const allowedOrigins = process.env.FRONTEND_URL 
+      ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+      : ['https://baddbeatz.com'];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Rate limiting
@@ -142,6 +162,7 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Auth server running on port ${PORT}`);
   console.log('Remember to set environment variables in production!');
+  console.log('CORS allowed origins:', process.env.FRONTEND_URL || 'https://baddbeatz.com');
 });
 
 module.exports = app;
