@@ -6,7 +6,16 @@ export default {
 
     if (url.pathname === '/api/ask' && request.method === 'POST') {
       try {
-        const { question } = await request.json();
+        let question;
+        try {
+          const json = await request.json();
+          question = json.question;
+        } catch (e) {
+          return new Response(
+            JSON.stringify({ error: 'Invalid JSON in request body' }),
+            { status: 400, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
 
         // Ensure a valid, non-empty question string
         if (typeof question !== 'string' || question.trim() === '') {
@@ -16,20 +25,22 @@ export default {
           );
         }
 
+
         // Basic rate limiting by client IP
         const ip =
           request.headers.get('CF-Connecting-IP') ||
           request.headers.get('X-Forwarded-For') ||
           'unknown';
         const key = `ip:${ip}`;
-        const count = parseInt((await env.RATE_LIMIT.get(key)) || '0');
+        let count = parseInt((await env.RATE_LIMIT.get(key)) || '0');
         if (count >= 20) {
           return new Response(
             JSON.stringify({ error: 'Rate limit exceeded' }),
             { status: 429, headers: { 'Content-Type': 'application/json' } }
           );
         }
-        await env.RATE_LIMIT.put(key, String(count + 1), { expirationTtl: 60 });
+        count++;
+        await env.RATE_LIMIT.put(key, String(count), { expirationTtl: 60 });
 
         const openaiKey = env.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
         if (!openaiKey) {
@@ -38,6 +49,9 @@ export default {
             { status: 500, headers: { 'Content-Type': 'application/json' } }
           );
         }
+
+        // Debug: log the openaiKey presence (do not log the key itself)
+        console.log(`OpenAI API key is set: ${!!openaiKey}`);
 
         const aiRes = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
@@ -54,12 +68,21 @@ export default {
           })
         });
 
+        if (!aiRes.ok) {
+          return new Response(
+            JSON.stringify({ error: `OpenAI API error: ${aiRes.statusText}` }),
+            { status: aiRes.status, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+
         const aiResJson = await aiRes.json();
         return new Response(JSON.stringify(aiResJson), {
-          status: aiRes.status,
+          status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
       } catch (err) {
+        // Log the error for debugging
+        console.error('Error during AI request:', err);
         return new Response(JSON.stringify({ error: 'AI request failed' }), {
           status: 500,
           headers: { 'Content-Type': 'application/json' }
