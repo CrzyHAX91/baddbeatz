@@ -44,7 +44,7 @@ class IntroVideoManager {
         // Create overlay container
         const overlay = document.createElement('div');
         overlay.id = 'intro-video-overlay';
-        overlay.innerHTML = '
+        overlay.innerHTML = DOMPurify.sanitize('
             <div class=' /* SECURITY: Review this innerHTML usage */intro-video-container">
                 <video 
                     id="intro-video" 
@@ -69,7 +69,7 @@ class IntroVideoManager {
                     <p>Loading the experience...</p>
                 </div>
             </div>
-        `;
+        `);
 
         // Add styles
         this.addIntroStyles();

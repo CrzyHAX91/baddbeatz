@@ -133,7 +133,7 @@ class LiveStreamManager {
                 break;
         }
         
-        container.innerHTML = embedHTML;
+        container.innerHTML = DOMPurify.sanitize(embedHTML);
         this.addStreamOverlay(streamData);
     }
 
@@ -143,7 +143,7 @@ class LiveStreamManager {
     addStreamOverlay(streamData) {
         const overlay = document.createElement('div');
         overlay.className = 'stream-overlay';
-        overlay.innerHTML = '
+        overlay.innerHTML = DOMPurify.sanitize('
             <div class=' /* SECURITY: Review this innerHTML usage */stream-info">
                 <div class="dj-info">
                     <h3>🎧 ${streamData.djName || 'TheBadGuyHimself'}</h3>
@@ -158,7 +158,7 @@ class LiveStreamManager {
             <div class="current-track" id="current-track">
                 <marquee>🎵 Track info will appear here...</marquee>
             </div>
-        `;
+        `);
         
         document.getElementById('live-stream-container').appendChild(overlay);
     }
@@ -192,7 +192,7 @@ class LiveStreamManager {
             </div>
         `;
         
-        chatContainer.innerHTML = chatHTML;
+        chatContainer.innerHTML = DOMPurify.sanitize(chatHTML);
         this.setupChatEventListeners();
         this.connectToChat(platform, streamData);
     }
@@ -271,13 +271,13 @@ class LiveStreamManager {
             minute: '2-digit'
         });
         
-        messageElement.innerHTML = '
+        messageElement.innerHTML = DOMPurify.sanitize('
             <div class=' /* SECURITY: Review this innerHTML usage */message-header">
                 <span class="username">${messageData.username}</span>
                 <span class="timestamp">${timestamp}</span>
             </div>
             <div class="message-content">${this.escapeHtml(messageData.message)}</div>
-        `;
+        `);
         
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -294,11 +294,11 @@ class LiveStreamManager {
     showTrackRequestModal() {
         const modal = document.createElement('div');
         modal.className = 'modal track-request-modal';
-        modal.innerHTML = '
+        modal.innerHTML = DOMPurify.sanitize('
             <div class=' /* SECURITY: Review this innerHTML usage */modal-content">
                 <div class="modal-header">
                     <h3>🎵 Request a Track</h3>
-                    <button class="close-modal">&times;</button>
+                    <button class="close-modal">&times);</button>
                 </div>
                 <div class="modal-body">
                     <input type="text" id="track-artist" placeholder="Artist name" required>
@@ -377,7 +377,7 @@ class LiveStreamManager {
 
         const requestElement = document.createElement('div');
         requestElement.className = 'track-request';
-        requestElement.innerHTML = '
+        requestElement.innerHTML = DOMPurify.sanitize('
             <div class=' /* SECURITY: Review this innerHTML usage */request-info">
                 <strong>${request.artist} - ${request.title}</strong>
                 ${request.genre ? `<span class="genre-tag">${request.genre}</span>` : ''}
@@ -388,7 +388,7 @@ class LiveStreamManager {
                     👍 <span class="vote-count">${request.votes}</span>
                 </button>
             </div>
-        `;
+        `);
         
         requestsList.appendChild(requestElement);
         
@@ -528,7 +528,7 @@ class LiveStreamManager {
             `;
         }).join('');
         
-        scheduleContainer.innerHTML = scheduleHTML;
+        scheduleContainer.innerHTML = DOMPurify.sanitize(scheduleHTML);
         
         // Add notification listeners
         scheduleContainer.querySelectorAll('.notify-btn').forEach(btn => {

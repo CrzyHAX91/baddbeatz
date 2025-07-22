@@ -9,7 +9,7 @@ async function loadYoutubeVideos() {
   if (window.AppUtils && window.AppUtils.showLoading) {
     window.AppUtils.showLoading(list);
   }
-  list.innerHTML = '<li class=' /* SECURITY: Review this innerHTML usage */loading-message">Loading latest videos...</li>';
+  list.innerHTML = DOMPurify.sanitize('<li class=' /* SECURITY: Review this innerHTML usage */loading-message">Loading latest videos...</li>');
   
   try {
     const channelId = list.dataset.channelId || 'UCqHpI2_Z48G9CuDFYQpsc2Q';
@@ -64,7 +64,7 @@ async function loadYoutubeVideos() {
     }
     
     // Create error message with direct channel link
-    list.innerHTML = '
+    list.innerHTML = DOMPurify.sanitize('
       <li class=' /* SECURITY: Review this innerHTML usage */error-message">
         <div class="error-content">
           <p class="error-text">🎥 YouTube Content Available</p>
@@ -74,7 +74,7 @@ async function loadYoutubeVideos() {
           </a>
         </div>
       </li>
-    `;
+    `);
   }
 }
 
@@ -86,7 +86,7 @@ function displayYouTubeVideos(videos, list) {
   list.textContent = '';
   
   if (videos.length === 0) {
-    list.innerHTML = '<li class=' /* SECURITY: Review this innerHTML usage */no-videos">No videos found. Check back later!</li>';
+    list.innerHTML = DOMPurify.sanitize('<li class=' /* SECURITY: Review this innerHTML usage */no-videos">No videos found. Check back later!</li>');
     return;
   }
   

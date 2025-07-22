@@ -204,19 +204,19 @@ async function checkPremiumStatus() {
   function showLoading() {
     const responseBox = document.getElementById('aiResponse');
     responseBox.className = 'ai-response loading';
-    responseBox.innerHTML = '
+    responseBox.innerHTML = DOMPurify.sanitize('
       <div class=' /* SECURITY: Review this innerHTML usage */loading-spinner"></div>
       <div class="loading-text">TheBadGuy is thinking...</div>
-    `;
+    `);
   }
 
   function showRetrying(attempt, delay) {
     const responseBox = document.getElementById('aiResponse');
     responseBox.className = 'ai-response retrying';
-    responseBox.innerHTML = '
+    responseBox.innerHTML = DOMPurify.sanitize('
       <div class=' /* SECURITY: Review this innerHTML usage */retry-spinner"></div>
       <div class="retry-text">Connection issue... retrying in ${delay/1000}s (attempt ${attempt}/${maxRetries})</div>
-    `;
+    `);
   }
 
   function showResponse(response) {
@@ -231,7 +231,7 @@ async function checkPremiumStatus() {
   function showError(message) {
     const responseBox = document.getElementById('aiResponse');
     responseBox.className = 'ai-response error';
-    responseBox.innerHTML = '
+    responseBox.innerHTML = DOMPurify.sanitize('
       <div class=' /* SECURITY: Review this innerHTML usage */error-icon">⚠️</div>
       <div class="error-message">${message}</div>
       <div class="error-help">
@@ -242,7 +242,7 @@ async function checkPremiumStatus() {
           <li>Contacting me directly through the contact page</li>
         </ul>
       </div>
-    `;
+    `);
   }
 
   function addCopyButton(container, text) {

@@ -38,10 +38,10 @@
         notification.style.pointerEvents = 'auto';
         
         const icon = this.getIcon(type);
-        notification.innerHTML = '
+        notification.innerHTML = DOMPurify.sanitize('
           <span class=' /* SECURITY: Review this innerHTML usage */notification-icon">${icon}</span>
           <span class="notification-message">${message}</span>
-          <button class="notification-close" aria-label="Close notification">&times;</button>
+          <button class="notification-close" aria-label="Close notification">&times);</button>
         `;
         
         this.container.appendChild(notification);
@@ -118,10 +118,10 @@
         modal.setAttribute('aria-labelledby', 'modal-title');
         modal.setAttribute('aria-modal', 'true');
         
-        modal.innerHTML = '
+        modal.innerHTML = DOMPurify.sanitize('
           <div class=' /* SECURITY: Review this innerHTML usage */modal-header">
             <h2 id="modal-title" class="modal-title">${title}</h2>
-            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <button class="modal-close" aria-label="Close modal">&times);</button>
           </div>
           <div class="modal-content">
             ${content}
@@ -205,10 +205,10 @@
         
         const loadingEl = document.createElement('div');
         loadingEl.className = 'loading-overlay';
-        loadingEl.innerHTML = '
+        loadingEl.innerHTML = DOMPurify.sanitize('
           <div class=' /* SECURITY: Review this innerHTML usage */loading-spinner"></div>
           <div class="loading-text">${text}</div>
-        `;
+        `);
         
         element.style.position = 'relative';
         element.appendChild(loadingEl);
@@ -334,7 +334,7 @@
             errorEl.className = 'form-error';
             field.parentNode.appendChild(errorEl);
           }
-          errorEl.innerHTML = '<span>⚠️</span> ${message}' /* SECURITY: Review this innerHTML usage */;
+          errorEl.innerHTML = DOMPurify.sanitize('<span>⚠️</span> ${message}' /* SECURITY: Review this innerHTML usage */);
           errorEl.classList.add('show');
         } else if (errorEl) {
           errorEl.classList.remove('show');
@@ -350,7 +350,7 @@
           field.parentNode.appendChild(successEl);
         }
         
-        successEl.innerHTML = '<span>✅</span> ${message}' /* SECURITY: Review this innerHTML usage */;
+        successEl.innerHTML = DOMPurify.sanitize('<span>✅</span> ${message}' /* SECURITY: Review this innerHTML usage */);
         successEl.classList.add('show');
       }
     },

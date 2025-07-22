@@ -50,10 +50,10 @@ let deferredPrompt;
 const installButton = document.createElement('button');
 installButton.id = 'pwa-install-button';
 installButton.className = 'pwa-install-btn';
-installButton.innerHTML = `
+installButton.innerHTML = DOMPurify.sanitize(`
   <span class="install-icon">📱</span>
   <span class="install-text">Install App</span>
-`;
+`);
 installButton.style.display = 'none';
 
 // Listen for beforeinstallprompt event
@@ -126,7 +126,7 @@ window.addEventListener('appinstalled', () => {
 function showUpdateNotification() {
   const notification = document.createElement('div');
   notification.className = 'pwa-update-notification';
-notification.innerHTML = `
+notification.innerHTML = DOMPurify.sanitize(`
     <div class="update-content">
       <span class="update-icon">🔄</span>
       <div class="update-text">
@@ -135,7 +135,7 @@ notification.innerHTML = `
       </div>
       <button class="update-btn" onclick="updateApp()">Update Now</button>
     </div>
-  `;
+  `);
   
   document.body.appendChild(notification);
   

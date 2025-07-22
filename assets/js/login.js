@@ -341,33 +341,29 @@ class BaddBeatzAuth {
     }
 
     async authenticateUser(loginData) {
-        // Authentication not configured
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    success: false,
-                    message: 'Authentication service not configured. Please contact support.'
-                });
-            }, 1500);
-        });
+        // Use the real authentication service
+        if (window.AuthService) {
+            return await window.AuthService.login(loginData.email, loginData.password);
+        } else {
+            return {
+                success: false,
+                message: 'Authentication service not loaded. Please refresh the page.'
+            };
+        }
     }
 
     async registerUser(registerData) {
-        // Simulate API call - replace with actual registration endpoint
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Demo registration logic
-                resolve({
-                    success: true,
-                    user: {
-                        id: Date.now(),
-                        email: registerData.email,
-                        artistName: registerData.artistName,
-                        role: 'member'
-                    }
-                });
-            }, 2000);
-        });
+        // Use the real authentication service for registration
+        if (window.AuthService) {
+            // Use artistName as username for the registration
+            const username = registerData.artistName || `${registerData.firstName} ${registerData.lastName}`;
+            return await window.AuthService.register(username, registerData.email, registerData.password);
+        } else {
+            return {
+                success: false,
+                message: 'Authentication service not loaded. Please refresh the page.'
+            };
+        }
     }
 
     saveUserSession(user) {

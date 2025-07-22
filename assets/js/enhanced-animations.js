@@ -408,19 +408,19 @@
         
         switch (type) {
           case 'dots':
-            spinner.innerHTML = '<div></div><div></div><div></div>' /* SECURITY: Review this innerHTML usage */;
+            spinner.innerHTML = DOMPurify.sanitize('<div></div><div></div><div></div>' /* SECURITY: Review this innerHTML usage */);
             break;
           case 'pulse':
-            spinner.innerHTML = '<div class=' /* SECURITY: Review this innerHTML usage */pulse-ring"></div>';
+            spinner.innerHTML = DOMPurify.sanitize('<div class=' /* SECURITY: Review this innerHTML usage */pulse-ring"></div>');
             break;
           case 'cyberpunk':
-            spinner.innerHTML = '
+            spinner.innerHTML = DOMPurify.sanitize('
               <div class=' /* SECURITY: Review this innerHTML usage */cyber-ring"></div>
               <div class="cyber-ring cyber-ring--delay"></div>
-            `;
+            `);
             break;
           default:
-            spinner.innerHTML = '<div class=' /* SECURITY: Review this innerHTML usage */spinner-circle"></div>';
+            spinner.innerHTML = DOMPurify.sanitize('<div class=' /* SECURITY: Review this innerHTML usage */spinner-circle"></div>');
         }
         
         container.appendChild(spinner);

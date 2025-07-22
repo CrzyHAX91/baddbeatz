@@ -601,7 +601,7 @@ function showModal(title, content) {
     
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content';
-    modalContent.innerHTML = content; // This needs to be sanitized separately
+    modalContent.innerHTML = DOMPurify.sanitize(content); // This needs to be sanitized separately
     
     modalElement.appendChild(headerElement);
     modalElement.appendChild(modalContent);
