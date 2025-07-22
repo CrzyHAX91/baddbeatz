@@ -23,6 +23,12 @@ class LiveStreamManager {
                 name: 'Facebook Live',
                 chatEnabled: false,
                 embedUrl: 'https://www.facebook.com/plugins/video.php'
+            },
+            tiktok: {
+                name: 'TikTok Live',
+                chatEnabled: true,
+                embedUrl: 'https://www.tiktok.com/embed/',
+                chatUrl: 'https://www.tiktok.com/live_chat'
             }
         };
         
@@ -107,6 +113,18 @@ class LiveStreamManager {
                         height="480"
                         width="100%"
                         allowfullscreen="true">
+                    </iframe>
+                `;
+                break;
+                
+            case 'tiktok':
+                embedHTML = `
+                    <iframe 
+                        src="https://www.tiktok.com/embed/live/${streamData.id}?autoplay=0&controls=1"
+                        height="480"
+                        width="100%"
+                        allowfullscreen="true"
+                        frameborder="0">
                     </iframe>
                 `;
                 break;
@@ -459,6 +477,14 @@ class LiveStreamManager {
                     duration: 90,
                     genre: 'Rawstyle',
                     platform: 'youtube'
+                },
+                {
+                    id: 'stream3',
+                    title: 'TikTok Hardcore Vibes',
+                    startTime: '2024-01-21T19:30:00Z',
+                    duration: 60,
+                    genre: 'Hardcore',
+                    platform: 'tiktok'
                 }
             ];
             
@@ -638,7 +664,10 @@ class LiveStreamManager {
             { username: 'RaveQueen', message: 'Can you play some harder stuff?' },
             { username: 'BassLover', message: 'The drop was perfect!' },
             { username: 'DJ_Apprentice', message: 'What equipment are you using?' },
-            { username: 'PartyAnimal', message: 'Greetings from Berlin! 🇩🇪' }
+            { username: 'PartyAnimal', message: 'Greetings from Berlin! 🇩🇪' },
+            { username: 'TikTokDancer', message: 'Love this track! 💃' },
+            { username: 'HardcoreFan', message: 'More BPM please! ⚡' },
+            { username: 'EDMVibes', message: 'This is fire! 🔥🔥🔥' }
         ];
         
         let messageIndex = 0;
