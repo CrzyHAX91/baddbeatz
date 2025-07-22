@@ -341,27 +341,13 @@ class BaddBeatzAuth {
     }
 
     async authenticateUser(loginData) {
-        // Simulate API call - replace with actual authentication endpoint
+        // Authentication not configured
         return new Promise((resolve) => {
             setTimeout(() => {
-                // Demo authentication logic
-                if (loginData.email === 'demo@baddbeatz.com' && loginData.password === 'demo123') {
-                    resolve({
-                        success: true,
-                        user: {
-                            id: 1,
-                            email: loginData.email,
-                            artistName: 'Demo User',
-                            role: 'member'
-                        },
-                        redirectUrl: 'dashboard.html'
-                    });
-                } else {
-                    resolve({
-                        success: false,
-                        message: 'Invalid email or password'
-                    });
-                }
+                resolve({
+                    success: false,
+                    message: 'Authentication service not configured. Please contact support.'
+                });
             }, 1500);
         });
     }
