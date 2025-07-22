@@ -27,9 +27,6 @@
     "socket.io": "^4.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "node-rtmp-server": "^2.1.5",
-    "ffmpeg-static": "^5.2.0",
-    "fluent-ffmpeg": "^2.1.2",
     "ws": "^8.13.0"
   },
   "devDependencies": {
