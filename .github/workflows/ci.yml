@@ -95,6 +95,45 @@ jobs:
         # Check for known security vulnerabilities
         safety check --json || echo "Security scan completed with warnings"
 
+    - name: YouTube API Key Incident Validation
+      run: |
+        echo "🔍 Validating YouTube API Key incident remediation..."
+        
+        # Reference to YOUTUBE_API_KEY_UPDATE.md incident
+        if [ -f "YOUTUBE_API_KEY_UPDATE.md" ]; then
+          echo "✅ YouTube API Key incident documentation found"
+          
+          # Ensure the compromised key is not in codebase
+          LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
+          
+          if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git --exclude-dir=node_modules; then
+            echo "❌ CRITICAL: Compromised YouTube API key still found!"
+            echo "::error::YouTube API key security incident not properly remediated"
+            exit 1
+          else
+            echo "✅ YouTube API key properly removed from codebase"
+          fi
+        else
+          echo "⚠️  YOUTUBE_API_KEY_UPDATE.md not found - incident documentation missing"
+        fi
+
+    - name: Basic secret pattern detection
+      run: |
+        echo "🔍 Running basic secret pattern detection..."
+        
+        # Check for common API key patterns (excluding documentation files)
+        if grep -rE "AIza[0-9A-Za-z\\-_]{35}" . --exclude-dir=.git --exclude-dir=node_modules --exclude="*.md" --exclude="*.yml"; then
+          echo "❌ Potential Google API key detected"
+          exit 1
+        fi
+        
+        if grep -rE "sk-[a-zA-Z0-9]{48}" . --exclude-dir=.git --exclude-dir=node_modules --exclude="*.md" --exclude="*.yml"; then
+          echo "❌ Potential OpenAI API key detected"
+          exit 1
+        fi
+        
+        echo "✅ No obvious API key patterns detected in source code"
+
   deploy-preview:
     name: Deploy Preview
     runs-on: ubuntu-latest

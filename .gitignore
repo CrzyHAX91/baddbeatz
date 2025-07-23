@@ -8,6 +8,32 @@ docs/
 .env.local
 .env.production
 .env.staging
+.env.*.local
+
+# API Keys and Secrets (prevent YouTube API key incident recurrence)
+*.key
+*.pem
+*.p12
+*.pfx
+config/secrets.yml
+config/secrets.json
+secrets/
+.secrets
+.secrets.baseline
+
+# Authentication tokens
+auth_token
+access_token
+refresh_token
+jwt_secret
+api_keys.json
+credentials.json
+
+# Cloud service keys
+google-credentials.json
+aws-credentials
+azure-credentials
+gcp-service-account.json
 
 # Database files
 data/app.db
