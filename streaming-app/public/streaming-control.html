@@ -608,9 +608,17 @@
 
             updateTrackDisplay(track) {
                 const trackInfo = document.getElementById('track-info');
+                const escapeHTML = (str) => str.replace(/[&<>"']/g, (char) => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[char]));
+                
                 trackInfo.innerHTML = `
-                    <strong>${track.artist} - ${track.title}</strong>
-                    ${track.genre ? `<br><span style="color: #00ffff;">[${track.genre}]</span>` : ''}
+                    <strong>${escapeHTML(track.artist)} - ${escapeHTML(track.title)}</strong>
+                    ${track.genre ? `<br><span style="color: #00ffff;">[${escapeHTML(track.genre)}]</span>` : ''}
                 `;
             }
 
