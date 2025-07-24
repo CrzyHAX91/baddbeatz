@@ -1,4 +1,5 @@
 // SECURITY: DOMPurify is loaded via CDN in HTML
+// SECURITY: DOMPurify is loaded via CDN in HTML
 // Ensure DOMPurify is available globally
 
 /**
