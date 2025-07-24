@@ -51,10 +51,21 @@ async function optimizeAssets() {
     'forum.html',
     'test.html',
     '404.html',
+    'dashboard.html',
+    'admin.html',
+    'live.html',
+    'privacy.html',
+    'terms.html',
+    'disclaimer.html',
+    'copyright.html',
+    'offline.html',
+    'pwa-test.html',
     'robots.txt',
     'sitemap.xml',
     'CNAME',
-    'favicon.ico'
+    'favicon.ico',
+    'manifest.json',
+    'service-worker.js'
   ];
   
   // Copy static files
