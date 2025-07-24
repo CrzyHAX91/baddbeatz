@@ -38,7 +38,9 @@
   "author": "TheBadGuyHimself",
   "license": "MIT",
   "dependencies": {
-    "dompurify": "^3.2.4"
+    "clean-css": "^5.3.3",
+    "dompurify": "^3.2.4",
+    "terser": "^5.43.1"
   },
   "devDependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",

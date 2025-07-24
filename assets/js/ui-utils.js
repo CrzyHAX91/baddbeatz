@@ -1,6 +1,3 @@
-// SECURITY: Consider using DOMPurify for sanitization
-// import DOMPurify from 'dompurify';
-
 /**
  * UI Utilities for BaddBeatz Website
  * Enhanced user experience components and interactions
@@ -38,10 +35,10 @@
         notification.style.pointerEvents = 'auto';
         
         const icon = this.getIcon(type);
-        notification.innerHTML = DOMPurify.sanitize('
-          <span class=' /* SECURITY: Review this innerHTML usage */notification-icon">${icon}</span>
+        notification.innerHTML = `
+          <span class="notification-icon">${icon}</span>
           <span class="notification-message">${message}</span>
-          <button class="notification-close" aria-label="Close notification">&times);</button>
+          <button class="notification-close" aria-label="Close notification">&times;</button>
         `;
         
         this.container.appendChild(notification);
@@ -118,10 +115,10 @@
         modal.setAttribute('aria-labelledby', 'modal-title');
         modal.setAttribute('aria-modal', 'true');
         
-        modal.innerHTML = DOMPurify.sanitize('
-          <div class=' /* SECURITY: Review this innerHTML usage */modal-header">
+        modal.innerHTML = `
+          <div class="modal-header">
             <h2 id="modal-title" class="modal-title">${title}</h2>
-            <button class="modal-close" aria-label="Close modal">&times);</button>
+            <button class="modal-close" aria-label="Close modal">&times;</button>
           </div>
           <div class="modal-content">
             ${content}
@@ -205,10 +202,10 @@
         
         const loadingEl = document.createElement('div');
         loadingEl.className = 'loading-overlay';
-        loadingEl.innerHTML = DOMPurify.sanitize('
-          <div class=' /* SECURITY: Review this innerHTML usage */loading-spinner"></div>
+        loadingEl.innerHTML = `
+          <div class="loading-spinner"></div>
           <div class="loading-text">${text}</div>
-        `);
+        `;
         
         element.style.position = 'relative';
         element.appendChild(loadingEl);
@@ -334,7 +331,7 @@
             errorEl.className = 'form-error';
             field.parentNode.appendChild(errorEl);
           }
-          errorEl.innerHTML = DOMPurify.sanitize('<span>⚠️</span> ${message}' /* SECURITY: Review this innerHTML usage */);
+          errorEl.innerHTML = `<span>⚠️</span> ${message}`;
           errorEl.classList.add('show');
         } else if (errorEl) {
           errorEl.classList.remove('show');
@@ -350,47 +347,8 @@
           field.parentNode.appendChild(successEl);
         }
         
-        successEl.innerHTML = DOMPurify.sanitize('<span>✅</span> ${message}' /* SECURITY: Review this innerHTML usage */);
+        successEl.innerHTML = `<span>✅</span> ${message}`;
         successEl.classList.add('show');
-      }
-    },
-
-    // Progress indicators
-    progress: {
-      create(container, value = 0, max = 100) {
-        if (typeof container === 'string') {
-          container = document.querySelector(container);
-        }
-        
-        if (!container) return null;
-        
-        const progressBar = document.createElement('div');
-        progressBar.className = 'progress-bar';
-        progressBar.setAttribute('role', 'progressbar');
-        progressBar.setAttribute('aria-valuemin', '0');
-        progressBar.setAttribute('aria-valuemax', max.toString());
-        progressBar.setAttribute('aria-valuenow', value.toString());
-        
-        const progressFill = document.createElement('div');
-        progressFill.className = 'progress-fill';
-        progressFill.style.width = `${(value / max) * 100}%`;
-        
-        progressBar.appendChild(progressFill);
-        container.appendChild(progressBar);
-        
-        return {
-          update(newValue) {
-            const percentage = Math.min(100, Math.max(0, (newValue / max) * 100));
-            progressFill.style.width = `${percentage}%`;
-            progressBar.setAttribute('aria-valuenow', newValue.toString());
-          },
-          
-          remove() {
-            if (progressBar.parentNode) {
-              progressBar.parentNode.removeChild(progressBar);
-            }
-          }
-        };
       }
     },
 
