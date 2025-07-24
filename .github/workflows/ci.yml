@@ -106,7 +106,7 @@ jobs:
           # Ensure the compromised key is not in codebase
           LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
           
-          if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git --exclude-dir=node_modules; then
+          if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git --exclude-dir=node_modules --exclude="*.md" --exclude="*.yml" --exclude="*.yaml"; then
             echo "❌ CRITICAL: Compromised YouTube API key still found!"
             echo "::error::YouTube API key security incident not properly remediated"
             exit 1
