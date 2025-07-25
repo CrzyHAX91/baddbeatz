@@ -115,7 +115,7 @@ class JavaScriptErrorFixer {
     fixUndefinedVariables(content, fileName) {
         let fixed = content;
         
-        // Common undefined variables and their fixes
+        // Common undefined variables and their fixes (predefined safe list)
         const undefinedFixes = {
             'DOMPurify': 'window.DOMPurify || { sanitize: (html) => html }',
             'gtag': 'window.gtag || function() {}',
@@ -124,22 +124,72 @@ class JavaScriptErrorFixer {
         };
         
         Object.entries(undefinedFixes).forEach(([variable, fallback]) => {
-            const regex = new RegExp(`\\b${variable}\\b(?!\\s*[=:])`, 'g');
-            if (regex.test(content)) {
+            // Sanitize variable name to prevent ReDoS attacks
+            const sanitizedVariable = this.sanitizeVariableName(variable);
+            if (!sanitizedVariable) {
+                console.warn(`Skipping invalid variable name: ${variable}`);
+                return;
+            }
+            
+            // Use a safer, more specific search approach
+            if (this.safeVariableSearch(content, sanitizedVariable)) {
                 // Add safety check at the beginning of the file
-                const safetyCheck = `const ${variable} = ${fallback};\n`;
+                const safetyCheck = `const ${sanitizedVariable} = ${fallback};\n`;
                 if (!fixed.includes(safetyCheck)) {
                     fixed = safetyCheck + fixed;
                     
                     this.fixes.push({
                         file: fileName,
-                        fix: `Added safety check for ${variable}`
+                        fix: `Added safety check for ${sanitizedVariable}`
                     });
                 }
             }
         });
         
         return fixed;
+    }
+
+    /**
+     * Sanitize variable name to prevent ReDoS attacks
+     * Only allows valid JavaScript identifier characters
+     */
+    sanitizeVariableName(variable) {
+        // Only allow valid JavaScript identifiers (letters, digits, underscore, dollar)
+        // Must start with letter, underscore, or dollar sign
+        const validIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+        
+        if (!validIdentifier.test(variable)) {
+            return null;
+        }
+        
+        // Additional length check to prevent extremely long variable names
+        if (variable.length > 50) {
+            return null;
+        }
+        
+        return variable;
+    }
+
+    /**
+     * Safe variable search that avoids ReDoS vulnerabilities
+     * Uses string methods instead of complex regex patterns
+     */
+    safeVariableSearch(content, variable) {
+        // Split content into tokens to avoid regex complexity
+        const tokens = content.split(/[\s\(\)\[\]\{\};,\.]/);
+        
+        // Look for exact matches that aren't assignments or property definitions
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i];
+            const nextToken = tokens[i + 1];
+            
+            // Check if token matches variable and next token is not assignment/property
+            if (token === variable && nextToken && !['=', ':'].includes(nextToken.charAt(0))) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     fixMissingDOMPurify(content, fileName) {
@@ -240,6 +290,12 @@ ${report.errors.length > 0 ? report.errors.map(error => `### ${error.file}
 \`\`\`
 ${error.error}
 \`\`\``).join('\n\n') : 'No errors encountered during processing.'}
+
+## Security Improvements
+
+- **ReDoS Protection**: Implemented safe variable name sanitization to prevent Regular Expression Denial of Service attacks
+- **Input Validation**: Added strict validation for JavaScript identifiers
+- **Safe Search**: Replaced complex regex patterns with safer string-based token matching
 
 ## Next Steps
 
