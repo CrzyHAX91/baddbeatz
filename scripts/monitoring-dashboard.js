@@ -2,6 +2,7 @@
  * BaddBeatz Performance Monitoring Dashboard
  * Tracks optimization progress and performance metrics
  */
+const crypto = require('crypto');
 
 class BaddBeatzMonitor {
     constructor() {
@@ -413,12 +414,12 @@ class BaddBeatzMonitor {
             const secureId = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
             return 'session_' + Date.now().toString(36) + '_' + secureId;
         } else {
-            // Fallback for older browsers (still more secure than Math.random)
+            // Fallback for environments without Web Crypto API
+            const crypto = require('crypto');
             const timestamp = Date.now().toString(36);
-            const randomPart = Array.from({length: 16}, () => 
-                Math.floor(Math.random() * 36).toString(36)
-            ).join('');
-            console.warn('BaddBeatz Monitor: Using fallback random generation - consider upgrading browser for better security');
+            const randomBytes = crypto.randomBytes(16);
+            const randomPart = Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+            console.warn('BaddBeatz Monitor: Using Node.js crypto module for secure random generation');
             return 'session_' + timestamp + '_' + randomPart;
         }
     }
