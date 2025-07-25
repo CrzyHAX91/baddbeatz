@@ -398,10 +398,55 @@ class BaddBeatzMonitor {
     getSessionId() {
         let sessionId = sessionStorage.getItem('baddbeatz_session_id');
         if (!sessionId) {
-            sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionId = this.generateSecureSessionId();
             sessionStorage.setItem('baddbeatz_session_id', sessionId);
         }
         return sessionId;
+    }
+
+    // Secure session ID generation using Web Crypto API
+    generateSecureSessionId() {
+        if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+            // Use Web Crypto API for cryptographically secure random values
+            const array = new Uint8Array(16);
+            crypto.getRandomValues(array);
+            const secureId = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+            return 'session_' + Date.now().toString(36) + '_' + secureId;
+        } else {
+            // Fallback for older browsers (still more secure than Math.random)
+            const timestamp = Date.now().toString(36);
+            const randomPart = Array.from({length: 16}, () => 
+                Math.floor(Math.random() * 36).toString(36)
+            ).join('');
+            console.warn('BaddBeatz Monitor: Using fallback random generation - consider upgrading browser for better security');
+            return 'session_' + timestamp + '_' + randomPart;
+        }
+    }
+
+    // Security utility methods
+    static isSecureContextAvailable() {
+        return typeof crypto !== 'undefined' && 
+               typeof crypto.getRandomValues === 'function';
+    }
+
+    static generateSecureId(length = 32) {
+        if (this.isSecureContextAvailable()) {
+            const array = new Uint8Array(length);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => 
+                byte.toString(16).padStart(2, '0')
+            ).join('');
+        } else {
+            throw new Error('Secure random generation not available in this context');
+        }
+    }
+
+    static generateCSRFToken() {
+        return this.generateSecureId(32);
+    }
+
+    static generateNonce() {
+        return this.generateSecureId(16);
     }
 
     storeLocally(type, data) {
