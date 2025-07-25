@@ -11,7 +11,7 @@
 
 ## Detected Secret
 
-- **API Key:** `AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM`
+- **API Key:** `AIzaSy***REDACTED***SlmM`
 - **Detected in:** 3 locations including `baddbeatz-repo/YOUTUBE_API_KEY_UPDATE.md`
 - **Detection Method:** GitHub Secret Scanning (Automated)
 - **Impact Assessment:** Potential unauthorized access to YouTube API services
@@ -68,7 +68,7 @@ The following automated checks now run on every commit:
 
 ```bash
 # Validate YouTube API key remediation
-LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
+LEAKED_KEY="AIzaSy***REDACTED***SlmM"
 if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git; then
   echo "❌ CRITICAL: Leaked YouTube API key still found!"
   exit 1
@@ -106,7 +106,7 @@ gcp-service-account.json
 All API keys now properly use environment variables:
 ```javascript
 // ❌ Before (vulnerable)
-const YOUTUBE_API_KEY = "AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM";
+const YOUTUBE_API_KEY = "AIzaSy***REDACTED***SlmM";
 
 // ✅ After (secure)
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
@@ -157,7 +157,7 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 ### Manual Verification
 ```bash
 # Confirm the leaked key is not in codebase
-grep -r "AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM" . --exclude="YOUTUBE_API_KEY_UPDATE.md"
+grep -r "AIzaSy***REDACTED***SlmM" . --exclude="YOUTUBE_API_KEY_UPDATE.md"
 # Should return no results
 
 # Verify environment variable usage

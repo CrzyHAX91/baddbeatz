@@ -2,7 +2,7 @@
 # https://baddbeatz.com/.well-known/security.txt
 
 Contact: security@baddbeatz.com
-Expires: 2026-07-24T23:47:12.157Z
+Expires: 2026-07-25T02:30:12.827Z
 Preferred-Languages: en, de
 Canonical: https://baddbeatz.com/.well-known/security.txt
 Policy: https://baddbeatz.com/security-policy.html
