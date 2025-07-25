@@ -1,627 +1,486 @@
 /**
- * BaddBeatz Monitoring Dashboard
- * Tracks performance metrics, user engagement, and optimization progress
+ * BaddBeatz Performance Monitoring Dashboard
+ * Tracks optimization progress and performance metrics
  */
 
-class BaddBeatzMonitoring {
+class BaddBeatzMonitor {
     constructor() {
         this.metrics = {
             performance: {},
             userEngagement: {},
-            businessKPIs: {},
+            businessMetrics: {},
             technicalHealth: {}
         };
-        this.alerts = [];
         this.init();
     }
 
     init() {
-        this.setupPerformanceMonitoring();
-        this.setupUserEngagementTracking();
-        this.setupBusinessMetrics();
-        this.setupTechnicalHealthChecks();
-        this.startDashboard();
+        this.setupPerformanceObserver();
+        this.trackUserEngagement();
+        this.monitorTechnicalHealth();
+        this.startReporting();
     }
 
-    // Performance Monitoring
-    setupPerformanceMonitoring() {
-        // Core Web Vitals tracking
-        if ('PerformanceObserver' in window) {
-            const observer = new PerformanceObserver((list) => {
-                for (const entry of list.getEntries()) {
-                    this.trackCoreWebVital(entry);
-                }
-            });
-
-            observer.observe({
-                entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift']
-            });
-        }
-
-        // Page load performance
-        window.addEventListener('load', () => {
-            this.trackPageLoadMetrics();
-        });
-
-        // Bundle size monitoring
-        this.trackBundleSize();
-    }
-
-    trackCoreWebVital(entry) {
-        const metric = {
-            name: entry.name,
-            value: entry.value,
-            rating: this.getRating(entry.name, entry.value),
-            timestamp: Date.now(),
-            page: window.location.pathname
-        };
-
-        this.metrics.performance[entry.name] = metric;
-        
-        // Alert if performance degrades
-        if (metric.rating === 'poor') {
-            this.createAlert('performance', `Poor ${entry.name}: ${entry.value}`, 'high');
-        }
-
-        this.sendToAnalytics('core_web_vital', metric);
-    }
-
-    trackPageLoadMetrics() {
-        const navigation = performance.getEntriesByType('navigation')[0];
-        const metrics = {
-            domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
-            loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
-            firstByte: navigation.responseStart - navigation.requestStart,
-            domInteractive: navigation.domInteractive - navigation.navigationStart,
-            timestamp: Date.now(),
-            page: window.location.pathname
-        };
-
-        this.metrics.performance.pageLoad = metrics;
-        
-        // Alert if page load is too slow
-        if (metrics.loadComplete > 3000) {
-            this.createAlert('performance', `Slow page load: ${metrics.loadComplete}ms`, 'medium');
-        }
-
-        this.sendToAnalytics('page_load_metrics', metrics);
-    }
-
-    trackBundleSize() {
-        // Estimate bundle size from loaded resources
-        const resources = performance.getEntriesByType('resource');
-        let totalSize = 0;
-        let jsSize = 0;
-        let cssSize = 0;
-
-        resources.forEach(resource => {
-            if (resource.transferSize) {
-                totalSize += resource.transferSize;
-                if (resource.name.endsWith('.js')) {
-                    jsSize += resource.transferSize;
-                } else if (resource.name.endsWith('.css')) {
-                    cssSize += resource.transferSize;
+    // Core Web Vitals Monitoring
+    setupPerformanceObserver() {
+        // First Contentful Paint (FCP)
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (entry.name === 'first-contentful-paint') {
+                    this.metrics.performance.fcp = entry.startTime;
+                    this.reportMetric('FCP', entry.startTime);
                 }
             }
-        });
+        }).observe({ entryTypes: ['paint'] });
 
-        const bundleMetrics = {
-            totalSize,
-            jsSize,
-            cssSize,
-            timestamp: Date.now()
-        };
+        // Largest Contentful Paint (LCP)
+        new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            const lastEntry = entries[entries.length - 1];
+            this.metrics.performance.lcp = lastEntry.startTime;
+            this.reportMetric('LCP', lastEntry.startTime);
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
 
-        this.metrics.performance.bundleSize = bundleMetrics;
-        
-        // Alert if bundle size is too large
-        if (totalSize > 500000) { // 500KB threshold
-            this.createAlert('performance', `Large bundle size: ${(totalSize/1024).toFixed(2)}KB`, 'medium');
-        }
+        // First Input Delay (FID)
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                this.metrics.performance.fid = entry.processingStart - entry.startTime;
+                this.reportMetric('FID', this.metrics.performance.fid);
+            }
+        }).observe({ entryTypes: ['first-input'] });
 
-        this.sendToAnalytics('bundle_size', bundleMetrics);
+        // Cumulative Layout Shift (CLS)
+        let clsValue = 0;
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (!entry.hadRecentInput) {
+                    clsValue += entry.value;
+                }
+            }
+            this.metrics.performance.cls = clsValue;
+            this.reportMetric('CLS', clsValue);
+        }).observe({ entryTypes: ['layout-shift'] });
     }
 
     // User Engagement Tracking
-    setupUserEngagementTracking() {
-        this.sessionStart = Date.now();
-        this.pageViews = 0;
-        this.interactions = 0;
+    trackUserEngagement() {
+        let startTime = Date.now();
+        let scrollDepth = 0;
+        let maxScrollDepth = 0;
 
-        // Track page views
-        this.trackPageView();
+        // Time on page
+        window.addEventListener('beforeunload', () => {
+            const timeOnPage = Date.now() - startTime;
+            this.metrics.userEngagement.timeOnPage = timeOnPage;
+            this.reportMetric('TimeOnPage', timeOnPage);
+        });
 
-        // Track user interactions
-        this.setupInteractionTracking();
+        // Scroll depth tracking
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            scrollDepth = Math.round((scrollTop / docHeight) * 100);
+            
+            if (scrollDepth > maxScrollDepth) {
+                maxScrollDepth = scrollDepth;
+                this.metrics.userEngagement.scrollDepth = maxScrollDepth;
+            }
+        });
 
-        // Track session duration
-        this.setupSessionTracking();
-
-        // Track feature usage
-        this.setupFeatureTracking();
+        // Click tracking for key elements
+        this.trackClicks();
+        
+        // Music player engagement
+        this.trackMusicEngagement();
     }
 
-    trackPageView() {
-        this.pageViews++;
-        const pageView = {
-            page: window.location.pathname,
+    trackClicks() {
+        const keyElements = [
+            '.book-now-btn',
+            '.login-btn',
+            '.join-community-btn',
+            '.mobile-menu-toggle',
+            '.social-links a',
+            '.music-player-controls'
+        ];
+
+        keyElements.forEach(selector => {
+            document.addEventListener('click', (e) => {
+                if (e.target.matches(selector)) {
+                    this.reportEvent('click', {
+                        element: selector,
+                        timestamp: Date.now(),
+                        page: window.location.pathname
+                    });
+                }
+            });
+        });
+    }
+
+    trackMusicEngagement() {
+        // SoundCloud player tracking
+        const soundcloudPlayers = document.querySelectorAll('iframe[src*="soundcloud"]');
+        soundcloudPlayers.forEach((player, index) => {
+            // Track when players are in viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.reportEvent('music_player_view', {
+                            player: `soundcloud_${index}`,
+                            timestamp: Date.now()
+                        });
+                    }
+                });
+            });
+            observer.observe(player);
+        });
+
+        // YouTube player tracking
+        const youtubePlayers = document.querySelectorAll('iframe[src*="youtube"]');
+        youtubePlayers.forEach((player, index) => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.reportEvent('video_player_view', {
+                            player: `youtube_${index}`,
+                            timestamp: Date.now()
+                        });
+                    }
+                });
+            });
+            observer.observe(player);
+        });
+    }
+
+    // Technical Health Monitoring
+    monitorTechnicalHealth() {
+        // JavaScript errors
+        window.addEventListener('error', (e) => {
+            this.reportError('javascript_error', {
+                message: e.message,
+                filename: e.filename,
+                lineno: e.lineno,
+                colno: e.colno,
+                stack: e.error ? e.error.stack : null
+            });
+        });
+
+        // Unhandled promise rejections
+        window.addEventListener('unhandledrejection', (e) => {
+            this.reportError('promise_rejection', {
+                reason: e.reason,
+                stack: e.reason ? e.reason.stack : null
+            });
+        });
+
+        // Resource loading errors
+        document.addEventListener('error', (e) => {
+            if (e.target !== window) {
+                this.reportError('resource_error', {
+                    element: e.target.tagName,
+                    source: e.target.src || e.target.href,
+                    message: 'Failed to load resource'
+                });
+            }
+        }, true);
+
+        // Network status
+        window.addEventListener('online', () => {
+            this.reportEvent('network_status', { status: 'online' });
+        });
+
+        window.addEventListener('offline', () => {
+            this.reportEvent('network_status', { status: 'offline' });
+        });
+    }
+
+    // Business Metrics Tracking
+    trackBusinessMetrics() {
+        // Form submissions
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', (e) => {
+                this.reportEvent('form_submission', {
+                    formId: form.id || 'unknown',
+                    formClass: form.className,
+                    timestamp: Date.now()
+                });
+            });
+        });
+
+        // Booking inquiries
+        const bookingButtons = document.querySelectorAll('.book-now-btn, .booking-btn');
+        bookingButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.reportEvent('booking_intent', {
+                    timestamp: Date.now(),
+                    page: window.location.pathname
+                });
+            });
+        });
+
+        // Newsletter signups
+        const newsletterForms = document.querySelectorAll('form[action*="newsletter"], .newsletter-form');
+        newsletterForms.forEach(form => {
+            form.addEventListener('submit', () => {
+                this.reportEvent('newsletter_signup', {
+                    timestamp: Date.now()
+                });
+            });
+        });
+    }
+
+    // PWA Installation Tracking
+    trackPWAInstallation() {
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            deferredPrompt = e;
+            this.reportEvent('pwa_install_prompt_shown', {
+                timestamp: Date.now()
+            });
+        });
+
+        window.addEventListener('appinstalled', () => {
+            this.reportEvent('pwa_installed', {
+                timestamp: Date.now()
+            });
+        });
+
+        // Track install button clicks
+        const installButtons = document.querySelectorAll('.install-app-btn, [data-action="install"]');
+        installButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.reportEvent('pwa_install_clicked', {
+                    timestamp: Date.now()
+                });
+            });
+        });
+    }
+
+    // Reporting Functions
+    reportMetric(name, value) {
+        const data = {
+            metric: name,
+            value: value,
             timestamp: Date.now(),
-            referrer: document.referrer,
+            page: window.location.pathname,
+            userAgent: navigator.userAgent,
+            viewport: {
+                width: window.innerWidth,
+                height: window.innerHeight
+            }
+        };
+
+        // Send to analytics endpoint
+        this.sendToAnalytics('metric', data);
+        
+        // Log to console in development
+        if (this.isDevelopment()) {
+            console.log(`📊 Metric: ${name} = ${value}ms`);
+        }
+    }
+
+    reportEvent(eventName, data) {
+        const eventData = {
+            event: eventName,
+            data: data,
+            timestamp: Date.now(),
+            page: window.location.pathname,
+            sessionId: this.getSessionId()
+        };
+
+        this.sendToAnalytics('event', eventData);
+        
+        if (this.isDevelopment()) {
+            console.log(`🎯 Event: ${eventName}`, data);
+        }
+    }
+
+    reportError(errorType, errorData) {
+        const data = {
+            type: errorType,
+            error: errorData,
+            timestamp: Date.now(),
+            page: window.location.pathname,
             userAgent: navigator.userAgent
         };
 
-        this.metrics.userEngagement.pageViews = this.pageViews;
-        this.sendToAnalytics('page_view', pageView);
-    }
-
-    setupInteractionTracking() {
-        const interactionEvents = ['click', 'scroll', 'keydown', 'touchstart'];
+        this.sendToAnalytics('error', data);
         
-        interactionEvents.forEach(event => {
-            document.addEventListener(event, () => {
-                this.interactions++;
-                this.metrics.userEngagement.interactions = this.interactions;
-            }, { passive: true });
-        });
+        console.error(`❌ Error: ${errorType}`, errorData);
     }
 
-    setupSessionTracking() {
-        // Track session duration every 30 seconds
-        setInterval(() => {
-            const sessionDuration = Date.now() - this.sessionStart;
-            this.metrics.userEngagement.sessionDuration = sessionDuration;
-            
-            this.sendToAnalytics('session_update', {
-                duration: sessionDuration,
-                pageViews: this.pageViews,
-                interactions: this.interactions
-            });
-        }, 30000);
-
-        // Track session end
-        window.addEventListener('beforeunload', () => {
-            const sessionData = {
-                duration: Date.now() - this.sessionStart,
-                pageViews: this.pageViews,
-                interactions: this.interactions,
-                endReason: 'navigation'
-            };
-            
-            this.sendToAnalytics('session_end', sessionData);
-        });
-    }
-
-    setupFeatureTracking() {
-        // Track authentication events
-        this.trackAuthenticationEvents();
-        
-        // Track music player usage
-        this.trackMusicPlayerEvents();
-        
-        // Track live streaming events
-        this.trackLiveStreamingEvents();
-        
-        // Track booking inquiries
-        this.trackBookingEvents();
-    }
-
-    trackAuthenticationEvents() {
-        // Login attempts
-        document.addEventListener('submit', (e) => {
-            if (e.target.id === 'loginForm') {
-                this.sendToAnalytics('auth_attempt', { type: 'login' });
-            } else if (e.target.id === 'registerForm') {
-                this.sendToAnalytics('auth_attempt', { type: 'register' });
-            }
-        });
-    }
-
-    trackMusicPlayerEvents() {
-        // Track play/pause events
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('play-button')) {
-                this.sendToAnalytics('music_player', { action: 'play' });
-            } else if (e.target.classList.contains('pause-button')) {
-                this.sendToAnalytics('music_player', { action: 'pause' });
-            }
-        });
-    }
-
-    trackLiveStreamingEvents() {
-        // Track stream views
-        if (window.location.pathname === '/live.html') {
-            this.sendToAnalytics('live_stream', { action: 'view_start' });
-            
-            // Track stream duration
-            const streamStart = Date.now();
-            window.addEventListener('beforeunload', () => {
-                this.sendToAnalytics('live_stream', { 
-                    action: 'view_end',
-                    duration: Date.now() - streamStart
-                });
-            });
-        }
-    }
-
-    trackBookingEvents() {
-        // Track contact form submissions
-        document.addEventListener('submit', (e) => {
-            if (e.target.classList.contains('booking-form')) {
-                this.sendToAnalytics('booking_inquiry', { 
-                    page: window.location.pathname,
-                    timestamp: Date.now()
-                });
-            }
-        });
-    }
-
-    // Business Metrics
-    setupBusinessMetrics() {
-        this.trackConversionFunnel();
-        this.trackRevenueEvents();
-        this.trackUserRetention();
-    }
-
-    trackConversionFunnel() {
-        const funnelSteps = {
-            'landing': 'Landing page visit',
-            'contact_view': 'Contact form viewed',
-            'contact_submit': 'Contact form submitted',
-            'booking_confirmed': 'Booking confirmed'
-        };
-
-        // Track funnel progression
-        Object.keys(funnelSteps).forEach(step => {
-            if (this.shouldTrackFunnelStep(step)) {
-                this.sendToAnalytics('conversion_funnel', { step, timestamp: Date.now() });
-            }
-        });
-    }
-
-    shouldTrackFunnelStep(step) {
-        switch(step) {
-            case 'landing':
-                return window.location.pathname === '/';
-            case 'contact_view':
-                return window.location.pathname.includes('contact') || 
-                       document.querySelector('.contact-form') !== null;
-            case 'contact_submit':
-                // This would be triggered by form submission event
-                return false;
-            case 'booking_confirmed':
-                // This would be triggered by successful booking
-                return false;
-            default:
-                return false;
-        }
-    }
-
-    trackRevenueEvents() {
-        // Track premium subscription events
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('premium-upgrade')) {
-                this.sendToAnalytics('revenue_event', { 
-                    type: 'premium_click',
-                    value: 9.99
-                });
-            }
-        });
-
-        // Track merchandise clicks
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('merch-item')) {
-                this.sendToAnalytics('revenue_event', { 
-                    type: 'merchandise_click',
-                    item: e.target.dataset.item
-                });
-            }
-        });
-    }
-
-    trackUserRetention() {
-        // Track returning users
-        const lastVisit = localStorage.getItem('lastVisit');
-        const currentVisit = Date.now();
-        
-        if (lastVisit) {
-            const daysSinceLastVisit = (currentVisit - parseInt(lastVisit)) / (1000 * 60 * 60 * 24);
-            this.sendToAnalytics('user_retention', { 
-                daysSinceLastVisit,
-                isReturningUser: true
-            });
-        } else {
-            this.sendToAnalytics('user_retention', { 
-                isReturningUser: false,
-                isNewUser: true
-            });
-        }
-        
-        localStorage.setItem('lastVisit', currentVisit.toString());
-    }
-
-    // Technical Health Checks
-    setupTechnicalHealthChecks() {
-        this.checkJavaScriptErrors();
-        this.checkAPIHealth();
-        this.checkSecurityHeaders();
-        this.checkPWAStatus();
-    }
-
-    checkJavaScriptErrors() {
-        window.addEventListener('error', (event) => {
-            const error = {
-                message: event.message,
-                filename: event.filename,
-                lineno: event.lineno,
-                colno: event.colno,
-                stack: event.error?.stack,
-                timestamp: Date.now()
-            };
-
-            this.createAlert('technical', `JavaScript Error: ${event.message}`, 'high');
-            this.sendToAnalytics('javascript_error', error);
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            const error = {
-                reason: event.reason,
-                promise: event.promise,
-                timestamp: Date.now()
-            };
-
-            this.createAlert('technical', `Unhandled Promise Rejection: ${event.reason}`, 'high');
-            this.sendToAnalytics('promise_rejection', error);
-        });
-    }
-
-    checkAPIHealth() {
-        // Check authentication API
-        fetch('/api/health')
-            .then(response => {
-                this.metrics.technicalHealth.apiStatus = response.ok ? 'healthy' : 'degraded';
-                if (!response.ok) {
-                    this.createAlert('technical', 'API health check failed', 'high');
-                }
-            })
-            .catch(error => {
-                this.metrics.technicalHealth.apiStatus = 'down';
-                this.createAlert('technical', 'API is unreachable', 'critical');
-            });
-    }
-
-    checkSecurityHeaders() {
-        // Check if security headers are present
-        fetch(window.location.href, { method: 'HEAD' })
-            .then(response => {
-                const securityHeaders = [
-                    'content-security-policy',
-                    'x-frame-options',
-                    'x-content-type-options',
-                    'strict-transport-security'
-                ];
-
-                const missingHeaders = securityHeaders.filter(header => 
-                    !response.headers.has(header)
-                );
-
-                if (missingHeaders.length > 0) {
-                    this.createAlert('security', `Missing security headers: ${missingHeaders.join(', ')}`, 'medium');
-                }
-
-                this.metrics.technicalHealth.securityHeaders = {
-                    present: securityHeaders.length - missingHeaders.length,
-                    missing: missingHeaders
-                };
-            });
-    }
-
-    checkPWAStatus() {
-        // Check if service worker is registered
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistration()
-                .then(registration => {
-                    this.metrics.technicalHealth.pwaStatus = registration ? 'active' : 'inactive';
-                });
-        } else {
-            this.metrics.technicalHealth.pwaStatus = 'unsupported';
-        }
-
-        // Check if app is installable
-        window.addEventListener('beforeinstallprompt', () => {
-            this.metrics.technicalHealth.installable = true;
-        });
-    }
-
-    // Utility Methods
-    getRating(metricName, value) {
-        const thresholds = {
-            'largest-contentful-paint': { good: 2500, poor: 4000 },
-            'first-input-delay': { good: 100, poor: 300 },
-            'cumulative-layout-shift': { good: 0.1, poor: 0.25 }
-        };
-
-        const threshold = thresholds[metricName];
-        if (!threshold) return 'unknown';
-
-        if (value <= threshold.good) return 'good';
-        if (value <= threshold.poor) return 'needs-improvement';
-        return 'poor';
-    }
-
-    createAlert(category, message, severity) {
-        const alert = {
-            id: Date.now(),
-            category,
-            message,
-            severity,
-            timestamp: Date.now()
-        };
-
-        this.alerts.push(alert);
-        console.warn(`[BaddBeatz Alert] ${severity.toUpperCase()}: ${message}`);
-        
-        // Send critical alerts immediately
-        if (severity === 'critical') {
-            this.sendToAnalytics('alert', alert);
-        }
-    }
-
-    sendToAnalytics(event, data) {
-        // Send to your analytics service (Google Analytics, custom endpoint, etc.)
+    // Analytics Integration
+    sendToAnalytics(type, data) {
+        // Send to Google Analytics 4
         if (typeof gtag !== 'undefined') {
-            gtag('event', event, data);
+            gtag('event', type, data);
         }
 
         // Send to custom analytics endpoint
-        if (window.customAnalytics) {
-            window.customAnalytics.track(event, data);
+        if (this.shouldSendToCustomEndpoint()) {
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ type, data })
+            }).catch(err => {
+                console.warn('Failed to send analytics data:', err);
+            });
         }
 
-        // Store locally for dashboard
-        const analyticsData = {
-            event,
-            data,
-            timestamp: Date.now()
+        // Store locally for offline analysis
+        this.storeLocally(type, data);
+    }
+
+    // Performance Dashboard
+    generateDashboard() {
+        const dashboard = {
+            performance: {
+                fcp: this.metrics.performance.fcp,
+                lcp: this.metrics.performance.lcp,
+                fid: this.metrics.performance.fid,
+                cls: this.metrics.performance.cls,
+                score: this.calculatePerformanceScore()
+            },
+            engagement: {
+                timeOnPage: this.metrics.userEngagement.timeOnPage,
+                scrollDepth: this.metrics.userEngagement.scrollDepth,
+                interactions: this.getInteractionCount()
+            },
+            technical: {
+                errors: this.getErrorCount(),
+                loadTime: this.getPageLoadTime(),
+                resources: this.getResourceMetrics()
+            }
         };
 
-        const existingData = JSON.parse(localStorage.getItem('baddbeatz_analytics') || '[]');
-        existingData.push(analyticsData);
+        return dashboard;
+    }
+
+    calculatePerformanceScore() {
+        const { fcp, lcp, fid, cls } = this.metrics.performance;
         
-        // Keep only last 1000 events
-        if (existingData.length > 1000) {
-            existingData.splice(0, existingData.length - 1000);
+        let score = 100;
+        
+        // FCP scoring (target: <1.5s)
+        if (fcp > 1500) score -= 20;
+        else if (fcp > 1000) score -= 10;
+        
+        // LCP scoring (target: <2.5s)
+        if (lcp > 2500) score -= 25;
+        else if (lcp > 1500) score -= 15;
+        
+        // FID scoring (target: <100ms)
+        if (fid > 100) score -= 20;
+        else if (fid > 50) score -= 10;
+        
+        // CLS scoring (target: <0.1)
+        if (cls > 0.1) score -= 15;
+        else if (cls > 0.05) score -= 8;
+        
+        return Math.max(0, score);
+    }
+
+    // Utility Functions
+    isDevelopment() {
+        return window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1';
+    }
+
+    shouldSendToCustomEndpoint() {
+        return !this.isDevelopment() && 
+               window.location.protocol === 'https:';
+    }
+
+    getSessionId() {
+        let sessionId = sessionStorage.getItem('baddbeatz_session_id');
+        if (!sessionId) {
+            sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('baddbeatz_session_id', sessionId);
+        }
+        return sessionId;
+    }
+
+    storeLocally(type, data) {
+        const key = `baddbeatz_analytics_${type}`;
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.push(data);
+        
+        // Keep only last 100 entries
+        if (existing.length > 100) {
+            existing.splice(0, existing.length - 100);
         }
         
-        localStorage.setItem('baddbeatz_analytics', JSON.stringify(existingData));
+        localStorage.setItem(key, JSON.stringify(existing));
     }
 
-    // Dashboard Methods
-    startDashboard() {
-        // Create dashboard UI if in development mode
-        if (window.location.hostname === 'localhost' || window.location.search.includes('debug=true')) {
-            this.createDashboardUI();
-        }
-
-        // Update dashboard every 5 seconds
-        setInterval(() => {
-            this.updateDashboard();
-        }, 5000);
+    getInteractionCount() {
+        const interactions = JSON.parse(localStorage.getItem('baddbeatz_analytics_event') || '[]');
+        return interactions.filter(event => 
+            event.data.event === 'click' || 
+            event.data.event === 'form_submission'
+        ).length;
     }
 
-    createDashboardUI() {
-        const dashboard = document.createElement('div');
-        dashboard.id = 'baddbeatz-monitoring-dashboard';
-        dashboard.style.cssText = `
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            width: 300px;
-            background: rgba(0, 0, 0, 0.9);
-            color: #00ffff;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            z-index: 10000;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #00ffff;
-        `;
-
-        dashboard.innerHTML = `
-            <div style="font-weight: bold; margin-bottom: 10px; color: #ff00ff;">
-                🚀 BaddBeatz Monitoring
-            </div>
-            <div id="dashboard-content"></div>
-            <button onclick="this.parentElement.style.display='none'" 
-                    style="position: absolute; top: 5px; right: 5px; background: none; border: none; color: #ff00ff; cursor: pointer;">
-                ✕
-            </button>
-        `;
-
-        document.body.appendChild(dashboard);
+    getErrorCount() {
+        const errors = JSON.parse(localStorage.getItem('baddbeatz_analytics_error') || '[]');
+        return errors.length;
     }
 
-    updateDashboard() {
-        const content = document.getElementById('dashboard-content');
-        if (!content) return;
-
-        const performance = this.metrics.performance;
-        const engagement = this.metrics.userEngagement;
-        const technical = this.metrics.technicalHealth;
-
-        content.innerHTML = `
-            <div style="margin-bottom: 10px;">
-                <strong>⚡ Performance</strong><br>
-                LCP: ${performance['largest-contentful-paint']?.value?.toFixed(0) || 'N/A'}ms 
-                (${performance['largest-contentful-paint']?.rating || 'N/A'})<br>
-                FID: ${performance['first-input-delay']?.value?.toFixed(0) || 'N/A'}ms<br>
-                CLS: ${performance['cumulative-layout-shift']?.value?.toFixed(3) || 'N/A'}<br>
-                Bundle: ${performance.bundleSize ? (performance.bundleSize.totalSize/1024).toFixed(1) + 'KB' : 'N/A'}
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <strong>👥 Engagement</strong><br>
-                Session: ${engagement.sessionDuration ? Math.floor(engagement.sessionDuration/1000) + 's' : 'N/A'}<br>
-                Page Views: ${engagement.pageViews || 0}<br>
-                Interactions: ${engagement.interactions || 0}
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <strong>🔧 Technical</strong><br>
-                API: ${technical.apiStatus || 'Unknown'}<br>
-                PWA: ${technical.pwaStatus || 'Unknown'}<br>
-                Security Headers: ${technical.securityHeaders?.present || 0}/4
-            </div>
-            
-            <div>
-                <strong>🚨 Alerts (${this.alerts.length})</strong><br>
-                ${this.alerts.slice(-3).map(alert => 
-                    `<span style="color: ${this.getAlertColor(alert.severity)}">${alert.message}</span>`
-                ).join('<br>')}
-            </div>
-        `;
+    getPageLoadTime() {
+        const navigation = performance.getEntriesByType('navigation')[0];
+        return navigation ? navigation.loadEventEnd - navigation.fetchStart : 0;
     }
 
-    getAlertColor(severity) {
-        switch(severity) {
-            case 'critical': return '#ff0000';
-            case 'high': return '#ff6600';
-            case 'medium': return '#ffff00';
-            case 'low': return '#00ff00';
-            default: return '#ffffff';
-        }
-    }
-
-    // Public API
-    getMetrics() {
-        return this.metrics;
-    }
-
-    getAlerts() {
-        return this.alerts;
-    }
-
-    clearAlerts() {
-        this.alerts = [];
-    }
-
-    exportData() {
+    getResourceMetrics() {
+        const resources = performance.getEntriesByType('resource');
         return {
-            metrics: this.metrics,
-            alerts: this.alerts,
-            analyticsData: JSON.parse(localStorage.getItem('baddbeatz_analytics') || '[]')
+            total: resources.length,
+            failed: resources.filter(r => r.transferSize === 0).length,
+            slow: resources.filter(r => r.duration > 1000).length
         };
+    }
+
+    // Reporting Schedule
+    startReporting() {
+        // Send dashboard data every 30 seconds
+        setInterval(() => {
+            const dashboard = this.generateDashboard();
+            this.reportEvent('dashboard_update', dashboard);
+        }, 30000);
+
+        // Send summary report every 5 minutes
+        setInterval(() => {
+            this.sendSummaryReport();
+        }, 300000);
+    }
+
+    sendSummaryReport() {
+        const summary = {
+            performance: this.generateDashboard(),
+            timestamp: Date.now(),
+            page: window.location.pathname,
+            session: this.getSessionId()
+        };
+
+        this.sendToAnalytics('summary', summary);
     }
 }
 
-// Initialize monitoring
-const baddBeatzMonitoring = new BaddBeatzMonitoring();
-
-// Make it globally available
-window.BaddBeatzMonitoring = baddBeatzMonitoring;
+// Initialize monitoring when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.baddbeatzMonitor = new BaddBeatzMonitor();
+    
+    // Expose dashboard for debugging
+    window.getBaddBeatzDashboard = () => {
+        return window.baddbeatzMonitor.generateDashboard();
+    };
+});
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = BaddBeatzMonitoring;
+    module.exports = BaddBeatzMonitor;
 }

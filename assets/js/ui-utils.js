@@ -1,493 +1,417 @@
 /**
- * UI Utilities for BaddBeatz Website
- * Enhanced user experience components and interactions
+ * BaddBeatz UI Utilities
+ * Common utility functions for enhanced user experience
  */
 
-(function() {
-  'use strict';
-
-  // Global UI utilities object
-  window.UIUtils = {
-    // Notification system
-    notifications: {
-      container: null,
-      
-      init() {
-        if (!this.container) {
-          this.container = document.createElement('div');
-          this.container.id = 'notification-container';
-          this.container.style.cssText = `
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            pointer-events: none;
-          `;
-          document.body.appendChild(this.container);
-        }
-      },
-      
-      show(message, type = 'info', duration = 5000) {
+class BaddBeatzUI {
+    constructor() {
         this.init();
-        
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.style.pointerEvents = 'auto';
-        
-        const icon = this.getIcon(type);
-        notification.innerHTML = `
-          <span class="notification-icon">${icon}</span>
-          <span class="notification-message">${message}</span>
-          <button class="notification-close" aria-label="Close notification">&times;</button>
-        `;
-        
-        this.container.appendChild(notification);
-        
-        // Animate in
-        requestAnimationFrame(() => {
-          notification.classList.add('show');
-        });
-        
-        // Auto remove
-        const autoRemove = setTimeout(() => {
-          this.remove(notification);
-        }, duration);
-        
-        // Manual close
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => {
-          clearTimeout(autoRemove);
-          this.remove(notification);
-        });
-        
-        return notification;
-      },
-      
-      remove(notification) {
-        notification.classList.remove('show');
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-          }
-        }, 300);
-      },
-      
-      getIcon(type) {
-        const icons = {
-          success: '✅',
-          error: '❌',
-          warning: '⚠️',
-          info: 'ℹ️'
-        };
-        return icons[type] || icons.info;
-      },
-      
-      success(message, duration) {
-        return this.show(message, 'success', duration);
-      },
-      
-      error(message, duration) {
-        return this.show(message, 'error', duration);
-      },
-      
-      warning(message, duration) {
-        return this.show(message, 'warning', duration);
-      },
-      
-      info(message, duration) {
-        return this.show(message, 'info', duration);
-      }
-    },
+    }
 
-    // Modal system
-    modal: {
-      overlay: null,
-      
-      create(title, content, options = {}) {
-        this.close(); // Close any existing modal
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.setAttribute('role', 'dialog');
-        modal.setAttribute('aria-labelledby', 'modal-title');
-        modal.setAttribute('aria-modal', 'true');
-        
-        modal.innerHTML = `
-          <div class="modal-header">
-            <h2 id="modal-title" class="modal-title">${title}</h2>
-            <button class="modal-close" aria-label="Close modal">&times;</button>
-          </div>
-          <div class="modal-content">
-            ${content}
-          </div>
-          ${options.showFooter !== false ? `
-            <div class="modal-footer">
-              ${options.footerContent || ''}
-            </div>
-          ` : ''}
-        `;
-        
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-        
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-        
-        // Show modal
-        requestAnimationFrame(() => {
-          overlay.classList.add('show');
-        });
-        
-        // Close handlers
-        const closeBtn = modal.querySelector('.modal-close');
-        closeBtn.addEventListener('click', () => this.close());
-        
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) {
-            this.close();
-          }
-        });
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', this.handleKeydown);
-        
-        // Focus management
-        const focusableElements = modal.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusableElements.length > 0) {
-          focusableElements[0].focus();
-        }
-        
-        this.overlay = overlay;
-        return overlay;
-      },
-      
-      close() {
-        if (this.overlay) {
-          this.overlay.classList.remove('show');
-          document.body.style.overflow = '';
-          document.removeEventListener('keydown', this.handleKeydown);
-          
-          setTimeout(() => {
-            if (this.overlay && this.overlay.parentNode) {
-              this.overlay.parentNode.removeChild(this.overlay);
-            }
-            this.overlay = null;
-          }, 300);
-        }
-      },
-      
-      handleKeydown(e) {
-        if (e.key === 'Escape') {
-          UIUtils.modal.close();
-        }
-      }
-    },
+    init() {
+        this.setupMobileMenu();
+        this.setupFormEnhancements();
+        this.setupLoadingStates();
+        this.setupErrorHandling();
+        this.setupAccessibility();
+    }
 
-    // Loading states
-    loading: {
-      show(element, text = 'Loading...') {
-        if (typeof element === 'string') {
-          element = document.querySelector(element);
-        }
+    // Mobile Menu Fix
+    setupMobileMenu() {
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle, .hamburger');
+        const mobileMenu = document.querySelector('.mobile-menu, .nav-menu');
         
-        if (!element) return;
-        
-        element.classList.add('loading');
-        element.setAttribute('aria-busy', 'true');
-        
-        const loadingEl = document.createElement('div');
-        loadingEl.className = 'loading-overlay';
-        loadingEl.innerHTML = `
-          <div class="loading-spinner"></div>
-          <div class="loading-text">${text}</div>
-        `;
-        
-        element.style.position = 'relative';
-        element.appendChild(loadingEl);
-      },
-      
-      hide(element) {
-        if (typeof element === 'string') {
-          element = document.querySelector(element);
-        }
-        
-        if (!element) return;
-        
-        element.classList.remove('loading');
-        element.removeAttribute('aria-busy');
-        
-        const loadingEl = element.querySelector('.loading-overlay');
-        if (loadingEl) {
-          loadingEl.remove();
-        }
-      },
-      
-      skeleton(container, count = 3) {
-        if (typeof container === 'string') {
-          container = document.querySelector(container);
-        }
-        
-        if (!container) return;
-        
-        container.textContent = '';
-        
-        for (let i = 0; i < count; i++) {
-          const skeleton = document.createElement('div');
-          skeleton.className = 'loading-skeleton video-skeleton';
-          container.appendChild(skeleton);
-        }
-      }
-    },
+        if (mobileMenuToggle && mobileMenu) {
+            mobileMenuToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle menu visibility
+                mobileMenu.classList.toggle('active');
+                mobileMenuToggle.classList.toggle('active');
+                
+                // Update ARIA attributes
+                const isExpanded = mobileMenu.classList.contains('active');
+                mobileMenuToggle.setAttribute('aria-expanded', isExpanded);
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = isExpanded ? 'hidden' : '';
+                
+                console.log('Mobile menu toggled:', isExpanded);
+            });
 
-    // Form validation
-    forms: {
-      validate(form) {
-        if (typeof form === 'string') {
-          form = document.querySelector(form);
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Close menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                    document.body.style.overflow = '';
+                    mobileMenuToggle.focus();
+                }
+            });
         }
+    }
+
+    // Form Enhancements
+    setupFormEnhancements() {
+        const forms = document.querySelectorAll('form');
         
-        if (!form) return false;
-        
-        let isValid = true;
-        const inputs = form.querySelectorAll('input, textarea, select');
-        
-        inputs.forEach(input => {
-          const isFieldValid = this.validateField(input);
-          if (!isFieldValid) {
-            isValid = false;
-          }
+        forms.forEach(form => {
+            // Add loading states to form submissions
+            form.addEventListener('submit', (e) => {
+                const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Loading...';
+                    submitBtn.classList.add('loading');
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => {
+                    this.validateField(input);
+                });
+
+                input.addEventListener('input', () => {
+                    // Clear error state on input
+                    input.classList.remove('error');
+                    const errorMsg = input.parentNode.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
+                });
+            });
         });
-        
-        return isValid;
-      },
-      
-      validateField(field) {
+    }
+
+    validateField(field) {
         const value = field.value.trim();
-        const type = field.type;
-        const required = field.hasAttribute('required');
-        
         let isValid = true;
         let errorMessage = '';
-        
-        // Required validation
-        if (required && !value) {
-          isValid = false;
-          errorMessage = 'This field is required';
-        }
-        
-        // Type-specific validation
-        if (value && type === 'email') {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
-            isValid = false;
-            errorMessage = 'Please enter a valid email address';
-          }
-        }
-        
-        if (value && type === 'url') {
-          try {
-            new URL(value);
-          } catch {
-            isValid = false;
-            errorMessage = 'Please enter a valid URL';
-          }
-        }
-        
-        // Length validation
-        const minLength = field.getAttribute('minlength');
-        const maxLength = field.getAttribute('maxlength');
-        
-        if (minLength && value.length < parseInt(minLength)) {
-          isValid = false;
-          errorMessage = `Minimum ${minLength} characters required`;
-        }
-        
-        if (maxLength && value.length > parseInt(maxLength)) {
-          isValid = false;
-          errorMessage = `Maximum ${maxLength} characters allowed`;
-        }
-        
-        // Update field appearance
-        field.classList.remove('valid', 'invalid');
-        field.classList.add(isValid ? 'valid' : 'invalid');
-        
-        // Show/hide error message
-        this.showFieldError(field, isValid ? null : errorMessage);
-        
-        return isValid;
-      },
-      
-      showFieldError(field, message) {
-        let errorEl = field.parentNode.querySelector('.form-error');
-        
-        if (message) {
-          if (!errorEl) {
-            errorEl = document.createElement('div');
-            errorEl.className = 'form-error';
-            field.parentNode.appendChild(errorEl);
-          }
-          errorEl.innerHTML = `<span>⚠️</span> ${message}`;
-          errorEl.classList.add('show');
-        } else if (errorEl) {
-          errorEl.classList.remove('show');
-        }
-      },
-      
-      showFieldSuccess(field, message = 'Valid') {
-        let successEl = field.parentNode.querySelector('.form-success');
-        
-        if (!successEl) {
-          successEl = document.createElement('div');
-          successEl.className = 'form-success';
-          field.parentNode.appendChild(successEl);
-        }
-        
-        successEl.innerHTML = `<span>✅</span> ${message}`;
-        successEl.classList.add('show');
-      }
-    },
 
-    // Utility functions
-    utils: {
-      debounce(func, wait) {
+        // Email validation
+        if (field.type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid email address';
+            }
+        }
+
+        // Required field validation
+        if (field.required && !value) {
+            isValid = false;
+            errorMessage = 'This field is required';
+        }
+
+        // Password strength (basic)
+        if (field.type === 'password' && value && value.length < 6) {
+            isValid = false;
+            errorMessage = 'Password must be at least 6 characters';
+        }
+
+        // Update UI based on validation
+        if (!isValid) {
+            field.classList.add('error');
+            this.showFieldError(field, errorMessage);
+        } else {
+            field.classList.remove('error');
+            this.clearFieldError(field);
+        }
+
+        return isValid;
+    }
+
+    showFieldError(field, message) {
+        this.clearFieldError(field);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        field.parentNode.appendChild(errorDiv);
+    }
+
+    clearFieldError(field) {
+        const errorMsg = field.parentNode.querySelector('.error-message');
+        if (errorMsg) {
+            errorMsg.remove();
+        }
+    }
+
+    // Loading States
+    setupLoadingStates() {
+        // Show loading for slow-loading content
+        const loadingElements = document.querySelectorAll('[data-loading]');
+        
+        loadingElements.forEach(element => {
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.className = 'loading-spinner';
+            loadingSpinner.innerHTML = '<div class="spinner"></div>';
+            element.appendChild(loadingSpinner);
+
+            // Hide spinner when content loads
+            element.addEventListener('load', () => {
+                loadingSpinner.remove();
+            });
+        });
+
+        // Add loading states to buttons
+        const buttons = document.querySelectorAll('button[data-async]');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.add('loading');
+                button.disabled = true;
+                
+                // Re-enable after 3 seconds (fallback)
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                }, 3000);
+            });
+        });
+    }
+
+    // Error Handling
+    setupErrorHandling() {
+        // Global error handler
+        window.addEventListener('error', (e) => {
+            console.error('JavaScript Error:', e.error);
+            this.showNotification('An error occurred. Please refresh the page.', 'error');
+        });
+
+        // Unhandled promise rejections
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled Promise Rejection:', e.reason);
+            this.showNotification('Something went wrong. Please try again.', 'error');
+        });
+
+        // Network errors
+        window.addEventListener('offline', () => {
+            this.showNotification('You are offline. Some features may not work.', 'warning');
+        });
+
+        window.addEventListener('online', () => {
+            this.showNotification('Connection restored!', 'success');
+        });
+    }
+
+    // Accessibility Enhancements
+    setupAccessibility() {
+        // Skip to main content link
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.className = 'skip-link';
+        skipLink.textContent = 'Skip to main content';
+        document.body.insertBefore(skipLink, document.body.firstChild);
+
+        // Focus management for modals
+        const modals = document.querySelectorAll('.modal, .popup');
+        modals.forEach(modal => {
+            modal.addEventListener('show', () => {
+                const focusableElements = modal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusableElements.length > 0) {
+                    focusableElements[0].focus();
+                }
+            });
+        });
+
+        // Keyboard navigation for custom elements
+        const customButtons = document.querySelectorAll('[role="button"]');
+        customButtons.forEach(button => {
+            button.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    button.click();
+                }
+            });
+        });
+    }
+
+    // Notification System
+    showNotification(message, type = 'info', duration = 5000) {
+        // Remove existing notifications
+        const existing = document.querySelectorAll('.notification');
+        existing.forEach(n => n.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" aria-label="Close notification">&times;</button>
+            </div>
+        `;
+
+        // Add to page
+        document.body.appendChild(notification);
+
+        // Close button functionality
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => {
+            notification.remove();
+        });
+
+        // Auto-remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, duration);
+        }
+
+        // Animate in
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
+    }
+
+    // Smooth Scrolling
+    enableSmoothScrolling() {
+        const links = document.querySelectorAll('a[href^="#"]');
+        
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    e.preventDefault();
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    }
+
+    // Lazy Loading Images
+    setupLazyLoading() {
+        const images = document.querySelectorAll('img[data-src]');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => {
+            img.classList.add('lazy');
+            imageObserver.observe(img);
+        });
+    }
+
+    // Performance Monitoring Integration
+    trackUserInteraction(element, action) {
+        if (window.baddbeatzMonitor) {
+            window.baddbeatzMonitor.reportEvent('user_interaction', {
+                element: element.tagName.toLowerCase(),
+                action: action,
+                timestamp: Date.now(),
+                page: window.location.pathname
+            });
+        }
+    }
+
+    // Utility Functions
+    debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
-          const later = () => {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
             clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
+            timeout = setTimeout(later, wait);
         };
-      },
-      
-      throttle(func, limit) {
+    }
+
+    throttle(func, limit) {
         let inThrottle;
         return function() {
-          const args = arguments;
-          const context = this;
-          if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-          }
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
         };
-      },
-      
-      copyToClipboard(text) {
-        if (navigator.clipboard) {
-          return navigator.clipboard.writeText(text);
+    }
+
+    // Safe DOM Manipulation (DOMPurify fallback)
+    safeHTML(html) {
+        if (typeof DOMPurify !== 'undefined') {
+            return DOMPurify.sanitize(html);
         } else {
-          // Fallback for older browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = text;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textArea);
-          return Promise.resolve();
+            // Basic sanitization fallback
+            const div = document.createElement('div');
+            div.textContent = html;
+            return div.innerHTML;
         }
-      },
-      
-      formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-      },
-      
-      formatTime(seconds) {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = Math.floor(seconds % 60);
-        
-        if (hours > 0) {
-          return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-        return `${minutes}:${secs.toString().padStart(2, '0')}`;
-      }
-    }
-  };
-
-  // Initialize on DOM ready
-  document.addEventListener('DOMContentLoaded', function() {
-    // Initialize form validation
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-      const inputs = form.querySelectorAll('input, textarea, select');
-      inputs.forEach(input => {
-        input.addEventListener('blur', () => {
-          UIUtils.forms.validateField(input);
-        });
-        
-        input.addEventListener('input', UIUtils.utils.debounce(() => {
-          if (input.classList.contains('invalid')) {
-            UIUtils.forms.validateField(input);
-          }
-        }, 300));
-      });
-      
-      form.addEventListener('submit', (e) => {
-        if (!UIUtils.forms.validate(form)) {
-          e.preventDefault();
-          UIUtils.notifications.error('Please fix the errors in the form');
-        }
-      });
-    });
-
-    // Initialize tooltips
-    const tooltips = document.querySelectorAll('[data-tooltip]');
-    tooltips.forEach(element => {
-      const tooltip = document.createElement('div');
-      tooltip.className = 'tooltip-content';
-      tooltip.textContent = element.getAttribute('data-tooltip');
-      element.classList.add('tooltip');
-      element.appendChild(tooltip);
-    });
-
-    // Initialize lazy loading for images
-    if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const img = entry.target;
-            img.src = img.dataset.src;
-            img.classList.remove('lazy-load');
-            img.classList.add('loaded');
-            observer.unobserve(img);
-          }
-        });
-      });
-
-      const lazyImages = document.querySelectorAll('img[data-src]');
-      lazyImages.forEach(img => {
-        img.classList.add('lazy-load');
-        imageObserver.observe(img);
-      });
     }
 
-    // Keyboard navigation improvements
-    document.addEventListener('keydown', (e) => {
-      // Skip to main content with Alt+M
-      if (e.altKey && e.key === 'm') {
-        const main = document.querySelector('main') || document.querySelector('#main');
-        if (main) {
-          main.focus();
-          main.scrollIntoView();
+    // Device Detection
+    isMobile() {
+        return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    isTouch() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    // Local Storage Helpers
+    setStorage(key, value) {
+        try {
+            localStorage.setItem(`baddbeatz_${key}`, JSON.stringify(value));
+        } catch (e) {
+            console.warn('LocalStorage not available:', e);
         }
-      }
-    });
-  });
+    }
 
-  // Export for testing
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = UIUtils;
-  }
+    getStorage(key) {
+        try {
+            const item = localStorage.getItem(`baddbeatz_${key}`);
+            return item ? JSON.parse(item) : null;
+        } catch (e) {
+            console.warn('LocalStorage read error:', e);
+            return null;
+        }
+    }
+}
 
-})();
+// Initialize UI utilities when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.baddbeatzUI = new BaddBeatzUI();
+    
+    // Enable additional features
+    window.baddbeatzUI.enableSmoothScrolling();
+    window.baddbeatzUI.setupLazyLoading();
+    
+    console.log('🎵 BaddBeatz UI utilities initialized');
+});
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BaddBeatzUI;
+}
