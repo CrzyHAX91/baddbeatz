@@ -26,21 +26,20 @@ jobs:
         submodules: recursive
         fetch-depth: 0
     
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
+        cache-dependency-path: 'baddbeatz/package-lock.json'
     
     - name: Install Node dependencies
       run: |
-        cd baddbeatz
-        if [ -f package.json ]; then npm ci; fi
+        if [ -f "baddbeatz/package.json" ]; then
+          cd baddbeatz
+          npm ci
+          cd ..
+        fi
       continue-on-error: true
     
     - name: Build static site
@@ -48,21 +47,21 @@ jobs:
         # Create docs directory for deployment
         mkdir -p docs
         
+        # Copy all HTML files from baddbeatz root
+        echo "Copying HTML files..."
+        cp baddbeatz/*.html docs/ 2>/dev/null || true
+        
         # Copy assets directory if it exists
         if [ -d "baddbeatz/assets" ]; then
           echo "Copying assets directory..."
           cp -r baddbeatz/assets docs/
         fi
         
-        # Copy all HTML files from baddbeatz root
-        echo "Copying HTML files..."
-        find baddbeatz -maxdepth 1 -name "*.html" -exec cp {} docs/ \; 2>/dev/null || true
-        
         # Copy other static files from baddbeatz root
-        for file in baddbeatz/robots.txt baddbeatz/sitemap.xml baddbeatz/CNAME baddbeatz/manifest.json baddbeatz/service-worker.js baddbeatz/offline.html baddbeatz/favicon.ico; do
-          if [ -f "$file" ]; then
+        for file in robots.txt sitemap.xml CNAME manifest.json service-worker.js offline.html favicon.ico; do
+          if [ -f "baddbeatz/$file" ]; then
             echo "Copying $file..."
-            cp "$file" docs/
+            cp "baddbeatz/$file" docs/
           fi
         done
         
@@ -95,10 +94,18 @@ jobs:
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>BaddBeatz</title>
+            <link rel="stylesheet" href="assets/css/style.css">
         </head>
         <body>
-            <h1>BaddBeatz</h1>
-            <p>Welcome to BaddBeatz - Your Music Platform</p>
+            <div class="container">
+                <h1>BaddBeatz</h1>
+                <p>Welcome to BaddBeatz - Your Music Platform</p>
+                <nav>
+                    <a href="music.html">Music</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="login.html">Login</a>
+                </nav>
+            </div>
         </body>
         </html>
         EOF
@@ -125,6 +132,10 @@ jobs:
         echo "✅ Build validation completed"
         echo "Contents of docs directory:"
         ls -la docs/
+        
+        # Show file count
+        echo "Total files in docs:"
+        find docs -type f | wc -l
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -174,3 +185,4 @@ jobs:
         projectName: baddbeatz
         directory: ./artifact
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
