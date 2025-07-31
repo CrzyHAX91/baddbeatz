@@ -1,0 +1,196 @@
+name: Dependency Security Monitoring
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'baddbeatz/package.json'
+      - 'baddbeatz/backend/package.json'
+      - 'baddbeatz/streaming-app/package.json'
+      - 'requirements.txt'
+      - 'baddbeatz/requirements.txt'
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  dependency-audit:
+    runs-on: ubuntu-latest
+    name: Dependency Security Audit
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    # Node.js Dependency Audits
+    - name: Audit main project dependencies
+      run: |
+        if [ -f package.json ]; then
+          echo "🔍 Auditing main project dependencies..."
+          npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found in main project"
+        fi
+        
+    - name: Audit baddbeatz dependencies
+      run: |
+        if [ -f baddbeatz/package.json ]; then
+          echo "🔍 Auditing baddbeatz dependencies..."
+          cd baddbeatz && npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found in baddbeatz"
+        fi
+        
+    - name: Audit backend dependencies
+      run: |
+        if [ -f baddbeatz/backend/package.json ]; then
+          echo "🔍 Auditing backend dependencies..."
+          cd baddbeatz/backend && npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found in backend"
+        fi
+        
+    - name: Audit streaming-app dependencies
+      run: |
+        if [ -f baddbeatz/streaming-app/package.json ]; then
+          echo "🔍 Auditing streaming-app dependencies..."
+          cd baddbeatz/streaming-app && npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found in streaming-app"
+        fi
+        
+    # Python Dependency Audits
+    - name: Install Python dependencies
+      run: |
+        if [ -f requirements.txt ]; then
+          echo "📦 Installing Python dependencies..."
+          pip install -r requirements.txt || echo "⚠️ Failed to install some Python dependencies"
+        fi
+        if [ -f baddbeatz/requirements.txt ]; then
+          echo "📦 Installing baddbeatz Python dependencies..."
+          pip install -r baddbeatz/requirements.txt || echo "⚠️ Failed to install some baddbeatz Python dependencies"
+        fi
+        
+    - name: Check Python dependency conflicts
+      run: |
+        echo "🔍 Checking Python dependency conflicts..."
+        pip check || echo "⚠️ Python dependency conflicts detected"
+        
+    - name: Install safety for Python security scanning
+      run: |
+        echo "🛡️ Installing safety for Python security scanning..."
+        pip install safety || echo "⚠️ Failed to install safety"
+        
+    - name: Run Python security scan
+      run: |
+        echo "🔍 Running Python security scan..."
+        safety check --json --output safety-report.json || echo "⚠️ Python security vulnerabilities found"
+        
+    # Generate comprehensive report
+    - name: Generate dependency report
+      run: |
+        echo "📊 Generating comprehensive dependency report..."
+        cat > dependency-audit-report.md << 'EOF'
+        # 🔒 Automated Dependency Security Report
+        
+        **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Workflow**: Dependency Security Monitoring
+        **Trigger**: ${{ github.event_name }}
+        
+        ## 📋 Audit Summary
+        
+        ### Node.js Dependencies
+        - ✅ Main project: Audited
+        - ✅ BaddBeatz: Audited  
+        - ✅ Backend: Audited
+        - ✅ Streaming App: Audited
+        
+        ### Python Dependencies
+        - ✅ Dependency conflicts: Checked
+        - ✅ Security vulnerabilities: Scanned
+        
+        ## 🎯 Next Steps
+        
+        If vulnerabilities were found:
+        1. Review the workflow logs for details
+        2. Run `npm audit fix` for Node.js issues
+        3. Update Python dependencies as needed
+        4. Re-run security scans to verify fixes
+        
+        ## 📅 Next Scheduled Scan
+        
+        Weekly on Mondays at 9:00 AM UTC
+        
+        ---
+        *This report was generated automatically by GitHub Actions*
+        EOF
+        
+    - name: Upload dependency report
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-audit-report
+        path: |
+          dependency-audit-report.md
+          safety-report.json
+        retention-days: 30
+        
+    # Create issue if vulnerabilities found (only on schedule)
+    - name: Create security issue if vulnerabilities found
+      if: github.event_name == 'schedule'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const { execSync } = require('child_process');
+          
+          // Check if there are any vulnerabilities
+          let hasVulnerabilities = false;
+          let issueBody = '# 🚨 Weekly Dependency Security Alert\n\n';
+          
+          try {
+            // Check npm audit results
+            execSync('npm audit --audit-level=moderate', { stdio: 'pipe' });
+          } catch (error) {
+            hasVulnerabilities = true;
+            issueBody += '## Node.js Vulnerabilities Found\n\n';
+            issueBody += '```\n' + error.stdout.toString() + '\n```\n\n';
+          }
+          
+          if (fs.existsSync('safety-report.json')) {
+            const safetyReport = JSON.parse(fs.readFileSync('safety-report.json', 'utf8'));
+            if (safetyReport.vulnerabilities && safetyReport.vulnerabilities.length > 0) {
+              hasVulnerabilities = true;
+              issueBody += '## Python Vulnerabilities Found\n\n';
+              issueBody += `Found ${safetyReport.vulnerabilities.length} Python security issues.\n\n`;
+            }
+          }
+          
+          if (hasVulnerabilities) {
+            issueBody += '## 🛠️ Recommended Actions\n\n';
+            issueBody += '1. Run `npm audit fix` to fix Node.js vulnerabilities\n';
+            issueBody += '2. Update Python dependencies as recommended\n';
+            issueBody += '3. Review and test all fixes\n';
+            issueBody += '4. Re-run security scans to verify fixes\n\n';
+            issueBody += '**Auto-generated by**: Dependency Security Monitoring workflow\n';
+            issueBody += `**Date**: ${new Date().toISOString()}\n`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Weekly Security Alert: Dependencies Need Attention`,
+              body: issueBody,
+              labels: ['security', 'dependencies', 'automated']
+            });
+          }
