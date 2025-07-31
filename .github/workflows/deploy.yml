@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages and Cloudflare Pages
 
 on:
   push:
@@ -37,34 +37,29 @@ jobs:
         node-version: '20'
         cache: 'npm'
     
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      continue-on-error: true
-    
     - name: Install Node dependencies
       run: |
+        cd baddbeatz
         if [ -f package.json ]; then npm ci; fi
       continue-on-error: true
     
     - name: Build static site
       run: |
-        # Create docs directory for GitHub Pages
+        # Create docs directory for deployment
         mkdir -p docs
         
         # Copy assets directory if it exists
-        if [ -d "assets" ]; then
+        if [ -d "baddbeatz/assets" ]; then
           echo "Copying assets directory..."
-          cp -r assets docs/
+          cp -r baddbeatz/assets docs/
         fi
         
-        # Copy all HTML files
+        # Copy all HTML files from baddbeatz root
         echo "Copying HTML files..."
-        find . -maxdepth 1 -name "*.html" -exec cp {} docs/ \; 2>/dev/null || true
+        find baddbeatz -maxdepth 1 -name "*.html" -exec cp {} docs/ \; 2>/dev/null || true
         
-        # Copy other static files
-        for file in robots.txt sitemap.xml CNAME manifest.json service-worker.js offline.html favicon.ico; do
+        # Copy other static files from baddbeatz root
+        for file in baddbeatz/robots.txt baddbeatz/sitemap.xml baddbeatz/CNAME baddbeatz/manifest.json baddbeatz/service-worker.js baddbeatz/offline.html baddbeatz/favicon.ico; do
           if [ -f "$file" ]; then
             echo "Copying $file..."
             cp "$file" docs/
@@ -72,29 +67,22 @@ jobs:
         done
         
         # Copy data directory if it exists
-        if [ -d "data" ]; then
+        if [ -d "baddbeatz/data" ]; then
           echo "Copying data directory..."
-          cp -r data docs/
+          cp -r baddbeatz/data docs/
         fi
-        
-        # Copy LiteLLM documentation files
-        for file in LITELLM_CONTEXT_WINDOW_FIX_GUIDE.md QUICK_FIX_REFERENCE.md COMPREHENSIVE_LITELLM_TESTING_REPORT.md; do
-          if [ -f "$file" ]; then
-            echo "Copying $file..."
-            cp "$file" docs/
-          fi
-        done
         
         # Generate any dynamic content using Node.js if script exists
-        if [ -f "scripts/build-docs.cjs" ]; then
+        if [ -f "baddbeatz/scripts/build-docs.cjs" ]; then
           echo "Running build script..."
-          node scripts/build-docs.cjs || true
+          cd baddbeatz && node scripts/build-docs.cjs || true
+          cd ..
         fi
         
-        # Ensure index.html exists
-        if [ ! -f "docs/index.html" ] && [ -f "index.html" ]; then
+        # Ensure index.html exists in docs
+        if [ ! -f "docs/index.html" ] && [ -f "baddbeatz/index.html" ]; then
           echo "Copying index.html as fallback..."
-          cp index.html docs/
+          cp baddbeatz/index.html docs/
         fi
         
         # Create a simple index.html if none exists
@@ -115,8 +103,26 @@ jobs:
         </html>
         EOF
         fi
+    
+    - name: Validate build
+      run: |
+        echo "Validating build output..."
         
-        # List contents for debugging
+        # Check if required files exist
+        if [ ! -f "docs/index.html" ]; then
+          echo "❌ Error: index.html not found"
+          exit 1
+        fi
+        
+        if [ ! -d "docs/assets" ]; then
+          echo "⚠️ Warning: assets directory not found"
+        fi
+        
+        if [ ! -f "docs/robots.txt" ]; then
+          echo "⚠️ Warning: robots.txt not found"
+        fi
+        
+        echo "✅ Build validation completed"
         echo "Contents of docs directory:"
         ls -la docs/
     
@@ -128,7 +134,7 @@ jobs:
       with:
         path: './docs'
 
-  deploy:
+  deploy_github:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -139,3 +145,32 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+
+  deploy_cloudflare:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: github-pages
+        path: ./artifact
+    
+    - name: Extract artifact
+      run: |
+        cd artifact
+        tar -xf artifact.tar
+        ls -la
+    
+    - name: Publish to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CF_API_TOKEN }}
+        accountId: ${{ secrets.CF_ACCOUNT_ID }}
+        projectName: baddbeatz
+        directory: ./artifact
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}

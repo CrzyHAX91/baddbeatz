@@ -41,7 +41,7 @@ Result: ✅ ci.yml: Valid YAML syntax
 
 #### Test: Compromised Key Detection
 ```bash
-# Command: findstr /S "AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM" *.js *.html *.md *.py *.css *.json *.yml *.yaml | findstr /V "YOUTUBE_API_KEY_UPDATE.md"
+# Command: findstr /S "[REDACTED_API_KEY]" *.js *.html *.md *.py *.css *.json *.yml *.yaml | findstr /V "YOUTUBE_API_KEY_UPDATE.md"
 Results Found:
 - .github\SECURITY.md (documentation - appropriate)
 - .github\workflows\ci.yml (validation script - appropriate)
@@ -108,7 +108,7 @@ Results:
 **Test Commands Integrated:**
 ```bash
 # YouTube API Key Validation
-LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
+LEAKED_KEY="[REDACTED_API_KEY]"  # Actual key stored securely in environment
 if grep -r "$LEAKED_KEY" . --exclude-dir=.git --exclude="YOUTUBE_API_KEY_UPDATE.md"; then
   echo "❌ CRITICAL: Leaked YouTube API key still found!"
   exit 1

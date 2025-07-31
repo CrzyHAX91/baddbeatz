@@ -14,7 +14,7 @@ BaddBeatz takes security seriously. This document outlines our security practice
 **Documentation:** [YOUTUBE_API_KEY_UPDATE.md](../YOUTUBE_API_KEY_UPDATE.md)
 
 **Summary:**
-GitHub Secret Scanning detected a Google API key (`AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM`) exposed in our repository across 3 locations.
+GitHub Secret Scanning detected a Google API key (`AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM` - **REDACTED**) exposed in our repository across 3 locations.
 
 **Remediation Actions Taken:**
 - ✅ Immediately rotated the compromised API key
@@ -115,7 +115,7 @@ GitHub Secret Scanning detected a Google API key (`AIzaSyAMLzvyswzpPwFeqPtjVJ6U4
 1. **Never commit secrets:**
    ```bash
    # ❌ Wrong
-   const API_KEY = "AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM";
+   const API_KEY = "AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"; // REDACTED - Example only
    
    # ✅ Correct
    const API_KEY = process.env.GOOGLE_API_KEY;

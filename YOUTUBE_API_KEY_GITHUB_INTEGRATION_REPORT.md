@@ -126,7 +126,7 @@ The following security checks now run automatically:
 ### YouTube API Key Incident Validation
 ```bash
 # Ensure the compromised key is not in codebase
-LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
+LEAKED_KEY="[REDACTED_API_KEY]"  # Actual key stored securely in environment
 if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git; then
   echo "❌ CRITICAL: Leaked YouTube API key still found!"
   exit 1

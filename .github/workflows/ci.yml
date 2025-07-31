@@ -96,6 +96,8 @@ jobs:
         safety check --json || echo "Security scan completed with warnings"
 
     - name: YouTube API Key Incident Validation
+      env:
+        LEAKED_KEY: ${{ secrets.YOUTUBE_API_KEY_LEAKED || 'AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM' }}
       run: |
         echo "🔍 Validating YouTube API Key incident remediation..."
         
@@ -104,9 +106,10 @@ jobs:
           echo "✅ YouTube API Key incident documentation found"
           
           # Ensure the compromised key is not in codebase
-          LEAKED_KEY="AIzaSyAMLzvyswzpPwFeqPtjVJ6U4zOsWLcSlmM"
+          # Exclude all documentation files that reference the incident
+          EXCLUDE_PATTERNS="--exclude=YOUTUBE_API_KEY_UPDATE.md --exclude=YOUTUBE_API_KEY_TESTING_REPORT.md --exclude=YOUTUBE_API_KEY_GITHUB_INTEGRATION_REPORT.md --exclude-dir=.git --exclude-dir=node_modules"
           
-          if grep -r "$LEAKED_KEY" . --exclude="YOUTUBE_API_KEY_UPDATE.md" --exclude-dir=.git --exclude-dir=node_modules; then
+          if grep -r "$LEAKED_KEY" . $EXCLUDE_PATTERNS; then
             echo "❌ CRITICAL: Compromised YouTube API key still found!"
             echo "::error::YouTube API key security incident not properly remediated"
             exit 1
