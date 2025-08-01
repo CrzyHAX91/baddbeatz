@@ -34,49 +34,88 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Limit payload size
 
 // Rate limiting
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // limit each IP to 5 requests per windowMs
-  message: 'Too many login attempts, please try again later'
+  message: 'Too many login attempts, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // In-memory user store (replace with database in production)
 const users = new Map();
 
 // JWT secret (use environment variable in production)
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-this';
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  console.warn('⚠️  WARNING: Using default JWT secret. Set JWT_SECRET environment variable in production!');
+  return 'your-super-secret-key-change-this-in-production';
+})();
+
+// Input validation helpers
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePassword = (password) => {
+  // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+
+const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return input;
+  return input.trim().replace(/[<>]/g, '');
+};
 
 // Register endpoint
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    // Input sanitization
+    const sanitizedUsername = sanitizeInput(username);
+    const sanitizedEmail = sanitizeInput(email);
+    
     // Validation
-    if (!username || !email || !password) {
+    if (!sanitizedUsername || !sanitizedEmail || !password) {
       return res.status(400).json({ error: 'All fields are required' });
     }
     
-    if (password.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    if (!validateEmail(sanitizedEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address' });
+    }
+    
+    if (!validatePassword(password)) {
+      return res.status(400).json({ 
+        error: 'Password must be at least 8 characters with uppercase, lowercase, and number' 
+      });
+    }
+    
+    if (sanitizedUsername.length < 2 || sanitizedUsername.length > 50) {
+      return res.status(400).json({ error: 'Username must be between 2 and 50 characters' });
     }
     
     // Check if user exists
-    if (users.has(email)) {
+    if (users.has(sanitizedEmail)) {
       return res.status(409).json({ error: 'User already exists' });
     }
     
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash password with higher salt rounds for better security
+    const hashedPassword = await bcrypt.hash(password, 12);
     
-    // Store user
-    users.set(email, {
-      username,
-      email,
+    // Store user with sanitized data
+    users.set(sanitizedEmail, {
+      username: sanitizedUsername,
+      email: sanitizedEmail,
       password: hashedPassword,
-      createdAt: new Date()
+      createdAt: new Date(),
+      lastLogin: null,
+      loginAttempts: 0,
+      lockedUntil: null
     });
     
     res.status(201).json({ message: 'User created successfully' });
@@ -91,31 +130,68 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    // Input sanitization
+    const sanitizedEmail = sanitizeInput(email);
+    
     // Validation
-    if (!email || !password) {
+    if (!sanitizedEmail || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
     
+    if (!validateEmail(sanitizedEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address' });
+    }
+    
     // Get user
-    const user = users.get(email);
+    const user = users.get(sanitizedEmail);
     if (!user) {
+      // Use same error message to prevent user enumeration
       return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Check if account is locked
+    if (user.lockedUntil && user.lockedUntil > Date.now()) {
+      const lockTimeRemaining = Math.ceil((user.lockedUntil - Date.now()) / 1000 / 60);
+      return res.status(423).json({ 
+        error: `Account locked. Try again in ${lockTimeRemaining} minutes.` 
+      });
     }
     
     // Verify password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
+      // Increment failed login attempts
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      
+      // Lock account after 5 failed attempts for 15 minutes
+      if (user.loginAttempts >= 5) {
+        user.lockedUntil = Date.now() + (15 * 60 * 1000); // 15 minutes
+        return res.status(423).json({ 
+          error: 'Account locked due to too many failed attempts. Try again in 15 minutes.' 
+        });
+      }
+      
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    // Generate JWT
+    // Reset login attempts on successful login
+    user.loginAttempts = 0;
+    user.lockedUntil = null;
+    user.lastLogin = new Date();
+    
+    // Generate JWT with more secure payload
     const token = jwt.sign(
       { 
         email: user.email, 
-        username: user.username 
+        username: user.username,
+        iat: Math.floor(Date.now() / 1000),
       },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { 
+        expiresIn: '24h',
+        issuer: 'baddbeatz-auth',
+        audience: 'baddbeatz-app'
+      }
     );
     
     res.json({
@@ -140,9 +216,15 @@ app.get('/api/auth/verify', (req, res) => {
   }
   
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET, {
+      issuer: 'baddbeatz-auth',
+      audience: 'baddbeatz-app'
+    });
     res.json({ valid: true, user: decoded });
   } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired' });
+    }
     res.status(401).json({ error: 'Invalid token' });
   }
 });
@@ -156,6 +238,12 @@ app.post('/api/auth/logout', (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date() });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Server error:', error);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 // Start server

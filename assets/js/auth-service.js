@@ -4,7 +4,27 @@ class AuthService {
         this.baseURL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3001/api/auth' 
             : 'https://api.baddbeatz.com/api/auth';
-        this.token = localStorage.getItem('authToken');
+        
+        // Check token from sessionStorage and validate expiry
+        this.token = this.getValidToken();
+    }
+
+    // Get valid token (check expiry)
+    getValidToken() {
+        const token = sessionStorage.getItem('authToken');
+        const expiry = sessionStorage.getItem('tokenExpiry');
+        
+        if (!token || !expiry) {
+            return null;
+        }
+        
+        // Check if token is expired
+        if (Date.now() > parseInt(expiry)) {
+            this.logout();
+            return null;
+        }
+        
+        return token;
     }
 
     // Register new user
@@ -48,10 +68,20 @@ class AuthService {
                 throw new Error(data.error || 'Login failed');
             }
 
-            // Store token and user info
+            // Store token and user info securely
             this.token = data.token;
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // Use sessionStorage for tokens (more secure than localStorage)
+            sessionStorage.setItem('authToken', data.token);
+            sessionStorage.setItem('tokenExpiry', (Date.now() + (24 * 60 * 60 * 1000)).toString()); // 24 hours
+            
+            // Store non-sensitive user info in localStorage
+            const safeUserData = {
+                username: data.user.username,
+                email: data.user.email,
+                // Don't store sensitive data
+            };
+            localStorage.setItem('user', JSON.stringify(safeUserData));
 
             return { success: true, user: data.user };
         } catch (error) {
@@ -102,9 +132,10 @@ class AuthService {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            // Clear local storage
+            // Clear all stored data
             this.token = null;
-            localStorage.removeItem('authToken');
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('tokenExpiry');
             localStorage.removeItem('user');
             
             // Redirect to login
@@ -120,12 +151,13 @@ class AuthService {
 
     // Check if user is authenticated
     isAuthenticated() {
-        return !!this.token;
+        return !!this.token && this.getValidToken();
     }
 
     // Get auth headers for API requests
     getAuthHeaders() {
-        return this.token ? { 'Authorization': `Bearer ${this.token}` } : {};
+        const validToken = this.getValidToken();
+        return validToken ? { 'Authorization': `Bearer ${validToken}` } : {};
     }
 
     // Protected route guard
