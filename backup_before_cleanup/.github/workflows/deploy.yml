@@ -1,0 +1,188 @@
+name: Deploy to GitHub Pages and Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'baddbeatz/package-lock.json'
+    
+    - name: Install Node dependencies
+      run: |
+        if [ -f "baddbeatz/package.json" ]; then
+          cd baddbeatz
+          npm ci
+          cd ..
+        fi
+      continue-on-error: true
+    
+    - name: Build static site
+      run: |
+        # Create docs directory for deployment
+        mkdir -p docs
+        
+        # Copy all HTML files from baddbeatz root
+        echo "Copying HTML files..."
+        cp baddbeatz/*.html docs/ 2>/dev/null || true
+        
+        # Copy assets directory if it exists
+        if [ -d "baddbeatz/assets" ]; then
+          echo "Copying assets directory..."
+          cp -r baddbeatz/assets docs/
+        fi
+        
+        # Copy other static files from baddbeatz root
+        for file in robots.txt sitemap.xml CNAME manifest.json service-worker.js offline.html favicon.ico; do
+          if [ -f "baddbeatz/$file" ]; then
+            echo "Copying $file..."
+            cp "baddbeatz/$file" docs/
+          fi
+        done
+        
+        # Copy data directory if it exists
+        if [ -d "baddbeatz/data" ]; then
+          echo "Copying data directory..."
+          cp -r baddbeatz/data docs/
+        fi
+        
+        # Generate any dynamic content using Node.js if script exists
+        if [ -f "baddbeatz/scripts/build-docs.cjs" ]; then
+          echo "Running build script..."
+          cd baddbeatz && node scripts/build-docs.cjs || true
+          cd ..
+        fi
+        
+        # Ensure index.html exists in docs
+        if [ ! -f "docs/index.html" ] && [ -f "baddbeatz/index.html" ]; then
+          echo "Copying index.html as fallback..."
+          cp baddbeatz/index.html docs/
+        fi
+        
+        # Create a simple index.html if none exists
+        if [ ! -f "docs/index.html" ]; then
+          echo "Creating fallback index.html..."
+          cat > docs/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>BaddBeatz</title>
+            <link rel="stylesheet" href="assets/css/style.css">
+        </head>
+        <body>
+            <div class="container">
+                <h1>BaddBeatz</h1>
+                <p>Welcome to BaddBeatz - Your Music Platform</p>
+                <nav>
+                    <a href="music.html">Music</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="login.html">Login</a>
+                </nav>
+            </div>
+        </body>
+        </html>
+        EOF
+        fi
+    
+    - name: Validate build
+      run: |
+        echo "Validating build output..."
+        
+        # Check if required files exist
+        if [ ! -f "docs/index.html" ]; then
+          echo "❌ Error: index.html not found"
+          exit 1
+        fi
+        
+        if [ ! -d "docs/assets" ]; then
+          echo "⚠️ Warning: assets directory not found"
+        fi
+        
+        if [ ! -f "docs/robots.txt" ]; then
+          echo "⚠️ Warning: robots.txt not found"
+        fi
+        
+        echo "✅ Build validation completed"
+        echo "Contents of docs directory:"
+        ls -la docs/
+        
+        # Show file count
+        echo "Total files in docs:"
+        find docs -type f | wc -l
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './docs'
+
+  deploy_github:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  deploy_cloudflare:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: github-pages
+        path: ./artifact
+    
+    - name: Extract artifact
+      run: |
+        cd artifact
+        tar -xf artifact.tar
+        ls -la
+    
+    - name: Publish to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CF_API_TOKEN }}
+        accountId: ${{ secrets.CF_ACCOUNT_ID }}
+        projectName: baddbeatz
+        directory: ./artifact
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
