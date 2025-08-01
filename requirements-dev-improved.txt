@@ -13,7 +13,7 @@ pytest-mock>=3.10.0,<4.0.0
 # Code Quality and Linting
 pylint>=2.17.0,<3.0.0
 flake8>=6.0.0,<7.0.0
-black>=23.0.0,<24.0.0
+black>=23.0.0,<26.0.0
 isort>=5.12.0,<6.0.0
 
 # Type Checking
