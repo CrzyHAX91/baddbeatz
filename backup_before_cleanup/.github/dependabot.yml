@@ -1,0 +1,124 @@
+version: 2
+updates:
+  # Enable version updates for npm (main project)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+
+  # Enable version updates for npm (baddbeatz)
+  - package-ecosystem: "npm"
+    directory: "/baddbeatz"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:15"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "deps(baddbeatz)"
+      prefix-development: "deps-dev(baddbeatz)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "baddbeatz"
+      - "automated"
+
+  # Enable version updates for npm (backend)
+  - package-ecosystem: "npm"
+    directory: "/baddbeatz/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "deps(backend)"
+      prefix-development: "deps-dev(backend)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "automated"
+
+  # Enable version updates for npm (streaming-app)
+  - package-ecosystem: "npm"
+    directory: "/baddbeatz/streaming-app"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:45"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "deps(streaming)"
+      prefix-development: "deps-dev(streaming)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "streaming"
+      - "automated"
+
+  # Enable version updates for pip (Python dependencies)
+  - package-ecosystem: "pip"
+    directory: "/baddbeatz"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "deps(python)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+      - "automated"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "10:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "CrzyHAX91"
+    assignees:
+      - "CrzyHAX91"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "github-actions"
+      - "ci/cd"
+      - "automated"
