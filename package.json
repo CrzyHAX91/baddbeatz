@@ -12,8 +12,10 @@
     "build:docs": "node scripts/build-docs.cjs",
     "build:production": "npm run build && wrangler deploy --env production",
     "build:dev": "npm run build && wrangler deploy --env development",
+    "build:ci": "npm run clean && npm run build:assets && npm run build:docs",
     "deploy": "npm run build:production",
     "deploy:dev": "npm run build:dev",
+    "deploy:unified": "echo 'Use GitHub Actions workflow for unified deployment'",
     "preview": "wrangler deploy --env development",
     "dev:local": "wrangler dev --local",
     "dev:remote": "wrangler dev",
@@ -26,9 +28,11 @@
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:integration": "npm run build && npm run test",
+    "test:ci": "npm run lint && npm run test",
     "start": "python server.py",
     "lint": "eslint assets/js/**/*.js workers-site/**/*.js --ignore-missing",
-    "lint:fix": "eslint assets/js/**/*.js workers-site/**/*.js --fix --ignore-missing"
+    "lint:fix": "eslint assets/js/**/*.js workers-site/**/*.js --fix --ignore-missing",
+    "validate:build": "node -e \"const fs=require('fs');if(!fs.existsSync('dist/index.html')){console.error('Build validation failed: index.html not found');process.exit(1);}console.log('Build validation passed');\""
   },
   "keywords": [
     "dj",
