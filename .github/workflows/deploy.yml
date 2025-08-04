@@ -1,4 +1,4 @@
-name: Enhanced Unified Deployment
+name: BaddBeatz Enhanced Deployment Pipeline
 
 on:
   push:
