@@ -63,5 +63,13 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "npmConfig": {
+    "timeout": "300000",
+    "registry": "https://registry.npmjs.org/",
+    "fetch-retries": "5",
+    "fetch-retry-factor": "2",
+    "fetch-retry-mintimeout": "10000",
+    "fetch-retry-maxtimeout": "60000"
   }
 }
