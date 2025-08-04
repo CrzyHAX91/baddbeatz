@@ -2,6 +2,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: [
     '<rootDir>/tests/**/*.test.js',
+    '<rootDir>/tests/**/*.test.cjs',
     '<rootDir>/tests/**/*.spec.js'
   ],
   collectCoverageFrom: [
