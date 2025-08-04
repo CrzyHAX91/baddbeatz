@@ -71,9 +71,9 @@ Created `csp-config.js` with recommended CSP headers:
 Via `workers-site/security-headers.js`:
 - X-Frame-Options: DENY
 - X-Content-Type-Options: nosniff
-- X-XSS-Protection: 1; mode=block
 - Strict-Transport-Security (HSTS)
 - Referrer-Policy: strict-origin-when-cross-origin
+- Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'
 
 ## 🚨 Critical Security Issues to Address
 

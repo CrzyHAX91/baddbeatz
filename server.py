@@ -10,8 +10,12 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         # Add security headers for local testing
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('X-Frame-Options', 'DENY')
-        self.send_header('X-XSS-Protection', '1; mode=block')
         self.send_header('Referrer-Policy', 'strict-origin-when-cross-origin')
+        # Modern browsers ignore X-XSS-Protection; use CSP instead
+        self.send_header(
+            'Content-Security-Policy',
+            "default-src 'self'; script-src 'self'; object-src 'none'"
+        )
         super().end_headers()
 
     def do_GET(self):
@@ -26,7 +30,7 @@ with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
     print(f"Server running at http://localhost:{PORT}/")
     print(f"Directory: {os.getcwd()}")
     print("\nSecurity features enabled:")
-    print("- XSS Protection headers")
+    print("- Content Security Policy active")
     print("- Frame options set to DENY")
     print("- Content type sniffing disabled")
     print("\nPress Ctrl+C to stop the server")
