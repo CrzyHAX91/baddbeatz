@@ -23,7 +23,7 @@ From the `DEPENDENCY_SECURITY_REVIEW.md`, I identified:
 - **Issues Found**:
   1. `pydantic-core` version mismatch (required: 2.33.2, installed: 2.23.4)
   2. `rich` version conflict (required: <14>=12, installed: 14.1.0)
-  3. `click` version conflict (required: <8.2>=7.1, installed: 8.2.1)
+  3. `click` version requirement (required: <8.2>=7.1, installed: 8.1.8)
   4. `cachetools` version conflict (required: <6.0>=2.0.0, installed: 6.1.0)
   5. `pydantic` conflicts (required: <2.10.0>=2.6.0, installed: 2.11.7)
 

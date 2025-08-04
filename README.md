@@ -29,7 +29,8 @@ A modern, cyberpunk-themed DJ portfolio website featuring music streaming, booki
 
 2. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements.txt      # Core dependencies
+   pip install -r requirements-dev.txt  # Dev & test tools
    npm install
    ```
 
@@ -53,7 +54,8 @@ baddbeatz/
 ├── scripts/         # Build and utility scripts
 ├── *.html          # Main HTML pages
 ├── server_improved.py # Main server file
-└── requirements.txt # Python dependencies
+├── requirements.txt     # Core Python dependencies
+└── requirements-dev.txt # Development & test dependencies
 ```
 
 ## 🔧 Configuration
@@ -72,11 +74,12 @@ wrangler deploy
 
 ## 🧪 Testing
 
-Run the test suite:
+Install dev dependencies and run the test suite:
 
 ```bash
+pip install -r requirements-dev.txt
 pytest tests/
-npm test
+pnpm test
 ```
 
 ## 📄 License
