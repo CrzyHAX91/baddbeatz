@@ -9,7 +9,7 @@ import huggingface_logic
 
 def test_hf_ask_success(monkeypatch):
     calls = {}
-    
+
     def fake_pipeline(task, model=None):
         calls['task'] = task
         calls['model'] = model
