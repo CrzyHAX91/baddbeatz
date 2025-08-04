@@ -41,9 +41,9 @@
   - Content-Security-Policy with strict rules
   - X-Frame-Options: DENY (clickjacking protection)
   - X-Content-Type-Options: nosniff
-  - X-XSS-Protection: 1; mode=block
   - Strict-Transport-Security (HSTS)
   - Referrer-Policy: strict-origin-when-cross-origin
+  - Removed deprecated X-XSS-Protection header in favor of CSP
 
 ## 🛡️ **Security Improvements Implemented**
 

@@ -44,6 +44,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
+        feature/critical-security-fixes
         cache-dependency-path: 'package-lock.json'
 
     - name: Install dependencies
@@ -59,6 +60,7 @@ jobs:
 
     - name: Run tests and linting
       run: |
+        feature/critical-security-fixes
         echo "🧪 Running tests and linting..."
         npm run lint || echo "⚠️ Linting completed with warnings"
         npm run test || echo "⚠️ Tests completed with warnings"
@@ -181,6 +183,7 @@ jobs:
         fi
         
         # Ensure we have an index.html
+
         if [ ! -f "docs/index.html" ]; then
           echo "Creating fallback index.html for GitHub Pages..."
           cat > docs/index.html << 'EOF'
@@ -213,11 +216,12 @@ jobs:
         </html>
         EOF
         fi
+        feature/critical-security-fixes
         
         echo "✅ GitHub Pages content prepared"
         echo "Contents:"
         ls -la docs/
-
+        
     - name: Setup Pages
       uses: actions/configure-pages@v4
 

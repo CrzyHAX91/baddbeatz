@@ -35,7 +35,7 @@
 **Critical Conflicts Found**:
 1. `pydantic 2.11.7` requires `pydantic-core==2.33.2` but has `2.37.2`
 2. `flask-limiter 3.12` requires `rich<14>=12` but has `14.1.0`
-3. `gtts 2.5.4` requires `click<8.2>=7.1` but has `8.2.1`
+3. `gtts 2.5.4` requires `click<8.2>=7.1` and now uses `8.1.8`
 4. `google-auth 2.40.3` requires `cachetools<6.0>=2.0.0` but has `6.1.0`
 5. `safety 3.6.0` requires `pydantic<2.10.0>=2.6.0` but has `2.11.7`
 6. Multiple version conflicts with `psutil`, `filelock`, and other packages
@@ -86,7 +86,7 @@
 |-------|----------------|------------------|---------|----------|
 | pydantic-core | 2.37.2 | 2.33.2 | High | 🔴 Critical |
 | rich | 14.1.0 | <14>=12 | Medium | 🟡 High |
-| click | 8.2.1 | <8.2>=7.1 | Medium | 🟡 High |
+| click | 8.1.8 | <8.2>=7.1 | None | ✅ Resolved |
 | cachetools | 6.1.0 | <6.0>=2.0.0 | Medium | 🟡 High |
 | pydantic | 2.11.7 | <2.10.0>=2.6.0 | High | 🔴 Critical |
 
