@@ -47,9 +47,9 @@ Conducted comprehensive dependency security review across all project components
    - flask-limiter requires: `rich<14>=12`
    - Installed: `rich 14.1.0`
 
-3. **click version conflict**:
+3. **click version requirement (resolved)**:
    - gtts requires: `click<8.2>=7.1`
-   - Installed: `click 8.2.1`
+   - Installed: `click 8.1.8`
 
 4. **cachetools version conflict**:
    - google-auth requires: `cachetools<6.0>=2.0.0`
