@@ -26,7 +26,7 @@ jobs:
   # Build and Test Job
   build-and-test:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     outputs:
       build-success: ${{ steps.build-check.outputs.success }}
@@ -152,7 +152,7 @@ jobs:
   # GitHub Pages Deployment
   deploy-github-pages:
     name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && needs.build-and-test.outputs.build-success == 'true'
     
@@ -233,7 +233,7 @@ jobs:
   # Cloudflare Workers Deployment (Production)
   deploy-cloudflare-workers:
     name: Deploy to Cloudflare Workers
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build-and-test
     if: github.ref == 'refs/heads/main' && needs.build-and-test.outputs.build-success == 'true'
     
@@ -304,7 +304,7 @@ jobs:
   # Preview Deployment for Pull Requests
   deploy-preview:
     name: Deploy Preview
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build-and-test
     if: github.event_name == 'pull_request' && needs.build-and-test.outputs.build-success == 'true'
     
@@ -354,7 +354,7 @@ jobs:
   # Deployment Summary
   deployment-summary:
     name: Deployment Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-and-test, deploy-github-pages, deploy-cloudflare-workers]
     if: always() && github.ref == 'refs/heads/main'
     
@@ -380,7 +380,7 @@ jobs:
   # Cleanup Job
   cleanup:
     name: Cleanup Old Deployments
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [deployment-summary]
     if: always() && github.ref == 'refs/heads/main'
     
